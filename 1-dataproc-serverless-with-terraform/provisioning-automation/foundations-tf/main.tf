@@ -7,7 +7,7 @@
 
 
 
-# The following are the demo specific org policy updates
+# The following are the lab specific org policy updates
 resource "google_project_organization_policy" "orgPolicyUpdate_disableSerialPortLogging" {
   project     = var.project_id
   constraint = "compute.disableSerialPortLogging"
