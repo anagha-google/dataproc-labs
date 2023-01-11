@@ -3,7 +3,7 @@
 ## 0. About the lab
 
 ### 0.1. Abstract
-This lab showcases Spark on GCP and orchestration of Spark applications with Airflow.
+This lab showcases running Spark on GCP and orchestration of Spark applications with Airflow.
 
 
 |  |  | 
