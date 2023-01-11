@@ -9,13 +9,13 @@ This lab demonstrates Dataproc Serverless Spark batch job orchestration with Apa
 
 ### 0.2. Duration 
 It takes ~1.5 hours to complete and is fully scrpited, including with Terraform for provisioning.
-<br>
+
 
 <hr>
 
 ### 0.3. Resources provisioned
 Covered in section 3.1
-<br>
+
 
 <hr>
 
@@ -144,6 +144,7 @@ In this section, we will provision-
 10. Import of Airflow DAG
 11. Configuration of Airflow variables
 
+<hr>
 
 ### 3.2. Run the terraform scripts
 Paste this in Cloud Shell after editing the GCP region variable to match your nearest region-
@@ -471,6 +472,8 @@ gs://s8s_data_and_code_bucket-159504796045/output_data/customer_augmented/_SUCCE
 gs://s8s_data_and_code_bucket-159504796045/output_data/customer_augmented/part-00000-b06a1fa4-3427-4d94-8ef7-e213fdd2a66f-c000.snappy.parquet
  ```
 
+<hr>
+Lets look at the next Spark application that curates telecom perforance data
 <hr>
 
 ### 5.2. Curate telecom performance data
