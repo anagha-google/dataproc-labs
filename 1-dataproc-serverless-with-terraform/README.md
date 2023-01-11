@@ -84,23 +84,28 @@ Covered in section 3.1
 
 ### 0.9. The data
 
-![README](images/lab-01-02.png)   
-<br><br>
+
 
 ![README](images/lab-01-03.png)   
 <br><br>
 
 <hr>
 
+### 0.10. The relationships between the data entities
 
-### 0.10. Lab Flow
+
+![README](images/lab-01-02.png)   
+<br><br>
+
+
+### 0.11. Lab Flow
 
 ![README](images/lab-01-01.png)   
 <br><br>
 
 <hr>
 
-### 0.10. For success
+### 0.12. For success
 
 Read the lab - narrative below, review the code, and then start trying out the lab.
 
