@@ -38,7 +38,7 @@ git clone https://github.com/anagha-google/dataproc-labs.git
 
 1. Paste this in Cloud Shell
 ```
-cd ~/cloud-composer-for-dataproc-lab/1-dataproc-serverless-with-terraform/provisioning-automation/foundations-tf
+cd ~/dataproc-labs/1-dataproc-serverless-with-terraform/provisioning-automation/foundations-tf
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 ```
 
@@ -75,7 +75,7 @@ In this section, we will provision-
 ### 3.2. Run the terraform scripts
 Paste this in Cloud Shell after editing the GCP region variable to match your nearest region-
 ```
-cd ~/cloud-composer-for-dataproc-lab/1-dataproc-serverless-with-terraform/provisioning-automation/core-tf/terraform
+cd ~/dataproc-labs/1-dataproc-serverless-with-terraform/provisioning-automation/core-tf/terraform
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
 PROJECT_NAME=`gcloud projects describe ${PROJECT_ID} | grep name | cut -d':' -f2 | xargs`
