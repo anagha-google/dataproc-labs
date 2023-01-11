@@ -118,6 +118,25 @@ resource "google_project_service" "enable_composer_google_apis" {
   disable_dependent_services = true
 }
 
+resource "time_sleep" "sleep_after_api_enabling" {
+  create_duration = "180s"
+  depends_on = [
+    google_project_service.enable_orgpolicy_google_apis,
+    enable_compute_google_apis,
+    enable_container_google_apis,
+    enable_containerregistry_google_apis,
+    enable_dataproc_google_apis,
+    enable_bigquery_google_apis,
+    enable_storage_google_apis,
+    enable_composer_google_apis,
+    enable_dpms_google_apis,
+    enable_notebooks_google_apis,
+    enable_aiplatform_google_apis,
+    enable_logging_google_apis,
+    enable_monitoring_google_apis
+  ]
+}
+
 
 
 
