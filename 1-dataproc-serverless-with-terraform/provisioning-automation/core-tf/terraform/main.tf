@@ -22,7 +22,7 @@ locals {
 project_id                  = "${var.project_id}"
 project_nbr                 = "${var.project_number}"
 admin_upn_fqn               = "${var.gcp_account_name}"
-location                    = "us-central1"
+location                    = "${var.gcp_region}"
 umsa                        = "s8s-lab-sa"
 umsa_fqn                    = "${local.umsa}@${local.project_id}.iam.gserviceaccount.com"
 s8s_spark_bucket            = "s8s-spark-bucket-${local.project_nbr}"
