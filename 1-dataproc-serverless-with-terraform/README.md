@@ -42,8 +42,9 @@ The Terraform in this section updates organization policies and enables Google A
 
 1. Paste this in Cloud Shell
 ```
+PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null
+
 cd ~/dataproc-labs/1-dataproc-serverless-with-terraform/provisioning-automation/foundations-tf
-PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 ```
 
 2. Run the Terraform for organization policy edits and enabling Google APIs
