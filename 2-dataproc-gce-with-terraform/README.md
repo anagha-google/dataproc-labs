@@ -1,8 +1,6 @@
 # Lab 2: Orchestrating Apache Spark applications on Dataproc - GCE with Airflow on Cloud Composer
 
-This lab demonstrates orchestration of Spark jobs on Dataproc on GCE with Apache Airflow on Cloud Composer 2.
-<br>
-It covers:
+This lab demonstrates orchestration of Spark applications on Dataproc - GCE with Airflow on Cloud Composer 2 and covers common patterns-
 1. Ephemeral Dataproc Cluster: Running an Airflow DAG that creates a Dataproc on GCE cluster, runs Spark jobs, deletes the cluster created by the DAG
 2. Existing Dataproc Cluster: Running an Airflow DAG with Spark jobs against an existing static Dataproc on GCE cluster
 
@@ -52,7 +50,7 @@ In this section, we will provision-
 
 ### 3.2. Run the terraform scripts
 
-1. Paste this in Cloud Shell
+1. Paste this in Cloud Shell after editing the GCP region variable to match your nearest region-
 ```
 cd ~/dataproc-labs/2-dataproc-gce-with-terraform/terraform/core-tf/terraform
 
@@ -60,6 +58,7 @@ PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
 PROJECT_NAME=`gcloud projects describe ${PROJECT_ID} | grep name | cut -d':' -f2 | xargs`
 GCP_ACCOUNT_NAME=`gcloud auth list --filter=status:ACTIVE --format="value(account)"`
+GCP_REGION="us-central1"
 DEPLOYER_ACCOUNT_NAME=$GCP_ACCOUNT_NAME
 ORG_ID=`gcloud organizations list --format="value(name)"`
 CC2_IMAGE_VERSION="composer-2.0.11-airflow-2.2.3"
@@ -77,6 +76,7 @@ terraform apply \
   -var="deployment_service_account_name=${DEPLOYER_ACCOUNT_NAME}" \
   -var="org_id=${ORG_ID}" \
   -var="cloud_composer_image_version=${CC2_IMAGE_VERSION}" \
+  -var="gcp_region=${GCP_REGION}" \
   -auto-approve >> dpgce-demo-tf.output
 ```
 
