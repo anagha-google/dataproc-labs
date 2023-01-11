@@ -39,8 +39,8 @@ The Terraform in this section updates organization policies and enables Google A
 
 1. Paste this in Cloud Shell
 ```
-cd ~/dataproc-labs/2-dataproc-gce-with-terraform/terraform/foundations-tf
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
+cd ~/dataproc-labs/2-dataproc-gce-with-terraform/provisioning-automation/foundations-tf
 ```
 
 2. Run the Terraform for organization policy edits and enabling Google APIs
@@ -71,7 +71,7 @@ In this section, we will provision-
 
 1. Paste this in Cloud Shell after editing the GCP region variable to match your nearest region-
 ```
-cd ~/dataproc-labs/2-dataproc-gce-with-terraform/terraform/core-tf/terraform
+cd ~/dataproc-labs/2-dataproc-gce-with-terraform/provisioning-automation/core-tf/terraform
 
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
@@ -81,7 +81,6 @@ GCP_REGION="us-central1"
 DEPLOYER_ACCOUNT_NAME=$GCP_ACCOUNT_NAME
 ORG_ID=`gcloud organizations list --format="value(name)"`
 CC2_IMAGE_VERSION="composer-2.0.11-airflow-2.2.3"
-
 ```
 
 2. Run the Terraform for provisioning the rest of the environment
@@ -149,7 +148,6 @@ Validate the creation of the BigQuery dataset called cell_tower_reporting_mart f
 - Click on all the tables of the cluster details and review the configuration
 - Under configuration, check for the metastore configuration
 - And check for the Spark History Server bucket configuration
-
 
 ### 4.7. Cloud Composer environment
 
