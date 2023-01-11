@@ -203,12 +203,12 @@ In this section, from PySpark, we transform customer master data (parquet) and s
 Review the code first.<br>
 
 #### 5.1.1. Abstract of the Pyspark script
-This script -
-(a) Reads the customer master data
-(b) Reads the service threshold data
-(c) Subsets each of the datasets for relevant attributes
-(d) Then joins them both based on cell tower name and
-(e) Persists to GCS
+This script -<br>
+(a) Reads the customer master data<br>
+(b) Reads the service threshold data<br>
+(c) Subsets each of the datasets for relevant attributes<br>
+(d) Then joins them both based on cell tower name and<br>
+(e) Persists to GCS<br>
 
 #### 5.1.2. Run the command below in Cloud Shell
 ```
@@ -223,9 +223,13 @@ gs://$CODE_AND_DATA_BUCKET/scripts/pyspark/curate_customer_data.py \
 -- $CODE_AND_DATA_BUCKET
 ```
 
+<br>
+
 #### 5.1.3. Review execution in the Dataproc batches UI
 Switch to Dataproc to check the execution under "batches". You should see a batch job called "s8s-lab1-curate-customer-master-..." there. Review its execution through completion. Review the code for the process and then explore the results in GCS.
 
+
+<br>
 
 #### 5.1.4. Review the intermediate console output
 
@@ -377,6 +381,8 @@ root
  
  ```
  
+ <br>
+ 
 #### 5.1.5. Review the results in Cloud Storage
  
  ```
@@ -407,6 +413,8 @@ This script -<br>
 (d) Then joins them both based on customer ID and<br> 
 (e) Persists to GCS
 
+<br>
+
 #### 5.2.2. Execute the command below
 ```
 gcloud dataproc batches submit \
@@ -420,8 +428,12 @@ gs://$CODE_AND_DATA_BUCKET/scripts/pyspark/curate_telco_performance_data.py \
 -- $CODE_AND_DATA_BUCKET
 ```
 
+<br>
+
 #### 5.2.3. Review execution in the Dataproc batches UI
 Switch to Dataproc to check the execution under "batches". You should see a batch job called "s8s-lab1-curate-telco-..." there. Review its execution through completion. Review the code for the process and then explore the results in GCS.
+
+<br>
 
 
 #### 5.2.4. Review the console output
@@ -576,6 +588,8 @@ only showing top 20 rows
 
 ```
 
+<br>
+
 #### 5.2.4. List the results in the GCS bucket
 ```
 gsutil ls -r gs://$CODE_AND_DATA_BUCKET/output_data/telco_performance_augmented
@@ -596,6 +610,8 @@ gs://s8s_data_and_code_bucket-159504796045/output_data/telco_performance_augment
 ```
 This output will be used in subsequent steps.
 
+<br>
+
 ### 5.3. Calculate Cell Tower performance metrics by customer
 In this section, from PySpark, we analyze the curated telecom data, and calculate the KPIs by customer.<br>
 
@@ -609,6 +625,8 @@ This script -<br>
 (d) persists to GCS as parquet and <br>
 (e) also creates an external table in BigQuery on the same dataset
 
+<br>
+
 #### 5.3.2. Execute the command below
 ```
 gcloud dataproc batches submit \
@@ -621,6 +639,8 @@ gs://$CODE_AND_DATA_BUCKET/scripts/pyspark/kpis_by_customer.py \
 --service-account $UMSA_FQN \
 -- $PROJECT_ID "cell_tower_reporting_mart" $CODE_AND_DATA_BUCKET
 ```
+
+<br>
 
 #### 5.3.3. Review the console output from the application
 ```
@@ -703,12 +723,16 @@ gs://s8s_data_and_code_bucket-159504796045/output_data/kpis_by_customer/part-000
 ```
 This output will be used in subsequent steps.
 
+<br>
+
 ### 5.3.5. Analyze results in BigQuery
 
 Run the query below-
 ```
 select customerID,CellName, defect_count from `cell_tower_reporting_mart.kpis_by_customer` limit 3
 ```
+
+<br>
 
 
 ### 5.4. Calculate performance metrics by Cell Tower and flag towers needing maintenance
@@ -724,6 +748,8 @@ This script -<br>
 (d) persists to GCS as parquet and <br>
 (e) also creates an external table in BigQuery on the same dataset
 
+<br>
+
 #### 5.4.2. Execute the command below
 ```
 gcloud dataproc batches submit \
@@ -737,6 +763,8 @@ gs://$CODE_AND_DATA_BUCKET/scripts/pyspark/kpis_by_cell_tower.py \
 -- $PROJECT_ID "cell_tower_reporting_mart" $CODE_AND_DATA_BUCKET
 
 ```
+<br>
+
 #### 5.4.3. Review the console output from the application
 ```
 root
@@ -861,6 +889,8 @@ gs://s8s_data_and_code_bucket-159504796045/output_data/kpis_by_cell_tower/part-0
 ```
 This output will be used in subsequent steps.
 
+<br>
+
 #### 5.4.5. Analyze results in BigQuery
 
 Run the query below-
@@ -868,11 +898,15 @@ Run the query below-
 select CellName, Maintainence_Required from `cell_tower_reporting_mart.kpis_by_cell_tower` limit 3
 ```
 
+<br>
+
 ### 6. Automate orchestration with Apache Airflow powered by Cloud Composer 2
 
 1. Execute the DAG - cell_tower_anomaly_detection 
 2. Review its execution in the Airflow UI and the Serverless Spark batches UI.<br>
 3. The serverless Spark batch jobs from Cloud Composer will have a "lab-01" prefix, whereas the ones you ran individually have a "s8s" prefix. Review the batch jobs and DAG through completion.
+
+<br>
 
 ##### =====================================================================================================
 ##### THIS CONCLUDES THE LAB - CELL TOWER ANOMALY DETECTION WITH DATAPROC SERVERLESS
