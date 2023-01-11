@@ -273,8 +273,7 @@ echo $CODE_AND_DATA_BUCKET
 
 ### 5.1. Curate customer master data
 
-In this section, from PySpark, we transform customer master data (parquet) and service threshold data (CSV) and join them, and persist to GCS.<br>
-Review the code first.<br>
+In this section, from PySpark, we transform customer master data (parquet) and service threshold data (CSV) and join them, and persist to GCS.<br><br>
 
 #### 5.1.1. Abstract of the Pyspark script
 This script -<br>
@@ -284,7 +283,11 @@ This script -<br>
 (d) Then joins them both based on cell tower name and<br>
 (e) Persists to GCS<br>
 
-#### 5.1.2. Run the command below in Cloud Shell
+#### 5.1.2. Code
+
+Review the [code](provisioning-automation/core-tf/scripts/pyspark/curate_customer_data.py) <br>
+
+#### 5.1.3. Run the command below in Cloud Shell
 ```
 gcloud dataproc batches submit \
 --project $PROJECT_ID \
@@ -299,13 +302,13 @@ gs://$CODE_AND_DATA_BUCKET/scripts/pyspark/curate_customer_data.py \
 
 <br>
 
-#### 5.1.3. Review execution in the Dataproc batches UI
+#### 5.1.4. Review execution in the Dataproc batches UI
 Switch to Dataproc to check the execution under "batches". You should see a batch job called "s8s-lab1-curate-customer-master-..." there. Review its execution through completion. Review the code for the process and then explore the results in GCS.
 
 
 <br>
 
-#### 5.1.4. Review the intermediate console output
+#### 5.1.5. Review the intermediate console output
 
 ```
 A) Customer data schema:
@@ -457,7 +460,7 @@ root
  
  <br>
  
-#### 5.1.5. Review the results in Cloud Storage
+#### 5.1.6. Review the results in Cloud Storage
  
  ```
  gsutil ls -r gs://$CODE_AND_DATA_BUCKET/output_data/customer_augmented
