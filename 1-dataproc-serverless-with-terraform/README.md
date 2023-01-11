@@ -19,6 +19,8 @@ This lab showcases Spark on GCP and orchestration of Spark applications with Air
 | Scheduling and Orchestration | Apache Airflow on Cloud Composer 2 |
 | Focus| Data Engineering on Google Cloud |
 
+The goal of the lab is to demystify Spark on GCP and orchestration of Spark on managed Airflow on GCP through a (zero fluff, zero dazzle) minimum viable end to end sample to accelerate adoption. 
+
 <hr>
 
 ### 0.2. Duration 
