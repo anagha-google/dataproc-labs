@@ -38,7 +38,7 @@ git clone https://github.com/anagha-google/cloud-composer-for-dataproc-lab.git
 
 1. Paste this in Cloud Shell
 ```
-cd ~/cloud-composer-for-dataproc-lab/1-dataproc-serverless-with-terraform/terraform/foundations-tf
+cd ~/cloud-composer-for-dataproc-lab/1-dataproc-serverless-with-terraform/provisioning-automation/foundations-tf
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 ```
 
@@ -56,13 +56,31 @@ Wait till the provisioning completes - ~5 minutes
 
 ## 3. Lab resources provisioning automation with Terraform 
 
-1. Paste this in Cloud Shell
+### 3.1. Resources provisioned
+In this section, we will provision-
+
+1. Network, subnet, firewall rule
+2. Storage buckets for code, datasets, and for use with the services
+3. BigQuery dataset
+4. Persistent Spark History Server
+5. Dataproc Metastore
+6. Cloud Composer 2
+7. User Managed Service Account
+8. Requisite IAM permissions
+9. Copy of code, data, etc into buckets
+10. Import of Airflow DAG
+11. Configuration of Airflow variables
+
+
+### 3.2. Run the terraform scripts
+Paste this in Cloud Shell after editing the GCP region variable to match your nearest region-
 ```
-cd ~/cloud-composer-for-dataproc-lab/1-dataproc-serverless-with-terraform/terraform/core-tf/terraform
+cd ~/cloud-composer-for-dataproc-lab/1-dataproc-serverless-with-terraform/provisioning-automation/core-tf/terraform
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
 PROJECT_NAME=`gcloud projects describe ${PROJECT_ID} | grep name | cut -d':' -f2 | xargs`
 GCP_ACCOUNT_NAME=`gcloud auth list --filter=status:ACTIVE --format="value(account)"`
+GCP_REGION="us-central1"
 DEPLOYER_ACCOUNT_NAME=$GCP_ACCOUNT_NAME
 ORG_ID=`gcloud organizations list --format="value(name)"`
 CC2_IMAGE_VERSION="composer-2.0.11-airflow-2.2.3"
