@@ -842,21 +842,27 @@ select CellName, Maintainence_Required from `cell_tower_reporting_mart.kpis_by_c
 
 ### 6. Automate orchestration with Apache Airflow powered by Cloud Composer 2
 
-There are two DAGs pre-created- 
-- One DAG that creates a new DPGCE clusters, runs the Spark jobs from prior sections and then terminates cluster
-- Another DAG that runs the Spark jobs from prior sections to an existing cluster
+There are two DAGs pre-created and imported into Airflow on Cloud Composer- 
+- One DAG that creates a new DPGCE cluster, runs the Spark jobs covered in the sections above, and then terminates the cluster; The ephemeral DPGCE cluster is associated with a Dataproc Metastore and Dataproc Persistent Spark History Server at creation time
+- Another DAG that runs the Spark jobs covered in the sections above, on an existing DPGCE cluster associated with a Dataproc Metastore and Dataproc Persistent Spark History Server
 
 
-#### 6.1. DAG: cell-tower-anomaly-detection-with-create-cluster
+#### 6.1. Orchestrate Spark jobs on Dataproc-GCE ephemeral cluster
+
+Click on the DAG "cell-tower-anomaly-detection-with-create-cluster" and run through the steps below - <br>
+
 1. Execute the DAG
 2. Validate the cluster creation & its specs, including the metastore and PHS configuration
 3. Then validate each of the jobs to completion
 4. Run the BQ queries from 5.3.5 and 5.4.5
 5. Ensure the Spark jobs/applications are visible from the PHS
 
-#### 6.2. DAG: cell-tower-anomaly-detection-with-existing-dpgce-cluster
+#### 6.2. Orchestrate Spark jobs on Dataproc-GCE static cluster
+
+Click on the DAG "cell-tower-anomaly-detection-with-existing-dpgce-cluster" and run through the steps below - <br>
+
 1. Execute the DAG
-2. The validate each of the jobs to completion
+2. Then validate each of the jobs to completion
 3. Run the BQ queries from 5.3.5 and 5.4.5
 4. Ensure the Spark jobs/applications are visible from the PHS
 
