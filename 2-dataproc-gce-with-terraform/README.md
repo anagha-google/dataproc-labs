@@ -17,6 +17,8 @@ git clone https://github.com/anagha-google/dataproc-labs.git
 <hr>
 
 ## 2. Foundational provisioning automation with Terraform 
+The Terraform in this section updates organization policies and enables Google APIs.<br>
+
 
 1. Paste this in Cloud Shell
 ```
@@ -32,11 +34,23 @@ terraform apply \
   -auto-approve >> dpgce-org-policy-tf.output
 ```
 
-Wait till the provisioning completes - ~5 minutes
+**Note:** Wait till the provisioning completes (~10 minutes) before moving to the next section.
 
 <hr>
 
 ## 3. Lab resources provisioning automation with Terraform 
+
+### 3.1. Resources provisioned
+In this section, we will provision-
+1. Network, subnet, firewall rule
+2. Storage buckets for code, datasets, and for use with the services
+3. BigQuery datasets
+4. Persistent Spark History Server
+5. Dataproc Metastore
+6. Cloud Composer 2
+7. Dataproc on GCE cluster
+
+### 3.2. Run the terraform scripts
 
 1. Paste this in Cloud Shell
 ```
@@ -66,7 +80,7 @@ terraform apply \
   -auto-approve >> dpgce-demo-tf.output
 ```
 
-Takes ~45 minutes to complete.
+**Note:** Takes ~45 minutes to complete.
 
 <br>
 
@@ -96,13 +110,39 @@ gsutil ls -r gs://dpgce_data_and_code_bucket-${PROJECT_NBR}/datasets
 
 ### 4.3. BigQuery dataset
 
+Validate the creation of the BigQuery dataset called cell_tower_reporting_mart from the Cloud Console, BigQuery UI
 <br>
 
-### 4.4. Cloud Composer environment
+### 4.4. Dataproc Metastore (DPMS)
 
-Note the Airflow variables and Telco Customer Churn Prediction DAG created
+- Validate the creation of the DPMS from the Cloud Console, Dataproc UI -> Metastore
+
+### 4.5. Persistent Spark History Server (PHS)
+
+- Validate the creation of the PHS from the Cloud Console, Dataproc UI -> Clusters
+- The PHS has a name prefix - "dpgce-sphs-"
+- Navigate to web interfaces, then "Spark History Server" and familiarize yourself with the UI
+
+### 4.6. Dataproc on GCE cluster (DPGCE)
+
+- Validate the creation of the Dataproc on GCE cluster from the Cloud Console, Dataproc UI -> Clusters
+- The DPGCE has a name prefix - "	dpgce-cluster-static-"
+- Click on all the tables of the cluster details and review the configuration
+- Under configuration, check for the metastore configuration
+- And check for the Spark History Server bucket configuration
+
+
+### 4.7. Cloud Composer environment
+
+From the Cloud Console, navigate to the Cloud Composer service and browse all the tabs of the deployed "environment".<br>
+1. Review the Airflow variables
+2. Click on the Airflow UI and view the two DAGs
+3. Open the DAG called - "cell-tower-anomaly-detection-with-create-cluster" and click on "code" and review the same
+4. Open the DAG called - "cell-tower-anomaly-detection-with-existing-dpgce-cluster" and click on "code" and review the same
 
 <br>
+
+<hr>
 
 ## 5. Run the Spark jobs individually
 
@@ -798,11 +838,28 @@ Run the query below-
 select CellName, Maintainence_Required from `cell_tower_reporting_mart.kpis_by_cell_tower` limit 3
 ```
 
+<hr>
+
 ### 6. Automate orchestration with Apache Airflow powered by Cloud Composer 2
 
-1. Execute the DAG - cell_tower_anomaly_detection 
-2. Review its execution in the Airflow UI and the Serverless Spark batches UI.<br>
-3. The serverless Spark batch jobs from Cloud Composer will have a "lab-01" prefix, whereas the ones you ran individually have a "s8s" prefix. Review the batch jobs and DAG through completion.
+There are two DAGs pre-created- 
+- One DAG that creates a new DPGCE clusters, runs the Spark jobs from prior sections and then terminates cluster
+- Another DAG that runs the Spark jobs from prior sections to an existing cluster
+
+
+#### 6.1. DAG: cell-tower-anomaly-detection-with-create-cluster
+1. Execute the DAG
+2. Validate the cluster creation & its specs, including the metastore and PHS configuration
+3. Then validate each of the jobs to completion
+4. Run the BQ queries from 5.3.5 and 5.4.5
+5. Ensure the Spark jobs/applications are visible from the PHS
+
+#### 6.2. DAG: cell-tower-anomaly-detection-with-existing-dpgce-cluster
+1. Execute the DAG
+2. The validate each of the jobs to completion
+3. Run the BQ queries from 5.3.5 and 5.4.5
+4. Ensure the Spark jobs/applications are visible from the PHS
+
 
 ##### =====================================================================================================
 ##### THIS CONCLUDES THE LAB - CELL TOWER ANOMALY DETECTION WITH SPARK POWERED BY DATAPROC ON GCE
