@@ -1,4 +1,4 @@
-# Lab 2: Orchestratng Apache Spark applications on Dataproc - GCE with Airflow on Cloud Composer
+# Lab 2: Orchestrating Apache Spark applications on Dataproc - GCE with Airflow on Cloud Composer
 
 This lab demonstrates orchestration of Spark jobs on Dataproc on GCE with Apache Airflow on Cloud Composer 2.
 <br>
