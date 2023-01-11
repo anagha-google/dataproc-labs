@@ -524,7 +524,7 @@ resource "google_storage_bucket_object" "upload_cc2_dag_to_airflow_dag_bucket" {
 }
 
 /******************************************
-13. Output important variables needed for the demo
+13. Output important variable
 ******************************************/
 
 output "PROJECT_ID" {
