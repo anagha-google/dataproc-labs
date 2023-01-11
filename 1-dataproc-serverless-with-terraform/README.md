@@ -3,7 +3,7 @@
 ## 0. About the lab
 
 ### 0.1. Abstract
-This lab demonstrates Dataproc Serverless Spark batch job orchestration with Apache Airflow on Cloud Composer. The use case is "Cell Tower Anomaly Detection" and is a data engineering focused lab. The goal is to demystify serverless Spark, and its orchestration on GCP managed services and provides "just enough" knowledge to get started.
+This lab showcases Spark on GCP and orchestration of Spark applications with Airflow.
 
 
 |  |  | 
