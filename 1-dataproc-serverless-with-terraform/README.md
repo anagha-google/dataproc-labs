@@ -5,6 +5,20 @@
 ### 0.1. Abstract
 This lab demonstrates Dataproc Serverless Spark batch job orchestration with Apache Airflow on Cloud Composer. The use case is "Cell Tower Anomaly Detection" and is a data engineering focused lab. The goal is to demystify serverless Spark, and its orchestration on GCP managed services and provides "just enough" knowledge to get started.
 
+
+|  |  | 
+| -- | :--- | 
+| Use case |  Anomaly Detection |
+| Domain |  Telecommunications |
+| Showcased | Detection of cell towers needing maintenance with Apache Spark |
+| Technical Use-case | Data engineering at scale |
+| Technology | Spark (PySpark) |
+| Product | Serverless Spark batches on Cloud Dataproc |
+| Dataset | Telco Customer Churn Public (small) Dataset |
+| Process | Rule-based, thresholds-based anomaly detection |
+| Scheduling and Orchestration | Apache Airflow on Cloud Composer 2 |
+| Focus| Data Engineering on Google Cloud |
+
 <hr>
 
 ### 0.2. Duration 
@@ -44,19 +58,7 @@ Covered in section 3.1
 
 <hr>
 
-### 0.7. What is covered in the lab
-
-| Aspect | Detail | 
-| -- | :--- | 
-| Use case |  Cell Tower Anomaly Detection |
-| Dataset |  Kaggle Telco Customer Churn Public (small) Dataset |
-| Anomaly Detection Strategy |  Rules based, thresholds based |
-| Focus| Data Engineering with Apache Spark powered by Dataproc Serverless <br>Scheduling and Orchestration with Apache Airflow powered by Cloud Composer<br>|
-
-
-<hr>
-
-### 0.8. Features covered
+### 0.7. Features covered
 
 | Functionality | Feature | 
 | -- | :--- | 
@@ -68,22 +70,21 @@ Covered in section 3.1
 | Provisioning Automation | Terraform |
 
 
+<hr>
+
+### 0.8. Lab Architecture
 
 <hr>
 
-### 0.9. Lab Architecture
+### 0.9. Lab Flow
 
 <hr>
 
-### 0.10. Lab Flow
-
-<hr>
-
-### 0.11. For success
+### 0.10. For success
 
 Read the lab - narrative below, review the code, and then start trying out the lab.
 
-### 0.12. Credits
+### 0.11. Credits
 
 | Contributor | Contribution | 
 | -- | :--- | 
