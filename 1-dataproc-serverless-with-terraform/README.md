@@ -76,9 +76,27 @@ Covered in section 3.1
 
 ### 0.8. Lab Architecture
 
+
+![README](images/lab-01-04.png)   
+<br><br>
+
 <hr>
 
-### 0.9. Lab Flow
+### 0.9. The data
+
+![README](images/lab-01-02.png)   
+<br><br>
+
+![README](images/lab-01-03.png)   
+<br><br>
+
+<hr>
+
+
+### 0.10. Lab Flow
+
+![README](images/lab-01-01.png)   
+<br><br>
 
 <hr>
 
@@ -283,6 +301,9 @@ This script -<br>
 (c) Subsets each of the datasets for relevant attributes<br>
 (d) Then joins them both based on cell tower name and<br>
 (e) Persists to GCS<br>
+
+![README](images/lab-01-05.png)   
+<br><br>
 
 <hr>
 
@@ -498,6 +519,9 @@ This script -<br>
 (e) Persists to GCS
 
 <br>
+
+![README](images/lab-01-06.png)   
+<br><br>
 
 #### 5.2.2. The PySpark code
 
@@ -722,6 +746,9 @@ This script -<br>
 
 <br>
 
+![README](images/lab-01-07.png)   
+<br><br>
+
 <hr>
 
 #### 5.3.2. The PySpark code
@@ -858,6 +885,9 @@ This script -<br>
 (e) also creates an external table in BigQuery on the same dataset
 
 <br>
+
+![README](images/lab-01-08.png)   
+<br><br>
 
 <hr>
 
