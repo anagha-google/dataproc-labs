@@ -107,9 +107,11 @@ terraform apply \
   -auto-approve
 ```
 
-Takes ~45 minutes to complete.
+Takes ~50 minutes to complete.
 
 <br>
+
+<hr>
 
 ## 4. Explore the resources provisioned
 
@@ -137,13 +139,28 @@ gsutil ls -r gs://s8s_data_and_code_bucket-${PROJECT_NBR}/datasets
 
 ### 4.3. BigQuery dataset
 
-<br>
+Validate the creation of the BigQuery dataset called cell_tower_reporting_mart from the Cloud Console, BigQuery UI
 
-### 4.4. Cloud Composer environment
+### 4.4. Dataproc Metastore (DPMS)
+Validate the creation of the DPMS from the Cloud Console, Dataproc UI -> Metastore
 
-Note the Airflow variables and Telco Customer Churn Prediction DAG created
+### 4.5. Persistent Spark History Server (PHS)
+Validate the creation of the PHS from the Cloud Console, Dataproc UI -> Clusters
 
-<br>
+- The PHS has a name prefix - "dpgce-sphs-"
+- Navigate to web interfaces, then "Spark History Server" and familiarize yourself with the UI
+
+### 4.6. Cloud Composer environment
+From the Cloud Console, navigate to the Cloud Composer service and 
+
+- Browse all the tabs of the deployed "environment".
+- Review the Airflow variables
+- Click on the Airflow UI and view the two DAGs
+- Open the DAG called - "cell-tower-anomaly-detection" and click on "code" and review the same
+
+We will first run the Spark jobs individually and get familiar with the Serverless Spark functionality and then run the precreated Airflow DAG that orchestrates the sample Spark jobs on Cloud Composer.
+
+<hr>
 
 ## 5. Run the Spark jobs individually
 
