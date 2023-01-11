@@ -38,6 +38,8 @@ bq_datamart_ds              = "cell_tower_reporting_mart"
 CC_GMSA_FQN                 = "service-${local.project_nbr}@cloudcomposer-accounts.iam.gserviceaccount.com"
 GCE_GMSA_FQN                = "${local.project_nbr}-compute@developer.gserviceaccount.com"
 CLOUD_COMPOSER2_IMG_VERSION = "${var.cloud_composer_image_version}"
+metastore_db_nm             = "dpgce_metastore_db"
+metastore_nm                = "dpgce-metastore-${local.project_nbr}"
 }
 
 
