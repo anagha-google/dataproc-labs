@@ -1,4 +1,4 @@
-# Lab 1: Orchestratng Spark on Dataproc Serverless with Airflow on Cloud Composer
+# Lab 1: Orchestrating Spark on Dataproc Serverless with Airflow on Cloud Composer
 
 This lab demonstrates Dataproc Serverless Spark batch job orchestration with Apache Airflow on Cloud Composer.
 <br>
