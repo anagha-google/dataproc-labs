@@ -11,7 +11,9 @@ Covered in section 3.1
 
 #### Prerequisites
 
+- A pre-created project
 - You need to have organization admin rights, and project owner privileges or work with privileged users to complete provisioning.
+
 
 #### Lab format
 
