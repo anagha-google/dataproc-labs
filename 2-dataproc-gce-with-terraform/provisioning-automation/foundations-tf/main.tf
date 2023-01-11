@@ -2,7 +2,7 @@
 # About
 # In this script, we will -
 # 1. Apply necessary updates to organization policies
-# 2. Enable google APIs for the Google Cloud services we will use in the demo
+# 2. Enable google APIs for the Google Cloud services we will use in the lab/demo
 #############################################################################################################################################################
 
 
