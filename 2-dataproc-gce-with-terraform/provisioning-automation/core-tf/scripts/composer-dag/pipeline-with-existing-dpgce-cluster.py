@@ -48,7 +48,7 @@ subnet_uri=Variable.get("subnet_uri")
 umsa=Variable.get("umsa")
 
 # Other variables
-dag_name="cell-tower-anomaly-detection-with-existing-dpgce-cluster"
+dag_name="cell-tower-anomaly-detection-on-static-dpgce-cluster"
 dpgce_cluster_name="dpgce-cluster-static-"+project_nbr
 dpgce_cluster_bucket_name="dpgce-spark-bucket-"+project_nbr
 dpgce_cluster_region=region

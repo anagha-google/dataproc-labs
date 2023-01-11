@@ -48,7 +48,7 @@ subnet_uri=Variable.get("subnet_uri")
 umsa=Variable.get("umsa")
 
 # Other variables
-dag_name="cell-tower-anomaly-detection-with-create-cluster"
+dag_name="cell-tower-anomaly-detection-with-ephemeral-dpgce-cluster"
 dpgce_cluster_name="dpgce-cluster-"+project_nbr
 dpgce_cluster_bucket_name="dpgce-spark-bucket-"+project_nbr
 dpgce_cluster_region=region
@@ -81,7 +81,7 @@ S = 10  # number of characters in the string.
 # call random.choices() string module to find the string in Uppercase + numeric data.
 ran = ''.join(random.choices(string.digits, k = S))
 
-job_id_prefix = "cell-tower-anomaly-detection-static-cluster-"+str(ran)
+job_id_prefix = "cell-tower-anomaly-detection-ephemeral-dpgce-cluster-"+str(ran)
 
 Curate_Customer_Master_Data_Job_Config = {
     "reference": {"job_id": job_id_prefix + "-curate-customer","project_id": project_id},
