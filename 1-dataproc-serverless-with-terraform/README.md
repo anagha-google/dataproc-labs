@@ -29,7 +29,7 @@ Covered in section 3.1
 ## 1. Clone this repo in Cloud Shell
 
 ```
-git clone https://github.com/anagha-google/cloud-composer-for-dataproc-lab.git
+git clone https://github.com/anagha-google/dataproc-labs.git
 ```
 
 <hr>
