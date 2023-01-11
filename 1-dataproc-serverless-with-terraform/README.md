@@ -3,7 +3,28 @@
 This lab demonstrates Dataproc Serverless Spark batch job orchestration with Apache Airflow on Cloud Composer.
 <br>
 
+#### Duration 
 It takes ~1.5 hours to complete and is fully scrpited, including with Terraform for provisioning.
+
+#### Resources provisioned
+Covered in section 3.1
+
+#### Prerequisites
+
+- You need to have organization admin rights, and project owner privileges or work with privileged users to complete provisioning.
+
+#### Lab format
+
+- Includes Terraform for provisioning automation
+- Is fully scripted - the entire solution is provided, and with instructions
+- Is self-paced/self-service
+
+#### Audience
+
+- A quick read for architects
+- Targeted for hands on practitioners
+
+<hr>
 
 ## 1. Clone this repo in Cloud Shell
 
