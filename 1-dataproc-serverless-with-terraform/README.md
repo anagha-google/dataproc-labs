@@ -52,10 +52,14 @@ cd ~/dataproc-labs/1-dataproc-serverless-with-terraform/provisioning-automation/
 terraform init
 terraform apply \
   -var="project_id=${PROJECT_ID}" \
-  -auto-approve
+  -auto-approve >> s8s-foundations-tf.output
 ```
 
-Wait till the provisioning completes - ~5 minutes
+Wait till the provisioning completes - ~5 minutes. In a separate cloud shell tab, you can tail the output file for execution state through completion-
+
+```
+tail -f  ~/dataproc-labs/1-dataproc-serverless-with-terraform/provisioning-automation/foundations-tf/s8s-foundations-tf.output
+```
 
 <hr>
 
@@ -105,10 +109,15 @@ terraform apply \
   -var="org_id=${ORG_ID}" \
   -var="cloud_composer_image_version=${CC2_IMAGE_VERSION}" \
   -var="gcp_region=${GCP_REGION}" \
-  -auto-approve
+  -auto-approve >> s8s-core-tf.output
+  
 ```
 
-Takes ~50 minutes to complete.
+Takes ~50 minutes to complete. In a separate cloud shell tab, you can tail the output file for execution state through completion-
+
+```
+tail -f ~/dataproc-labs/1-dataproc-serverless-with-terraform/provisioning-automation/core-tf/terraform/s8s-lab-tf.output
+```
 
 <br>
 
