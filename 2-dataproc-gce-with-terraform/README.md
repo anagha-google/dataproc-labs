@@ -804,8 +804,8 @@ select CellName, Maintainence_Required from `cell_tower_reporting_mart.kpis_by_c
 3. The serverless Spark batch jobs from Cloud Composer will have a "lab-01" prefix, whereas the ones you ran individually have a "s8s" prefix. Review the batch jobs and DAG through completion.
 
 ##### =====================================================================================================
-##### THIS CONCLUDES THE LAB - CELL TOWER ANOMALY DETECTION WITH DATAPROC SERVERLESS
-##### PROCEED TO NEXT MODULE
+##### THIS CONCLUDES THE LAB - CELL TOWER ANOMALY DETECTION WITH SPARK POWERED BY DATAPROC ON GCE
+##### DONT FORGET TO DESTROY THE RESOURCES
 ##### =====================================================================================================
 
 
