@@ -4,21 +4,24 @@ variable "project_id" {
 }
 variable "project_name" {
  type        = string
- description = "project name in which demo deploy"
+ description = "project name"
 }
 variable "project_number" {
  type        = string
- description = "project number in which demo deploy"
+ description = "project number"
 }
 variable "gcp_account_name" {
- description = "user performing the demo"
+ description = "lab user's FQN"
 }
 variable "deployment_service_account_name" {
- description = "Cloudbuild_Service_account having permission to deploy terraform resources"
+ description = "Cloudbuild_Service_account/lab user having permission to deploy terraform resources"
 }
 variable "org_id" {
  description = "Organization ID in which project created"
 }
 variable "cloud_composer_image_version" {
  description = "Version of Cloud Composer 2 image to use"
+}
+variable "gcp_region" {
+ description = "The GCP region you want to use"
 }
