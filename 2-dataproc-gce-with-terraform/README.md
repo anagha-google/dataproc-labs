@@ -1,4 +1,4 @@
-# Lab 2: Orchestratng Apache Spark applications on Dataproc - GCE with Airflow on Cloud Composer
+# Lab 2: Orchestrating Apache Spark applications on Dataproc - GCE with Airflow on Cloud Composer
 
 This lab demonstrates orchestration of Spark jobs on Dataproc on GCE with Apache Airflow on Cloud Composer 2.
 <br>
@@ -20,7 +20,7 @@ git clone https://github.com/anagha-google/cloud-composer-for-dataproc-lab.git
 
 1. Paste this in Cloud Shell
 ```
-cd ~/cloud-composer-for-dataproc-lab/2-dataproc-gce-with-terraform/terraform/org_policy
+cd ~/cloud-composer-for-dataproc-lab/2-dataproc-gce-with-terraform/terraform/foundations-tf
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 ```
 
@@ -40,7 +40,7 @@ Wait till the provisioning completes - ~5 minutes
 
 1. Paste this in Cloud Shell
 ```
-cd ~/cloud-composer-for-dataproc-lab/2-dataproc-gce-with-terraform/terraform/demo/terraform
+cd ~/cloud-composer-for-dataproc-lab/2-dataproc-gce-with-terraform/terraform/core-tf/terraform
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
 PROJECT_NAME=`gcloud projects describe ${PROJECT_ID} | grep name | cut -d':' -f2 | xargs`
@@ -804,8 +804,8 @@ select CellName, Maintainence_Required from `cell_tower_reporting_mart.kpis_by_c
 3. The serverless Spark batch jobs from Cloud Composer will have a "lab-01" prefix, whereas the ones you ran individually have a "s8s" prefix. Review the batch jobs and DAG through completion.
 
 ##### =====================================================================================================
-##### THIS CONCLUDES THE LAB - CELL TOWER ANOMALY DETECTION WITH DATAPROC SERVERLESS
-##### PROCEED TO NEXT MODULE
+##### THIS CONCLUDES THE LAB - CELL TOWER ANOMALY DETECTION WITH SPARK POWERED BY DATAPROC ON GCE
+##### DONT FORGET TO DESTROY THE RESOURCES
 ##### =====================================================================================================
 
 
