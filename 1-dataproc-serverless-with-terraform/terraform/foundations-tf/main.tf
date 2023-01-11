@@ -112,11 +112,48 @@ resource "google_project_service" "enable_storage_google_apis" {
   service = "storage.googleapis.com"
   disable_dependent_services = true
 }
+
 resource "google_project_service" "enable_composer_google_apis" {
   project = var.project_id
   service = "composer.googleapis.com"
   disable_dependent_services = true
 }
+
+resource "google_project_service" "enable_dpms_google_apis" {
+  project = var.project_id
+  service = "metastore.googleapis.com"
+  disable_dependent_services = true
+}
+
+
+resource "google_project_service" "enable_notebooks_google_apis" {
+  project = var.project_id
+  service = "notebooks.googleapis.com"
+  disable_dependent_services = true
+  
+}
+
+resource "google_project_service" "enable_aiplatform_google_apis" {
+  project = var.project_id
+  service = "aiplatform.googleapis.com"
+  disable_dependent_services = true
+
+}
+
+resource "google_project_service" "enable_logging_google_apis" {
+  project = var.project_id
+  service = "logging.googleapis.com"
+  disable_dependent_services = true
+
+}
+
+resource "google_project_service" "enable_monitoring_google_apis" {
+  project = var.project_id
+  service = "monitoring.googleapis.com"
+  disable_dependent_services = true
+
+}
+
 
 
 
