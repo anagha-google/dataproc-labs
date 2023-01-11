@@ -86,12 +86,8 @@ Covered in section 3.1
 
 Read the lab - narrative below, review the code, and then start trying out the lab.
 
-### 0.11. Credits
 
-| Contributor | Contribution | 
-| -- | :--- | 
-| Anagha Khanolkar |  Author |
-
+<hr>
 
 <hr>
 
