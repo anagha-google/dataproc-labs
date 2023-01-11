@@ -23,7 +23,7 @@ Covered in section 3.1
 
 - A pre-created project
 - You need to have organization admin rights, and project owner privileges or work with privileged users to complete provisioning.
-<br>
+
 
 <hr>
 
@@ -32,7 +32,7 @@ Covered in section 3.1
 - Includes Terraform for provisioning automation
 - Is fully scripted - the entire solution is provided, and with instructions
 - Is self-paced/self-service
-<br>
+
 
 <hr>
 
@@ -40,7 +40,7 @@ Covered in section 3.1
 
 - A quick read for architects
 - Targeted for hands on practitioners, especially data engineers
-<br>
+
 
 <hr>
 
@@ -52,7 +52,7 @@ Covered in section 3.1
 | Dataset |  Kaggle Telco Customer Churn Public (small) Dataset |
 | Anomaly Detection Strategy |  Rules based, thresholds based |
 | Focus| Data Engineering with Apache Spark powered by Dataproc Serverless <br>Scheduling and Orchestration with Apache Airflow powered by Cloud Composer<br>|
-<br>
+
 
 <hr>
 
@@ -67,16 +67,17 @@ Covered in section 3.1
 | Scheduling and Orchestration | Apache Airflow on Cloud Composer 2 |
 | Provisioning Automation | Terraform |
 
-<br>
+
 
 <hr>
 
 ### 0.9. Lab Architecture
 
+<hr>
 
 ### 0.10. Lab Flow
 
-
+<hr>
 
 ### 0.11. For success
 
