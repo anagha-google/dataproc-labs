@@ -102,6 +102,7 @@ terraform apply \
   -var="deployment_service_account_name=${DEPLOYER_ACCOUNT_NAME}" \
   -var="org_id=${ORG_ID}" \
   -var="cloud_composer_image_version=${CC2_IMAGE_VERSION}" \
+  -var="gcp_region=${GCP_REGION}" \
   -auto-approve
 ```
 
