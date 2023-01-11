@@ -5,22 +5,22 @@ This lab demonstrates orchestration of Spark applications on Dataproc - GCE with
 2. Existing Dataproc Cluster: Running an Airflow DAG with Spark jobs against an existing static Dataproc on GCE cluster
 
 
-## Duration 
+#### Duration 
 It takes ~1.5 hours to complete and is fully scrpited, including with Terraform for provisioning.
 
-## Resources provisioned
+#### Resources provisioned
 Covered in section 3.1
 
-## Prerequisites
+#### Prerequisites
 
 - You need to have organization admin rights, and project owner privileges or work with privileged users to complete provisioning.
 
-## Format
+#### Format
 
 - The lab is fully scripted - entire solution is provided, and with instructions
 - Is self-paced/self-service
 
-## Audience
+#### Audience
 
 - A quick read for architects
 - Targeted for hands on practitioners
