@@ -38,6 +38,8 @@ git clone https://github.com/anagha-google/dataproc-labs.git
 
 ## 2. Foundational provisioning automation with Terraform 
 
+The Terraform in this section updates organization policies and enables Google APIs.
+
 1. Paste this in Cloud Shell
 ```
 cd ~/dataproc-labs/1-dataproc-serverless-with-terraform/provisioning-automation/foundations-tf
