@@ -3,31 +3,48 @@
 ## 0. About the lab
 
 ### 0.1. Abstract
-This lab demonstrates Dataproc Serverless Spark batch job orchestration with Apache Airflow on Cloud Composer. The use case is "Cell Tower Anomaly Detection" and is a data engineering focused lab. 
+This lab demonstrates Dataproc Serverless Spark batch job orchestration with Apache Airflow on Cloud Composer. The use case is "Cell Tower Anomaly Detection" and is a data engineering focused lab. The goal is to demystify serverless Spark, and its orchestration on GCP managed services and provides "just enough" knowledge to get started.
+
 <br>
+
+<hr>
 
 ### 0.2. Duration 
 It takes ~1.5 hours to complete and is fully scrpited, including with Terraform for provisioning.
+<br>
+
+<hr>
 
 ### 0.3. Resources provisioned
 Covered in section 3.1
+<br>
+
+<hr>
 
 ### 0.4. Prerequisites
 
 - A pre-created project
 - You need to have organization admin rights, and project owner privileges or work with privileged users to complete provisioning.
+<br>
 
+<hr>
 
 ### 0.5. Lab format
 
 - Includes Terraform for provisioning automation
 - Is fully scripted - the entire solution is provided, and with instructions
 - Is self-paced/self-service
+<br>
+
+<hr>
 
 ### 0.6. Audience
 
 - A quick read for architects
 - Targeted for hands on practitioners, especially data engineers
+<br>
+
+<hr>
 
 ### 0.7. What is covered in the lab
 
@@ -37,22 +54,35 @@ Covered in section 3.1
 | Dataset |  Kaggle Telco Customer Churn Public (small) Dataset |
 | Anomaly Detection Strategy |  Rules based, thresholds based |
 | Focus| Data Engineering with Apache Spark powered by Dataproc Serverless <br>Scheduling and Orchestration with Apache Airflow powered by Cloud Composer<br>|
+<br>
+
+<hr>
 
 ### 0.8. Features covered
 
 | Functionality | Feature | 
 | -- | :--- | 
 | Spark platform |  Dataproc Serverless Spark **batches** |
-| Spark History Server |  Dataproc Spark History Server |
-| Data Lake Metastore |  Dataproc Metastore Service |
+| Spark History Server |  Dataproc **Persistent** Spark History Server |
+| Data Lake Metastore |  Apache Hive Metsatore on Dataproc Metastore Service |
 | Data Lake File System |  Google Cloud Storage |
 | Scheduling and Orchestration | Apache Airflow on Cloud Composer 2 |
 | Provisioning Automation | Terraform |
+
+<br>
+
+<hr>
 
 ### 0.9. Lab Architecture
 
 
 ### 0.10. Lab Flow
+
+
+
+### 0.11. For success
+
+Read the lab - narrative below, review the code, and then start trying out the lab.
 
 
 
