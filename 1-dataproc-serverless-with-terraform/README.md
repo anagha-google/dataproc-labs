@@ -1,30 +1,61 @@
 # Lab 1: Orchestrating Spark on Dataproc Serverless with Airflow on Cloud Composer
 
-This lab demonstrates Dataproc Serverless Spark batch job orchestration with Apache Airflow on Cloud Composer.
+## 0. About the lab
+
+### 0.1. Abstract
+This lab demonstrates Dataproc Serverless Spark batch job orchestration with Apache Airflow on Cloud Composer. The use case is "Cell Tower Anomaly Detection" and is a data engineering focused lab. 
 <br>
 
-#### Duration 
+### 0.2. Duration 
 It takes ~1.5 hours to complete and is fully scrpited, including with Terraform for provisioning.
 
-#### Resources provisioned
+### 0.3. Resources provisioned
 Covered in section 3.1
 
-#### Prerequisites
+### 0.4. Prerequisites
 
 - A pre-created project
 - You need to have organization admin rights, and project owner privileges or work with privileged users to complete provisioning.
 
 
-#### Lab format
+### 0.5. Lab format
 
 - Includes Terraform for provisioning automation
 - Is fully scripted - the entire solution is provided, and with instructions
 - Is self-paced/self-service
 
-#### Audience
+### 0.6. Audience
 
 - A quick read for architects
-- Targeted for hands on practitioners
+- Targeted for hands on practitioners, especially data engineers
+
+### 0.7. What is covered in the lab
+
+| Aspect | Detail | 
+| -- | :--- | 
+| Use case |  Cell Tower Anomaly Detection |
+| Dataset |  Kaggle Telco Customer Churn Public (small) Dataset |
+| Anomaly Detection Strategy |  Rules based, thresholds based |
+| Focus| Data Engineering |
+
+### 0.8. Features covered
+
+| Functionality | Feature | 
+| -- | :--- | 
+| Spark platform |  Dataproc Serverless Spark **batches** |
+| Spark History Server |  Dataproc Spark History Server |
+| Data Lake Metastore |  Dataproc Metastore Service |
+| Data Lake File System |  Google Cloud Storage |
+| Scheduling and Orchestration | Apache Airflow on Cloud Composer 2 |
+| Provisioning Automation | Terraform |
+
+### 0.9. Flow
+
+
+### 0.10. Architecture
+
+
+
 
 <hr>
 
