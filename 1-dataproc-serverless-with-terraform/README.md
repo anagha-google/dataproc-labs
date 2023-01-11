@@ -36,7 +36,7 @@ Covered in section 3.1
 | Use case |  Cell Tower Anomaly Detection |
 | Dataset |  Kaggle Telco Customer Churn Public (small) Dataset |
 | Anomaly Detection Strategy |  Rules based, thresholds based |
-| Focus| Data Engineering |
+| Focus| Data Engineering with Apache Spark powered by Dataproc Serverless <br>Scheduling and Orchestration with Apache Airflow powered by Cloud Composer<br>|
 
 ### 0.8. Features covered
 
