@@ -68,6 +68,9 @@ In this section, we will provision-
 5. Dataproc Metastore
 6. Cloud Composer 2
 7. Dataproc on GCE cluster
+8. User Managed Service Account
+9. Requisite IAM permissions
+
 
 ### 3.2. Run the terraform scripts
 
