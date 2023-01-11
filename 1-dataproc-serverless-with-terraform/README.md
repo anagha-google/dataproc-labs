@@ -500,7 +500,12 @@ This script -<br>
 
 <br>
 
-#### 5.2.2. Execute the command below
+#### 5.2.2. The PySpark code
+
+Review the [code](provisioning-automation/core-tf/scripts/pyspark/curate_telco_performance_data.py) <br>
+
+
+#### 5.2.3. Execute the command below
 ```
 gcloud dataproc batches submit \
 --project $PROJECT_ID \
@@ -515,13 +520,13 @@ gs://$CODE_AND_DATA_BUCKET/scripts/pyspark/curate_telco_performance_data.py \
 
 <br>
 
-#### 5.2.3. Review execution in the Dataproc batches UI
+#### 5.2.4. Review execution in the Dataproc batches UI
 Switch to Dataproc to check the execution under "batches". You should see a batch job called "s8s-lab1-curate-telco-..." there. Review its execution through completion. Review the code for the process and then explore the results in GCS.
 
 <br>
 
 
-#### 5.2.4. Review the console output
+#### 5.2.5. Review the console output
 ```
 
 A) The telco customer churn data - schema
@@ -675,7 +680,7 @@ only showing top 20 rows
 
 <br>
 
-#### 5.2.4. List the results in the GCS bucket
+#### 5.2.6. List the results in the GCS bucket
 ```
 gsutil ls -r gs://$CODE_AND_DATA_BUCKET/output_data/telco_performance_augmented
 ```
@@ -717,7 +722,15 @@ This script -<br>
 
 <br>
 
-#### 5.3.2. Execute the command below
+<hr>
+
+#### 5.3.2. The PySpark code
+
+Review the [code](provisioning-automation/core-tf/scripts/pyspark/kpis_by_customer.py) <br>
+
+<hr>
+
+#### 5.3.3. Execute the command below
 ```
 gcloud dataproc batches submit \
 --project $PROJECT_ID \
@@ -730,9 +743,9 @@ gs://$CODE_AND_DATA_BUCKET/scripts/pyspark/kpis_by_customer.py \
 -- $PROJECT_ID "cell_tower_reporting_mart" $CODE_AND_DATA_BUCKET
 ```
 
-<br>
+<hr>
 
-#### 5.3.3. Review the console output from the application
+#### 5.3.4. Review the console output from the application
 ```
 root
  |-- tenure: long (nullable = true)
@@ -798,7 +811,7 @@ only showing top 3 rows
 Note the defect count which is a netric derived that indicates issues with the cell tower.<br>
 
 
-#### 5.3.4. List the results in the GCS bucket
+#### 5.3.5. List the results in the GCS bucket
 ```
 gsutil ls -r gs://$CODE_AND_DATA_BUCKET/output_data/kpis_by_customer
 ```
@@ -815,7 +828,7 @@ This output will be used in subsequent steps.
 
 <br>
 
-### 5.3.5. Analyze results in BigQuery
+### 5.3.6. Analyze results in BigQuery
 
 Run the query below-
 ```
@@ -845,7 +858,17 @@ This script -<br>
 
 <br>
 
-#### 5.4.2. Execute the command below
+<hr>
+
+
+#### 5.4.2. The PySpark code
+
+Review the [code](provisioning-automation/core-tf/scripts/pyspark/kpis_by_cell_tower.py) <br>
+
+<hr>
+
+
+#### 5.4.3. Execute the command below
 ```
 gcloud dataproc batches submit \
 --project $PROJECT_ID \
@@ -860,7 +883,7 @@ gs://$CODE_AND_DATA_BUCKET/scripts/pyspark/kpis_by_cell_tower.py \
 ```
 <br>
 
-#### 5.4.3. Review the console output from the application
+#### 5.4.4. Review the console output from the application
 ```
 root
  |-- tenure: long (nullable = true)
@@ -971,7 +994,7 @@ only showing top 20 rows
 A metric has been added called "Maintenance_Required" to reflect defects beyond a threshold.<br>
 
 
-#### 5.4.4. List the results in the GCS bucket-
+#### 5.4.5. List the results in the GCS bucket-
 ```
 gsutil ls -r gs://$CODE_AND_DATA_BUCKET/output_data/kpis_by_cell_tower
 ```
@@ -986,7 +1009,7 @@ This output will be used in subsequent steps.
 
 <br>
 
-#### 5.4.5. Analyze results in BigQuery
+#### 5.4.6. Analyze results in BigQuery
 
 Run the query below-
 ```
