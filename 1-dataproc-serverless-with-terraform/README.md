@@ -688,6 +688,11 @@ This output will be used in subsequent steps.
 
 <br>
 
+
+<hr>
+
+<hr>
+
 ### 5.3. Calculate Cell Tower performance metrics by customer
 In this section, from PySpark, we analyze the curated telecom data, and calculate the KPIs by customer.<br>
 
@@ -809,6 +814,11 @@ select customerID,CellName, defect_count from `cell_tower_reporting_mart.kpis_by
 ```
 
 <br>
+
+
+<hr>
+
+<hr>
 
 
 ### 5.4. Calculate performance metrics by Cell Tower and flag towers needing maintenance
@@ -976,17 +986,23 @@ select CellName, Maintainence_Required from `cell_tower_reporting_mart.kpis_by_c
 
 <br>
 
+
+<hr>
+
+<hr>
+
 ### 6. Automate orchestration with Apache Airflow powered by Cloud Composer 2
 
 1. Execute the DAG - cell_tower_anomaly_detection 
-2. Review its execution in the Airflow UI and the Serverless Spark batches UI.<br>
-3. The serverless Spark batch jobs from Cloud Composer will have a "lab-01" prefix, whereas the ones you ran individually have a "s8s" prefix. Review the batch jobs and DAG through completion.
+2. This DAG chains together the Spark jobs we ran above
+3. Review its execution in the Airflow UI and the Serverless Spark batches UI.<br>
+4. The serverless Spark batch jobs from Cloud Composer will have a "lab-01" prefix, whereas the ones you ran individually have a "s8s" prefix. Review the batch jobs and DAG through completion.
 
 <br>
 
 ##### =====================================================================================================
 ##### THIS CONCLUDES THE LAB - CELL TOWER ANOMALY DETECTION WITH DATAPROC SERVERLESS
-##### PROCEED TO NEXT MODULE
+##### SHUT DOWN THE LAB TO AVOID BILLING
 ##### =====================================================================================================
 
 
