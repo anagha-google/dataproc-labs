@@ -314,7 +314,7 @@ Switch to Dataproc to check the execution under "batches". You should see a batc
 
 <br>
 
-#### 5.1.5. Review the intermediate console output
+#### 5.1.5. Take a quick read of the console output that is just FYI
 
 ```
 A) Customer data schema:
@@ -526,7 +526,8 @@ Switch to Dataproc to check the execution under "batches". You should see a batc
 <br>
 
 
-#### 5.2.5. Review the console output
+#### 5.2.5. Take a quick read of the console output that is just FYI
+
 ```
 
 A) The telco customer churn data - schema
@@ -745,7 +746,8 @@ gs://$CODE_AND_DATA_BUCKET/scripts/pyspark/kpis_by_customer.py \
 
 <hr>
 
-#### 5.3.4. Review the console output from the application
+#### 5.3.4. Take a quick read of the console output that is just FYI
+
 ```
 root
  |-- tenure: long (nullable = true)
@@ -883,7 +885,8 @@ gs://$CODE_AND_DATA_BUCKET/scripts/pyspark/kpis_by_cell_tower.py \
 ```
 <br>
 
-#### 5.4.4. Review the console output from the application
+#### 5.4.4. Take a quick read of the console output that is just FYI
+
 ```
 root
  |-- tenure: long (nullable = true)
