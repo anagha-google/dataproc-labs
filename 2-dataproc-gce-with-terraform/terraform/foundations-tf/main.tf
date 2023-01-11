@@ -5,16 +5,7 @@
 # 2. Enable google APIs for the Google Cloud services we will use in the demo
 #############################################################################################################################################################
 
-# This is required by teh CEDemo deployment framework
-resource "google_project_organization_policy" "allowedPolicyMemberDomains" {
-  project     = var.project_id
-  constraint = "iam.allowedPolicyMemberDomains"
-  list_policy {
-    allow {
-      all = true
-    }
-  }
-}
+
 
 # The following are the demo specific org policy updates
 resource "google_project_organization_policy" "orgPolicyUpdate_disableSerialPortLogging" {
@@ -112,11 +103,51 @@ resource "google_project_service" "enable_storage_google_apis" {
   service = "storage.googleapis.com"
   disable_dependent_services = true
 }
+
 resource "google_project_service" "enable_composer_google_apis" {
   project = var.project_id
   service = "composer.googleapis.com"
   disable_dependent_services = true
 }
+
+resource "google_project_service" "enable_dpms_google_apis" {
+  project = var.project_id
+  service = "metastore.googleapis.com"
+  disable_dependent_services = true
+}
+
+
+resource "google_project_service" "enable_notebooks_google_apis" {
+  project = var.project_id
+  service = "notebooks.googleapis.com"
+  disable_dependent_services = true
+  
+}
+
+resource "google_project_service" "enable_aiplatform_google_apis" {
+  project = var.project_id
+  service = "aiplatform.googleapis.com"
+  disable_dependent_services = true
+
+}
+
+resource "google_project_service" "enable_logging_google_apis" {
+  project = var.project_id
+  service = "logging.googleapis.com"
+  disable_dependent_services = true
+
+}
+
+resource "google_project_service" "enable_monitoring_google_apis" {
+  project = var.project_id
+  service = "monitoring.googleapis.com"
+  disable_dependent_services = true
+
+}
+
+
+
+
 
 
 

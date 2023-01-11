@@ -23,21 +23,25 @@ project_id                  = "${var.project_id}"
 project_nbr                 = "${var.project_number}"
 admin_upn_fqn               = "${var.gcp_account_name}"
 location                    = "us-central1"
-umsa                        = "s8s-lab-sa"
+umsa                        = "dpgce-lab-sa"
 umsa_fqn                    = "${local.umsa}@${local.project_id}.iam.gserviceaccount.com"
-s8s_spark_bucket            = "s8s-spark-bucket-${local.project_nbr}"
-s8s_spark_bucket_fqn        = "gs://s8s-spark-${local.project_nbr}"
-s8s_spark_sphs_nm           = "s8s-sphs-${local.project_nbr}"
-s8s_spark_sphs_bucket       = "s8s-sphs-${local.project_nbr}"
-s8s_spark_sphs_bucket_fqn   = "gs://s8s-sphs-${local.project_nbr}"
-vpc_nm                      = "s8s-vpc-${local.project_nbr}"
+dpgce_spark_bucket          = "dpgce-spark-bucket-${local.project_nbr}"
+dpgce_spark_bucket_fqn      = "gs://dpgce-spark-${local.project_nbr}"
+dpgce_spark_sphs_nm         = "dpgce-sphs-${local.project_nbr}"
+dpgce_spark_sphs_bucket     = "dpgce-sphs-${local.project_nbr}"
+dpgce_spark_sphs_bucket_fqn = "gs://dpgce-sphs-${local.project_nbr}"
+vpc_nm                      = "dpgce-vpc-${local.project_nbr}"
 spark_subnet_nm             = "spark-snet"
 spark_subnet_cidr           = "10.0.0.0/16"
-s8s_data_and_code_bucket    = "s8s_data_and_code_bucket-${local.project_nbr}"
+dpgce_data_and_code_bucket  = "dpgce_data_and_code_bucket-${local.project_nbr}"
 bq_datamart_ds              = "cell_tower_reporting_mart"
 CC_GMSA_FQN                 = "service-${local.project_nbr}@cloudcomposer-accounts.iam.gserviceaccount.com"
 GCE_GMSA_FQN                = "${local.project_nbr}-compute@developer.gserviceaccount.com"
 CLOUD_COMPOSER2_IMG_VERSION = "${var.cloud_composer_image_version}"
+metastore_db_nm             = "dpgce_metastore_db"
+metastore_nm                = "dpgce-metastore-${local.project_nbr}"
+subnet_resource_uri         = "projects/${local.project_id}/regions/${local.location}/subnetworks/${local.spark_subnet_nm}"
+dpgce_cluster_nm            = "dpgce-cluster-static-${local.project_nbr}"
 }
 
 
@@ -92,7 +96,6 @@ module "umsa_role_grants" {
 
 module "gmsa_role_grants_cc" {
   source                  = "terraform-google-modules/iam/google//modules/member_iam"
-  #version                 = "7.4.1"
   service_account_address = "${local.CC_GMSA_FQN}"
   prefix                  = "serviceAccount"
   project_id              = local.project_id
@@ -112,7 +115,6 @@ Account for Compute Engine (for Cloud Composer 2 to download images)
 
 module "gmsa_role_grants_gce" {
   source                  = "terraform-google-modules/iam/google//modules/member_iam"
-  #version                 = "7.4.1"
   service_account_address = "${local.GCE_GMSA_FQN}"
   prefix                  = "serviceAccount"
   project_id              = local.project_id
@@ -131,7 +133,6 @@ module "gmsa_role_grants_gce" {
 
 module "umsa_impersonate_privs_to_admin" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam/"
-  #version = "7.4.1"
 
   service_accounts = ["${local.umsa_fqn}"]
   project          = local.project_id
@@ -278,8 +279,8 @@ resource "time_sleep" "sleep_after_network_and_firewall_creation" {
 7. Storage bucket creation
  *****************************************/
 
-resource "google_storage_bucket" "s8s_spark_bucket_creation" {
-  name                              = local.s8s_spark_bucket
+resource "google_storage_bucket" "dpgce_spark_bucket_creation" {
+  name                              = local.dpgce_spark_bucket
   location                          = local.location
   uniform_bucket_level_access       = true
   force_destroy                     = true
@@ -288,8 +289,8 @@ resource "google_storage_bucket" "s8s_spark_bucket_creation" {
   ]
 }
 
-resource "google_storage_bucket" "s8s_spark_sphs_bucket_creation" {
-  name                              = local.s8s_spark_sphs_bucket
+resource "google_storage_bucket" "dpgce_spark_sphs_bucket_creation" {
+  name                              = local.dpgce_spark_sphs_bucket
   location                          = local.location
   uniform_bucket_level_access       = true
   force_destroy                     = true
@@ -298,8 +299,8 @@ resource "google_storage_bucket" "s8s_spark_sphs_bucket_creation" {
   ]
 }
 
-resource "google_storage_bucket" "s8s_data_and_code_bucket_creation" {
-  name                              = local.s8s_data_and_code_bucket
+resource "google_storage_bucket" "dpgce_data_and_code_bucket_creation" {
+  name                              = local.dpgce_data_and_code_bucket
   location                          = local.location
   uniform_bucket_level_access       = true
   force_destroy                     = true
@@ -316,49 +317,49 @@ dependencies having not completed
 resource "time_sleep" "sleep_after_bucket_creation" {
   create_duration = "60s"
   depends_on = [
-    google_storage_bucket.s8s_data_and_code_bucket_creation,
-    google_storage_bucket.s8s_spark_sphs_bucket_creation,
-    google_storage_bucket.s8s_spark_bucket_creation
+    google_storage_bucket.dpgce_data_and_code_bucket_creation,
+    google_storage_bucket.dpgce_spark_sphs_bucket_creation,
+    google_storage_bucket.dpgce_spark_bucket_creation
 
   ]
 }
 
 /******************************************
-8a. Copy of Pyspark scripts to s8s_data_and_code_bucket
+8a. Copy of Pyspark scripts to dpgce_data_and_code_bucket
  *****************************************/
 
 resource "google_storage_bucket_object" "pyspark_scripts_upload_to_gcs" {
   for_each = fileset("../scripts/pyspark/", "*")
   source = "../scripts/pyspark/${each.value}"
   name = "scripts/pyspark/${each.value}"
-  bucket = "${local.s8s_data_and_code_bucket}"
+  bucket = "${local.dpgce_data_and_code_bucket}"
   depends_on = [
     time_sleep.sleep_after_bucket_creation
   ]
 }
 
 /******************************************
-8b. Copy of Airflow DAG script to s8s_data_and_code_bucket
+8b. Copy of Airflow DAG script to dpgce_data_and_code_bucket
  *****************************************/
 
 resource "google_storage_bucket_object" "airflow_dag_upload_to_gcs" {
   name   = "scripts/composer-dag/pipeline.py"
   source = "../scripts/composer-dag/pipeline.py"  
-  bucket = "${local.s8s_data_and_code_bucket}"
+  bucket = "${local.dpgce_data_and_code_bucket}"
   depends_on = [
     time_sleep.sleep_after_bucket_creation
   ]
 }
 
 /******************************************
-8c. Copy of data to s8s_data_and_code_bucket
+8c. Copy of data to dpgce_data_and_code_bucket
  *****************************************/
 
 resource "google_storage_bucket_object" "csv_files_upload_to_gcs" {
   for_each = fileset("../datasets/", "*")
   source = "../datasets/${each.value}"
   name = "datasets/${each.value}"
-  bucket = "${local.s8s_data_and_code_bucket}"
+  bucket = "${local.dpgce_data_and_code_bucket}"
   depends_on = [
     time_sleep.sleep_after_bucket_creation
   ]
@@ -368,7 +369,7 @@ resource "google_storage_bucket_object" "other_files_upload_to_gcs" {
   for_each = fileset("../datasets/cust_raw_data/", "*")
   source = "../datasets/cust_raw_data/${each.value}"
   name = "datasets/cust_raw_data/${each.value}"
-  bucket = "${local.s8s_data_and_code_bucket}"
+  bucket = "${local.dpgce_data_and_code_bucket}"
   depends_on = [
     time_sleep.sleep_after_bucket_creation
   ]
@@ -395,7 +396,7 @@ resource "time_sleep" "sleep_after_network_and_storage_steps" {
 
 resource "google_dataproc_cluster" "sphs_creation" {
   provider = google-beta
-  name     = local.s8s_spark_sphs_nm
+  name     = local.dpgce_spark_sphs_nm
   region   = local.location
 
   cluster_config {
@@ -404,7 +405,7 @@ resource "google_dataproc_cluster" "sphs_creation" {
         enable_http_port_access = true
     }
 
-    staging_bucket = local.s8s_spark_bucket
+    staging_bucket = local.dpgce_spark_bucket
     
     # Override or set some custom properties
     software_config {
@@ -412,12 +413,12 @@ resource "google_dataproc_cluster" "sphs_creation" {
       override_properties = {
         "dataproc:dataproc.allow.zero.workers"=true
         "dataproc:job.history.to-gcs.enabled"=true
-        "spark:spark.history.fs.logDirectory"="${local.s8s_spark_sphs_bucket_fqn}/*/spark-job-history"
-        "mapred:mapreduce.jobhistory.read-only.dir-pattern"="${local.s8s_spark_sphs_bucket_fqn}/*/mapreduce-job-history/done"
+        "spark:spark.history.fs.logDirectory"="${local.dpgce_spark_sphs_bucket_fqn}/*/spark-job-history"
+        "mapred:mapreduce.jobhistory.read-only.dir-pattern"="${local.dpgce_spark_sphs_bucket_fqn}/*/mapreduce-job-history/done"
       }      
     }
     gce_cluster_config {
-      subnetwork =  "projects/${local.project_id}/regions/${local.location}/subnetworks/${local.spark_subnet_nm}" 
+      subnetwork =  local.subnet_resource_uri 
       service_account = local.umsa_fqn
       service_account_scopes = [
         "cloud-platform"
@@ -464,13 +465,18 @@ resource "google_composer_environment" "cloud_composer_env_creation" {
     software_config {
       image_version = local.CLOUD_COMPOSER2_IMG_VERSION 
       env_variables = {
-        AIRFLOW_VAR_CODE_BUCKET = "${local.s8s_data_and_code_bucket}"
-        AIRFLOW_VAR_PHS = "${local.s8s_spark_sphs_nm}"
+        
         AIRFLOW_VAR_PROJECT_ID = "${local.project_id}"
+        AIRFLOW_VAR_PROJECT_NBR = "${local.project_nbr}"        
         AIRFLOW_VAR_REGION = "${local.location}"
-        AIRFLOW_VAR_SUBNET = "${local.spark_subnet_nm}"
+        AIRFLOW_VAR_CODE_BUCKET = "${local.dpgce_data_and_code_bucket}"
         AIRFLOW_VAR_BQ_DATASET = "${local.bq_datamart_ds}"
+        AIRFLOW_VAR_METASTORE_DB = "${local.bq_datamart_ds}"
+        AIRFLOW_VAR_SUBNET_URI = "${local.subnet_resource_uri}"
+        
         AIRFLOW_VAR_UMSA = "${local.umsa}"
+       
+        AIRFLOW_VAR_PHS = "${local.dpgce_spark_sphs_nm}"
       }
     }
 
@@ -543,12 +549,12 @@ output "VPC_NM" {
   value = local.vpc_nm
 }
 
-output "SPARK_SERVERLESS_SUBNET" {
+output "SPARK_SUBNET" {
   value = local.spark_subnet_nm
 }
 
 output "PERSISTENT_HISTORY_SERVER_NM" {
-  value = local.s8s_spark_sphs_nm
+  value = local.dpgce_spark_sphs_nm
 }
 
 output "UMSA_FQN" {
@@ -556,8 +562,114 @@ output "UMSA_FQN" {
 }
 
 output "CODE_AND_DATA_BUCKET" {
-  value = local.s8s_data_and_code_bucket
+  value = local.dpgce_data_and_code_bucket
 }
+
+/******************************************
+14. Create Dataproc Metastore
+******************************************/
+
+resource "google_dataproc_metastore_service" "datalake_metastore" {
+  service_id = local.metastore_nm
+  location   = local.location
+  port       = 9080
+  tier       = "DEVELOPER"
+  network    = "projects/${local.project_id}/global/networks/${local.vpc_nm}"
+
+ maintenance_window {
+    hour_of_day = 2
+    day_of_week = "SUNDAY"
+  }
+
+ hive_metastore_config {
+    version = "3.1.2"
+  }
+  depends_on = [
+    module.administrator_role_grants,
+    time_sleep.sleep_after_network_and_storage_steps,
+    google_dataproc_cluster.sphs_creation,
+    time_sleep.sleep_after_composer_creation
+
+  ]
+}
+
+/*******************************************
+Introducing sleep to minimize errors from
+dependencies having not completed
+********************************************/
+resource "time_sleep" "sleep_after_metastore_creation" {
+  create_duration = "180s"
+  depends_on = [
+      google_dataproc_metastore_service.datalake_metastore
+  ]
+}
+
+/******************************************
+15. Create Dataproc GCE
+******************************************/
+
+resource "google_dataproc_cluster" "gce_cluster" {
+  provider = google-beta
+  name     = "${local.dpgce_cluster_nm}"
+  region   = local.location
+
+  cluster_config {
+
+    endpoint_config {
+      enable_http_port_access = true
+    }
+
+    staging_bucket = "${local.dpgce_spark_bucket}"
+
+    # Override or set some custom properties
+    software_config {
+      image_version = "2.0"
+      optional_components = [ "JUPYTER" ]
+      override_properties = {
+        "dataproc:dataproc.allow.zero.workers" = "false"
+      }
+    }
+
+    # Override or set some custom properties
+    master_config {
+      num_instances = 1
+      machine_type  = "n1-standard-4"
+      disk_config {
+        boot_disk_type    = "pd-standard"
+        boot_disk_size_gb = 500
+      }
+    }
+
+    worker_config {
+      num_instances    = 2
+      machine_type     = "n1-standard-4"
+      disk_config {
+        boot_disk_type    = "pd-standard"
+        boot_disk_size_gb = 500
+      }
+    }
+
+    gce_cluster_config {
+      subnetwork =  "projects/${local.project_id}/regions/${local.location}/subnetworks/${local.spark_subnet_nm}"
+      service_account = local.umsa_fqn
+      service_account_scopes = [
+        "cloud-platform"
+      ]
+    }
+    metastore_config {
+    dataproc_metastore_service = "projects/${local.project_id}/locations/${local.location}/services/${local.metastore_nm}"
+  }
+
+  }
+  depends_on = [
+    time_sleep.sleep_after_metastore_creation,
+    time_sleep.sleep_after_network_and_storage_steps,
+    google_dataproc_cluster.sphs_creation,
+    time_sleep.sleep_after_composer_creation
+    ]
+}
+
+
 
 /******************************************
 DONE
