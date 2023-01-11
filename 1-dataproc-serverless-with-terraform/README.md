@@ -271,6 +271,8 @@ echo $CODE_AND_DATA_BUCKET
 
 ```
 
+<hr>
+
 ### 5.1. Curate customer master data
 
 In this section, from PySpark, we transform customer master data (parquet) and service threshold data (CSV) and join them, and persist to GCS.<br><br>
@@ -283,9 +285,13 @@ This script -<br>
 (d) Then joins them both based on cell tower name and<br>
 (e) Persists to GCS<br>
 
+<hr>
+
 #### 5.1.2. Code
 
 Review the [code](provisioning-automation/core-tf/scripts/pyspark/curate_customer_data.py) <br>
+
+<hr>
 
 #### 5.1.3. Run the command below in Cloud Shell
 ```
