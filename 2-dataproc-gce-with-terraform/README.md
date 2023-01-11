@@ -3,8 +3,8 @@
 This lab demonstrates orchestration of Spark jobs on Dataproc on GCE with Apache Airflow on Cloud Composer 2.
 <br>
 It covers:
-1. Running an Airflow DAG that creates a Dataproc on GCE cluster, runs Spark jobs, deletes the cluster created by the DAG
-2. Running an Airflow DAG with Spark jobs against an existing static Dataproc on GCE cluster
+1. Ephemeral Dataproc Cluster: Running an Airflow DAG that creates a Dataproc on GCE cluster, runs Spark jobs, deletes the cluster created by the DAG
+2. Existing Dataproc Cluster: Running an Airflow DAG with Spark jobs against an existing static Dataproc on GCE cluster
 
 It takes ~1.5 hours to complete and is fully scrpited, including with Terraform for provisioning.
 
