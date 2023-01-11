@@ -70,6 +70,9 @@ In this section, we will provision-
 7. Dataproc on GCE cluster
 8. User Managed Service Account
 9. Requisite IAM permissions
+10. Copy of code, data, etc into buckets
+11. Import of Airflow DAG
+12. Configuration of Airflow variables
 
 
 ### 3.2. Run the terraform scripts
