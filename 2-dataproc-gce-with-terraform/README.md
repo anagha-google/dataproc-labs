@@ -4,7 +4,27 @@ This lab demonstrates orchestration of Spark applications on Dataproc - GCE with
 1. Ephemeral Dataproc Cluster: Running an Airflow DAG that creates a Dataproc on GCE cluster, runs Spark jobs, deletes the cluster created by the DAG
 2. Existing Dataproc Cluster: Running an Airflow DAG with Spark jobs against an existing static Dataproc on GCE cluster
 
+
+## Duration 
 It takes ~1.5 hours to complete and is fully scrpited, including with Terraform for provisioning.
+
+## Resources provisioned
+Covered in section 3.1
+
+## Prerequisites
+
+- You need to have organization admin rights, and project owner privileges or work with privileged users to complete provisioning.
+
+## Format
+
+- The lab is fully scripted - entire solution is provided, and with instructions
+- Is self-paced/self-service
+
+## Audience
+
+- A quick read for architects
+- Targeted for hands on practitioners
+
 
 ## 1. Clone this repo in Cloud Shell
 
@@ -16,7 +36,6 @@ git clone https://github.com/anagha-google/dataproc-labs.git
 
 ## 2. Foundational provisioning automation with Terraform 
 The Terraform in this section updates organization policies and enables Google APIs.<br>
-
 
 1. Paste this in Cloud Shell
 ```
