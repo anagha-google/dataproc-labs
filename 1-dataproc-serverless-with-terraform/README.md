@@ -267,6 +267,8 @@ From the Cloud Console, navigate to the Cloud Composer service and
 
 We will first run the Spark jobs individually and get familiar with the Serverless Spark functionality and then run the precreated Airflow DAG that orchestrates the sample Spark jobs on Cloud Composer.
 
+<br>
+
 <hr>
 
 ## 5. Run the Spark jobs individually
@@ -338,6 +340,8 @@ Switch to Dataproc to check the execution under "batches". You should see a batc
 
 
 <br>
+![README](images/lab-01-14.png)   
+<br><br>
 
 #### 5.1.5. Take a quick read of the console output that is just FYI
 
@@ -491,6 +495,11 @@ root
  
  <br>
  
+#### 5.1.7. Review the complete output in the Dataporc batches UI for the job
+
+![README](images/lab-01-11.png)   
+<br><br>
+ 
 #### 5.1.6. Review the results in Cloud Storage
  
  ```
@@ -505,6 +514,13 @@ gs://s8s_data_and_code_bucket-159504796045/output_data/customer_augmented/
 gs://s8s_data_and_code_bucket-159504796045/output_data/customer_augmented/_SUCCESS
 gs://s8s_data_and_code_bucket-159504796045/output_data/customer_augmented/part-00000-b06a1fa4-3427-4d94-8ef7-e213fdd2a66f-c000.snappy.parquet
  ```
+
+#### 5.1.7. Review the execution logs in the Spark History Server 
+
+From the Dataproc "batches" UI, click on the job that is running/completed and at the top right, click on "View History Server" to get directly to the Spark application executed in the Spark UI
+ 
+![README](images/lab-01-13.png)   
+<br><br>
 
 <hr>
 
@@ -1060,14 +1076,40 @@ select CellName, Maintainence_Required from `cell_tower_reporting_mart.kpis_by_c
 
 <hr>
 
-### 6. Automate orchestration with Apache Airflow powered by Cloud Composer 2
+## 6. Automate orchestration with Apache Airflow powered by Cloud Composer 2
 
-1. Execute the DAG - cell_tower_anomaly_detection 
-2. This DAG chains together the Spark jobs we ran above
-3. Review its execution in the Airflow UI and the Serverless Spark batches UI.<br>
-4. The serverless Spark batch jobs from Cloud Composer will have a "lab-01" prefix, whereas the ones you ran individually have a "s8s" prefix. Review the batch jobs and DAG through completion.
+### 6.1. Review the Airflow DAG code
+
+Review the code to understand the DAG construct, variables and how serverless Spark jobs are invoked.
+[Code](provisioning-automation/core-tf/scripts/composer-dag/pipeline.py)
+
+### 6.2. Review the Airflow environment and Terraform imported Airflow variables in the Cloud Composer UI
+Navigate to the "Environment Variables" tab and review the variables that get used in the DAG at runtime.
+
+ ![README](images/lab-01-09.png)   
+<br><br>
+
+### 6.3. Open the Airflow UI from the Cloud Composer UI on Cloud Console
+Familaize yourself with the UI if new to Airflow
+
+ ![README](images/lab-01-10.png)   
+<br><br>
+
+### 6.4. Run the DAG for Cell Tower Anomaly Detection
+
+ ![README](images/lab-01-11.png)   
+<br><br>
+
+### 6.5. Review the job execution in the Dataproc "Batches" UI
+
+![README](images/lab-01-11.png)   
+<br><br>
 
 <br>
+
+<hr>
+
+
 
 ##### =====================================================================================================
 ##### THIS CONCLUDES THE LAB - CELL TOWER ANOMALY DETECTION WITH DATAPROC SERVERLESS
