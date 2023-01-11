@@ -122,12 +122,16 @@ PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
 ```
 
+<br>
+
 ### 4.1. GCS bucket for code
 
 Run this command in Cloud Shell-
 ```
 gsutil ls -r gs://s8s_data_and_code_bucket-${PROJECT_NBR}/scripts
 ```
+
+<br>
 
 ### 4.2. GCS bucket for data
 
@@ -142,14 +146,20 @@ gsutil ls -r gs://s8s_data_and_code_bucket-${PROJECT_NBR}/datasets
 
 Validate the creation of the BigQuery dataset called cell_tower_reporting_mart from the Cloud Console, BigQuery UI
 
+<br>
+
 ### 4.4. Dataproc Metastore (DPMS)
 Validate the creation of the DPMS from the Cloud Console, Dataproc UI -> Metastore
+
+<br>
 
 ### 4.5. Persistent Spark History Server (PHS)
 Validate the creation of the PHS from the Cloud Console, Dataproc UI -> Clusters
 
-- The PHS has a name prefix - "dpgce-sphs-"
+- The PHS has a name prefix - "s8s-sphs-"
 - Navigate to web interfaces, then "Spark History Server" and familiarize yourself with the UI
+
+<br>
 
 ### 4.6. Cloud Composer environment
 From the Cloud Console, navigate to the Cloud Composer service and 
