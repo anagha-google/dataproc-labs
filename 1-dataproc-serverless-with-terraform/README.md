@@ -473,7 +473,7 @@ gs://s8s_data_and_code_bucket-159504796045/output_data/customer_augmented/part-0
  ```
 
 <hr>
-Lets look at the next Spark application that curates telecom perforance data
+
 <hr>
 
 ### 5.2. Curate telecom performance data
