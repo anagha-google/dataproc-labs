@@ -2,7 +2,7 @@
 # About
 # In this script, we will -
 # 1. Apply necessary updates to organization policies
-# 2. Enable google APIs for the Google Cloud services we will use in the demo
+# 2. Enable google APIs for the Google Cloud services we will use in the lab/demo
 #############################################################################################################################################################
 
 # This is required by teh CEDemo deployment framework
@@ -154,7 +154,28 @@ resource "google_project_service" "enable_monitoring_google_apis" {
 
 }
 
-
+/*******************************************
+Introducing sleep to minimize errors from
+dependencies having not completed
+********************************************/
+resource "time_sleep" "sleep_after_api_enabling" {
+  create_duration = "180s"
+  depends_on = [
+    google_project_service.enable_orgpolicy_google_apis,
+    enable_compute_google_apis,
+    enable_container_google_apis,
+    enable_containerregistry_google_apis,
+    enable_dataproc_google_apis,
+    enable_bigquery_google_apis,
+    enable_storage_google_apis,
+    enable_composer_google_apis,
+    enable_dpms_google_apis,
+    enable_notebooks_google_apis,
+    enable_aiplatform_google_apis,
+    enable_logging_google_apis,
+    enable_monitoring_google_apis
+  ]
+}
 
 
 
