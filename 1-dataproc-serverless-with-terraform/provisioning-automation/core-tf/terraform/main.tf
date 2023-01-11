@@ -558,6 +558,45 @@ output "UMSA_FQN" {
 output "CODE_AND_DATA_BUCKET" {
   value = local.s8s_data_and_code_bucket
 }
+  
+/******************************************
+14. Create Dataproc Metastore
+******************************************/
+
+resource "google_dataproc_metastore_service" "datalake_metastore" {
+  service_id = local.metastore_nm
+  location   = local.location
+  port       = 9080
+  tier       = "DEVELOPER"
+  network    = "projects/${local.project_id}/global/networks/${local.vpc_nm}"
+
+ maintenance_window {
+    hour_of_day = 2
+    day_of_week = "SUNDAY"
+  }
+
+ hive_metastore_config {
+    version = "3.1.2"
+  }
+  depends_on = [
+    module.administrator_role_grants,
+    time_sleep.sleep_after_network_and_storage_steps,
+    google_dataproc_cluster.sphs_creation,
+    time_sleep.sleep_after_composer_creation
+
+  ]
+}
+
+/*******************************************
+Introducing sleep to minimize errors from
+dependencies having not completed
+********************************************/
+resource "time_sleep" "sleep_after_metastore_creation" {
+  create_duration = "180s"
+  depends_on = [
+      google_dataproc_metastore_service.datalake_metastore
+  ]
+}
 
 /******************************************
 DONE
