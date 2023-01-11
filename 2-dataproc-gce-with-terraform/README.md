@@ -20,7 +20,7 @@ git clone https://github.com/anagha-google/cloud-composer-for-dataproc-lab.git
 
 1. Paste this in Cloud Shell
 ```
-cd ~/cloud-composer-for-dataproc-lab/2-dataproc-gce-with-terraform/terraform/org_policy
+cd ~/cloud-composer-for-dataproc-lab/2-dataproc-gce-with-terraform/terraform/foundations-tf
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 ```
 
@@ -40,7 +40,7 @@ Wait till the provisioning completes - ~5 minutes
 
 1. Paste this in Cloud Shell
 ```
-cd ~/cloud-composer-for-dataproc-lab/2-dataproc-gce-with-terraform/terraform/demo/terraform
+cd ~/cloud-composer-for-dataproc-lab/2-dataproc-gce-with-terraform/terraform/core-tf/terraform
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
 PROJECT_NAME=`gcloud projects describe ${PROJECT_ID} | grep name | cut -d':' -f2 | xargs`
