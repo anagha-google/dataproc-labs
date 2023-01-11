@@ -25,6 +25,8 @@ Covered in section 3.1
 - A quick read for architects
 - Targeted for hands on practitioners
 
+<hr>
+
 
 ## 1. Clone this repo in Cloud Shell
 
