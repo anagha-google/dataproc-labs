@@ -49,11 +49,10 @@ Covered in section 3.1
 | Scheduling and Orchestration | Apache Airflow on Cloud Composer 2 |
 | Provisioning Automation | Terraform |
 
-### 0.9. Flow
+### 0.9. Lab Architecture
 
 
-### 0.10. Architecture
-
+### 0.10. Lab Flow
 
 
 
