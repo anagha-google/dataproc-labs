@@ -49,7 +49,7 @@ umsa=Variable.get("umsa")
 
 # Other variables
 dag_name="cell-tower-anomaly-detection-with-ephemeral-dpgce-cluster"
-dpgce_cluster_name="dpgce-cluster-"+project_nbr
+dpgce_cluster_name="dpgce-cluster-ephemeral-"+project_nbr
 dpgce_cluster_bucket_name="dpgce-spark-bucket-"+project_nbr
 dpgce_cluster_region=region
 dpgce_cluster_master_type='n1-standard-4'
@@ -75,12 +75,14 @@ curate_telco_performance_metrics_script= "gs://"+code_bucket+"/scripts/pyspark/c
 kpis_by_customer_script= "gs://"+code_bucket+"/scripts/pyspark/kpis_by_customer.py"
 kpis_by_cell_tower_script= "gs://"+code_bucket+"/scripts/pyspark/kpis_by_cell_tower.py"
 
-# This is to add a random suffix to the serverless Spark batch ID that needs to be unique each run
+# This is to add a random suffix to the Dataproc job for uniqueness
 # ...Define the random module
 S = 10  # number of characters in the string.
 # call random.choices() string module to find the string in Uppercase + numeric data.
 ran = ''.join(random.choices(string.digits, k = S))
 
+
+# Common prefix for all jobs in the DAG
 job_id_prefix = "cell-tower-anomaly-detection-ephemeral-dpgce-cluster-"+str(ran)
 
 Curate_Customer_Master_Data_Job_Config = {
