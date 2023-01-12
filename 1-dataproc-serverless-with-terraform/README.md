@@ -1089,7 +1089,8 @@ Review the code to understand the DAG construct, variables and how serverless Sp
 <hr>
 
 ### 6.2. Review the Airflow environment and Terraform imported Airflow variables in the Cloud Composer UI
-Navigate to the "Environment Variables" tab and review the variables that get used in the DAG at runtime.
+
+Familaize yourself with the UI of Cloud Composer service. And then navigate to the "Environment Variables" tab and review the variables supplied at provision time that get used in the DAG at runtime.
 
  ![README](images/lab-01-09.png)   
 <br><br>
