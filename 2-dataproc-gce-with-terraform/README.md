@@ -100,15 +100,20 @@ Covered in section 3.1
 ![README](images/lab-01-02.png)   
 <br><br>
 
+### 0.11. The data engineering pipeline
 
-### 0.11. Lab Flow
+![README](images/lab-02-16.png)   
+<br><br>
+
+
+### 0.12. Lab Flow
 
 ![README](images/lab-02-01.png)   
 <br><br>
 
 <hr>
 
-### 0.12. For success
+### 0.13. For success
 
 Read the lab - narrative below, review the code, and then start trying out the lab.
 
