@@ -8,7 +8,7 @@ This lab demonstrates orchestration of Spark applications on Dataproc - GCE with
 2. Existing Dataproc Cluster: Running an Airflow DAG with Spark jobs against an existing static Dataproc on GCE cluster
 <br>
 
-**About:**
+**More about the lab:**
 |  |  | 
 | -- | :--- | 
 | Use case |  Anomaly Detection |
