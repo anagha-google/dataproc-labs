@@ -78,9 +78,12 @@ In this section, we will provision-
 ### 3.2. Run the terraform scripts
 
 1. Paste this in Cloud Shell after editing the GCP region variable to match your nearest region-
+
 ```
 cd ~/dataproc-labs/2-dataproc-gce-with-terraform/provisioning-automation/core-tf/terraform
+```
 
+```
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
 PROJECT_NAME=`gcloud projects describe ${PROJECT_ID} | grep name | cut -d':' -f2 | xargs`
