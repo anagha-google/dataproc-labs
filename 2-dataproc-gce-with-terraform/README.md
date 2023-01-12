@@ -1,29 +1,115 @@
 # Lab 2: Orchestrating Apache Spark applications on Dataproc - GCE with Airflow on Cloud Composer
 
+## 0. About the lab
+
+### 0.1. Abstract
 This lab demonstrates orchestration of Spark applications on Dataproc - GCE with Airflow on Cloud Composer 2 and covers common patterns-
 1. Ephemeral Dataproc Cluster: Running an Airflow DAG that creates a Dataproc on GCE cluster, runs Spark jobs, deletes the cluster created by the DAG
 2. Existing Dataproc Cluster: Running an Airflow DAG with Spark jobs against an existing static Dataproc on GCE cluster
 
 
-#### Duration 
-It takes ~1.5 hours to complete and is fully scrpited, including with Terraform for provisioning.
+|  |  | 
+| -- | :--- | 
+| Use case |  Anomaly Detection |
+| Domain |  Telecommunications |
+| Showcased | Detection of cell towers needing maintenance with Apache Spark |
+| Technical Use-case | Data engineering at scale |
+| Technology | Spark (PySpark) |
+| Product | Serverless Spark batches on Cloud Dataproc |
+| Dataset | Telco Customer Churn Public (small) Dataset |
+| Process | Rule-based, thresholds-based anomaly detection |
+| Scheduling and Orchestration | Apache Airflow on Cloud Composer 2 |
+| Focus| Data Engineering on Google Cloud |
 
-#### Resources provisioned
+The goal of the lab is to demystify Spark on Cloud Dataproc on Google Compute Engine and orchestration of Spark applications on managed Airflow on GCP through a (zero fluff, zero dazzle) minimum viable end to end sample to accelerate adoption. 
+
+<hr>
+
+### 0.2. Duration 
+It takes ~2 hours to complete and is fully scrpited, including with Terraform for provisioning.
+
+
+<hr>
+
+### 0.3. Resources provisioned
 Covered in section 3.1
 
-#### Prerequisites
 
+<hr>
+
+### 0.4. Prerequisites
+
+- A pre-created project
 - You need to have organization admin rights, and project owner privileges or work with privileged users to complete provisioning.
 
-#### Format
 
-- The lab is fully scripted - entire solution is provided, and with instructions
+<hr>
+
+### 0.5. Lab format
+
+- Includes Terraform for provisioning automation
+- Is fully scripted - the entire solution is provided, and with instructions
 - Is self-paced/self-service
+- It provisions all foundational entities - network, metastore etc for the lab user, versus use pre-existing and such sharable resources
 
-#### Audience
+<hr>
+
+### 0.6. Audience
 
 - A quick read for architects
-- Targeted for hands on practitioners
+- Targeted for hands on practitioners, especially data engineers
+
+
+<hr>
+
+### 0.7. Features covered
+
+| Functionality | Feature | 
+| -- | :--- | 
+| Spark platform |  Dataproc Serverless Spark **batches** |
+| Spark History Server |  Dataproc **Persistent** Spark History Server |
+| Data Lake Metastore |  Apache Hive Metsatore on Dataproc Metastore Service |
+| Data Lake File System |  Google Cloud Storage |
+| Scheduling and Orchestration | Apache Airflow on Cloud Composer 2 |
+| Provisioning Automation | Terraform |
+
+<hr>
+
+### 0.8. Lab Architecture
+
+
+![README](./images/lab-01-04.png)   
+<br><br>
+
+<hr>
+
+### 0.9. The data
+
+![README](images/lab-01-03.png)   
+<br><br>
+
+<hr>
+
+### 0.10. The relationships between the data entities
+
+
+![README](images/lab-01-02.png)   
+<br><br>
+
+
+### 0.11. Lab Flow
+
+![README](images/lab-01-01.png)   
+<br><br>
+
+<hr>
+
+### 0.12. For success
+
+Read the lab - narrative below, review the code, and then start trying out the lab.
+
+
+<hr>
 
 <hr>
 
