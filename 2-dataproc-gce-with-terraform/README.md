@@ -16,7 +16,7 @@ This lab demonstrates orchestration of Spark applications on Dataproc - GCE with
 | Showcased | Detection of cell towers needing maintenance with Apache Spark |
 | Technical Use-case | Data engineering at scale |
 | Technology | Spark (PySpark) |
-| Product | Serverless Spark batches on Cloud Dataproc |
+| Spark product | Serverless Spark batches on Cloud Dataproc |
 | Dataset | Telco Customer Churn Public (small) Dataset |
 | Process | Rule-based, thresholds-based anomaly detection |
 | Scheduling and Orchestration | Apache Airflow on Cloud Composer 2 |
