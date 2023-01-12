@@ -343,8 +343,9 @@ resource "google_storage_bucket_object" "pyspark_scripts_upload_to_gcs" {
  *****************************************/
 
 resource "google_storage_bucket_object" "airflow_dag_upload_to_gcs" {
-  name   = "scripts/composer-dag/pipeline.py"
-  source = "../scripts/composer-dag/pipeline.py"  
+  for_each = fileset("../scripts/composer-dag/", "*")
+  source = "../scripts/composer-dag/${each.value}"
+  name = "scripts/composer-dag/${each.value}"
   bucket = "${local.dpgce_data_and_code_bucket}"
   depends_on = [
     time_sleep.sleep_after_bucket_creation
@@ -419,6 +420,7 @@ resource "google_dataproc_cluster" "sphs_creation" {
         "mapred:mapreduce.jobhistory.done-dir"="${local.dpgce_spark_sphs_bucket_fqn}/events/mapreduce-job-history/done"
         "mapred:mapreduce.jobhistory.intermediate-done-dir"="${local.dpgce_spark_sphs_bucket_fqn}/events/mapreduce-job-history/intermediate-done"
         "yarn:yarn.nodemanager.remote-app-log-dir"="${local.dpgce_spark_sphs_bucket_fqn}/yarn-logs"
+
       }      
     }
     gce_cluster_config {
@@ -476,8 +478,10 @@ resource "google_composer_environment" "cloud_composer_env_creation" {
         AIRFLOW_VAR_CODE_BUCKET = "${local.dpgce_data_and_code_bucket}"
         AIRFLOW_VAR_BQ_DATASET = "${local.bq_datamart_ds}"
         AIRFLOW_VAR_METASTORE_DB = "${local.bq_datamart_ds}"
-        AIRFLOW_VAR_SUBNET_URI = "${local.subnet_resource_uri}"        
-        AIRFLOW_VAR_UMSA = "${local.umsa}"      
+        AIRFLOW_VAR_SUBNET_URI = "${local.subnet_resource_uri}"
+        
+        AIRFLOW_VAR_UMSA = "${local.umsa}"
+       
         AIRFLOW_VAR_PHS = "${local.dpgce_spark_sphs_nm}"
       }
     }
@@ -503,7 +507,7 @@ Introducing sleep to minimize errors from
 dependencies having not completed
 ********************************************/
 resource "time_sleep" "sleep_after_composer_creation" {
-  create_duration = "180s"
+  create_duration = "120s"
   depends_on = [
       google_composer_environment.cloud_composer_env_creation
   ]
@@ -522,18 +526,10 @@ output "CLOUD_COMPOSER_DAG_BUCKET" {
 ******************************************/
 # Remove the gs:// prefix and /dags suffix
 
-resource "google_storage_bucket_object" "upload_dag_ephemeral_to_airflow_dag_bucket" {
-  name   = "dags/pipeline-with-ephemeral-dpgce-cluster.py"
-  source = "../scripts/composer-dag/pipeline-with-ephemeral-dpgce-cluster.py"  
-  bucket = substr(substr(google_composer_environment.cloud_composer_env_creation.config.0.dag_gcs_prefix, 5, length(google_composer_environment.cloud_composer_env_creation.config.0.dag_gcs_prefix)), 0, (length(google_composer_environment.cloud_composer_env_creation.config.0.dag_gcs_prefix)-10))
-  depends_on = [
-    time_sleep.sleep_after_composer_creation
-  ]
-}
-    
-resource "google_storage_bucket_object" "upload_dag_static_to_airflow_dag_bucket" {
-  name   = "dags/pipeline-with-existing-dpgce-cluster.py"
-  source = "../scripts/composer-dag/pipeline-with-existing-dpgce-cluster.py"  
+resource "google_storage_bucket_object" "airflow_dag_upload_to_cc2_dag_bucket" {
+  for_each = fileset("../scripts/composer-dag/", "*")
+  source = "../scripts/composer-dag/${each.value}"
+  name = "dags/${each.value}"
   bucket = substr(substr(google_composer_environment.cloud_composer_env_creation.config.0.dag_gcs_prefix, 5, length(google_composer_environment.cloud_composer_env_creation.config.0.dag_gcs_prefix)), 0, (length(google_composer_environment.cloud_composer_env_creation.config.0.dag_gcs_prefix)-10))
   depends_on = [
     time_sleep.sleep_after_composer_creation
@@ -577,14 +573,14 @@ output "CODE_AND_DATA_BUCKET" {
 }
 
 /******************************************
-14. Create Dataproc Metastore
+14. Create Dataproc Metastore with gRPC endpoint
 ******************************************/
 
 resource "google_dataproc_metastore_service" "datalake_metastore" {
   provider = google-beta
   service_id = local.metastore_nm
   location   = local.location
-  port       = 9080
+  #port       = 9080
   tier       = "DEVELOPER"
   network    = "projects/${local.project_id}/global/networks/${local.vpc_nm}"
 
@@ -595,14 +591,11 @@ resource "google_dataproc_metastore_service" "datalake_metastore" {
 
  hive_metastore_config {
     version = "3.1.2"
-   endpoint_protocol = "GRPC"
+    endpoint_protocol = "GRPC"
   }
   depends_on = [
     module.administrator_role_grants,
-    time_sleep.sleep_after_network_and_storage_steps,
-    google_dataproc_cluster.sphs_creation,
-    time_sleep.sleep_after_composer_creation
-
+    time_sleep.sleep_after_network_and_storage_steps
   ]
 }
 
@@ -684,7 +677,9 @@ resource "google_dataproc_cluster" "gce_cluster" {
     time_sleep.sleep_after_metastore_creation,
     time_sleep.sleep_after_network_and_storage_steps,
     google_dataproc_cluster.sphs_creation,
-    time_sleep.sleep_after_composer_creation
+    time_sleep.sleep_after_composer_creation,
+    time_sleep.sleep_after_metastore_creation
+
     ]
 }
 
