@@ -3,7 +3,7 @@
 ## 0. About the lab
 
 ### 0.1. Abstract
-This lab demonstrates orchestration of Spark applications on Dataproc - GCE with Airflow on Cloud Composer 2 and covers common patterns-
+This lab demonstrates orchestration of Spark applications on Dataproc on Google Compute Engine (GCE) with Airflow on Cloud Composer 2 and covers common patterns-
 1. Ephemeral Dataproc Cluster: Running an Airflow DAG that creates a Dataproc on GCE cluster, runs Spark jobs, deletes the cluster created by the DAG
 2. Existing Dataproc Cluster: Running an Airflow DAG with Spark jobs against an existing static Dataproc on GCE cluster
 <br>
@@ -16,7 +16,7 @@ This lab demonstrates orchestration of Spark applications on Dataproc - GCE with
 | Showcased | Detection of cell towers needing maintenance with Apache Spark |
 | Technical Use-case | Data engineering at scale |
 | Technology | Spark (PySpark) |
-| Spark product | Serverless Spark batches on Cloud Dataproc |
+| Spark product | Cloud Dataproc on Google Compute Engine |
 | Dataset | Telco Customer Churn Public (small) Dataset |
 | Process | Rule-based, thresholds-based anomaly detection |
 | Scheduling and Orchestration | Apache Airflow on Cloud Composer 2 |
