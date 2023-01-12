@@ -97,7 +97,7 @@ Covered in section 3.1
 ![README](images/lab-01-02.png)   
 <br><br>
 
-### 0.12. The data engineering pipeline
+### 0.11. The data engineering pipeline
 
 ![README](images/lab-01-17.png)   
 <br><br>
