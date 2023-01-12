@@ -1084,14 +1084,14 @@ select CellName, Maintainence_Required from `cell_tower_reporting_mart.kpis_by_c
 
 ## 6. Automate orchestration with Apache Airflow powered by Cloud Composer 2
 
-### 6.1 The data engineering pipeline
+### 6.1. The data engineering pipeline
 
 ![README](images/lab-01-16.png)   
 <br><br>
 
 <hr>
 
-### 6.2 Architecture
+### 6.2. Architecture
 
 ![README](images/lab-01-17.png)   
 <br><br>
