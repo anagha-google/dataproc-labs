@@ -8,6 +8,7 @@ This lab demonstrates orchestration of Spark applications on Dataproc - GCE with
 2. Existing Dataproc Cluster: Running an Airflow DAG with Spark jobs against an existing static Dataproc on GCE cluster
 <br>
 
+**About:**
 |  |  | 
 | -- | :--- | 
 | Use case |  Anomaly Detection |
@@ -21,6 +22,8 @@ This lab demonstrates orchestration of Spark applications on Dataproc - GCE with
 | Scheduling and Orchestration | Apache Airflow on Cloud Composer 2 |
 | Focus| Data Engineering on Google Cloud |
 
+<br>
+**About:**<br>
 The goal of the lab is to demystify Spark on Cloud Dataproc on Google Compute Engine and orchestration of Spark applications on managed Airflow on GCP through a (zero fluff, zero dazzle) minimum viable end to end sample to accelerate adoption. 
 
 <hr>
