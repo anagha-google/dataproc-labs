@@ -97,15 +97,20 @@ Covered in section 3.1
 ![README](images/lab-01-02.png)   
 <br><br>
 
+### 0.12. The data engineering pipeline
 
-### 0.11. Lab Flow
+![README](images/lab-01-17.png)   
+<br><br>
+
+
+### 0.12. Lab Flow
 
 ![README](images/lab-01-01.png)   
 <br><br>
 
 <hr>
 
-### 0.12. For success
+### 0.13. For success
 
 Read the lab - narrative below, review the code, and then start trying out the lab.
 
@@ -1078,6 +1083,13 @@ select CellName, Maintainence_Required from `cell_tower_reporting_mart.kpis_by_c
 <hr>
 
 ## 6. Automate orchestration with Apache Airflow powered by Cloud Composer 2
+
+### RECAP: The data engineering pipeline
+
+![README](images/lab-01-16.png)   
+<br><br>
+
+<hr>
 
 ### 6.1. Review the Airflow DAG code
 
