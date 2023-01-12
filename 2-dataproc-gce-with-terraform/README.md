@@ -23,7 +23,8 @@ This lab demonstrates orchestration of Spark applications on Dataproc - GCE with
 | Focus| Data Engineering on Google Cloud |
 
 <br>
-**About:**<br>
+
+**Goal:**<br>
 The goal of the lab is to demystify Spark on Cloud Dataproc on Google Compute Engine and orchestration of Spark applications on managed Airflow on GCP through a (zero fluff, zero dazzle) minimum viable end to end sample to accelerate adoption. 
 
 <hr>
