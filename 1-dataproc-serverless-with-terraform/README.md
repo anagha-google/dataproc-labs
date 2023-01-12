@@ -1113,7 +1113,7 @@ Familaize yourself with the UI if new to Airflow
 
 ### 6.5. Review the job execution in the Dataproc "Batches" UI
 
-![README](images/lab-01-11.png)   
+![README](images/lab-01-15.png)   
 <br><br>
 
 <br>
