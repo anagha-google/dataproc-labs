@@ -1084,14 +1084,22 @@ select CellName, Maintainence_Required from `cell_tower_reporting_mart.kpis_by_c
 
 ## 6. Automate orchestration with Apache Airflow powered by Cloud Composer 2
 
-### RECAP: The data engineering pipeline
+### 6.1 The data engineering pipeline
 
 ![README](images/lab-01-16.png)   
 <br><br>
 
 <hr>
 
-### 6.1. Review the Airflow DAG code
+### 6.2 Architecture
+
+![README](images/lab-01-17.png)   
+<br><br>
+
+<hr>
+
+
+### 6.3. Review the Airflow DAG code
 
 Review the code to understand the DAG construct, variables and how serverless Spark jobs are invoked.
 [Code](provisioning-automation/core-tf/scripts/composer-dag/pipeline.py)
@@ -1100,7 +1108,7 @@ Review the code to understand the DAG construct, variables and how serverless Sp
 
 <hr>
 
-### 6.2. Review the Airflow environment and Terraform imported Airflow variables in the Cloud Composer UI
+### 6.4. Review the Airflow environment and Terraform imported Airflow variables in the Cloud Composer UI
 
 Familaize yourself with the UI of Cloud Composer service. And then navigate to the "Environment Variables" tab and review the variables supplied at provision time that get used in the DAG at runtime.
 
@@ -1112,18 +1120,18 @@ Familaize yourself with the UI of Cloud Composer service. And then navigate to t
 
 <hr>
 
-### 6.3. Open the Airflow UI from the Cloud Composer UI on Cloud Console
+### 6.5. Open the Airflow UI from the Cloud Composer UI on Cloud Console
 Familaize yourself with the UI if new to Airflow
 
  ![README](images/lab-01-10.png)   
 <br><br>
 
-### 6.4. Run the DAG for Cell Tower Anomaly Detection
+### 6.6. Run the DAG for Cell Tower Anomaly Detection
 
  ![README](images/lab-01-11.png)   
 <br><br>
 
-### 6.5. Review the job execution in the Dataproc "Batches" UI
+### 6.7. Review the job execution in the Dataproc "Batches" UI
 
 ![README](images/lab-01-15.png)   
 <br><br>
