@@ -638,6 +638,12 @@ resource "google_dataproc_cluster" "gce_cluster" {
       optional_components = [ "JUPYTER" ]
       override_properties = {
         "dataproc:dataproc.allow.zero.workers" = "false"
+        "spark:spark.history.fs.logDirectory"="${local.dpgce_spark_sphs_bucket_fqn}/*/spark-job-history"
+        "spark:spark.eventLog.dir"="${local.dpgce_spark_sphs_bucket_fqn}/events/spark-job-history"
+        "mapred:mapreduce.jobhistory.read-only.dir-pattern"="${local.dpgce_spark_sphs_bucket_fqn}/*/mapreduce-job-history/done"
+        "mapred:mapreduce.jobhistory.done-dir"="${local.dpgce_spark_sphs_bucket_fqn}/events/mapreduce-job-history/done"
+        "mapred:mapreduce.jobhistory.intermediate-done-dir"="${local.dpgce_spark_sphs_bucket_fqn}/events/mapreduce-job-history/intermediate-done"
+        "yarn:yarn.nodemanager.remote-app-log-dir"="${local.dpgce_spark_sphs_bucket_fqn}/yarn-logs"
       }
     }
 
