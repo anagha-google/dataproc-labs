@@ -6,7 +6,7 @@
 This lab demonstrates orchestration of Spark applications on Dataproc - GCE with Airflow on Cloud Composer 2 and covers common patterns-
 1. Ephemeral Dataproc Cluster: Running an Airflow DAG that creates a Dataproc on GCE cluster, runs Spark jobs, deletes the cluster created by the DAG
 2. Existing Dataproc Cluster: Running an Airflow DAG with Spark jobs against an existing static Dataproc on GCE cluster
-
+<br>
 
 |  |  | 
 | -- | :--- | 
