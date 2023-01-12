@@ -5,6 +5,6 @@ This repo hosts minimum viable end-to-end solutions that showcase Spark on GCP a
 | # | About | 
 | -- | :--- | 
 | [Lab-01](https://github.com/anagha-google/dataproc-labs/tree/main/1-dataproc-serverless-with-terraform) |  Orchestration of Spark jobs on Dataproc Serverless with Airflow on Cloud Composer 2 |
-| Lab-02|  Orchestration of Spark jobs on Dataproc GCE with Airflow on Cloud Composer 2 (ephemeral and static Spark clusters) |
+| Lab-02|  Orchestration of Spark jobs on Dataproc GCE with Airflow on Cloud Composer 2 (ephemeral and static Spark clusters) <br>Work In Progress - DO NOT USE|
 
 
