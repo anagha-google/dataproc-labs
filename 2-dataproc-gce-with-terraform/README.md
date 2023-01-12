@@ -82,7 +82,7 @@ Covered in section 3.1
 ### 0.8. Lab Architecture
 
 
-![README](./images/lab-01-04.png)   
+![README](./images/lab-02-04.png)   
 <br><br>
 
 <hr>
@@ -103,7 +103,7 @@ Covered in section 3.1
 
 ### 0.11. Lab Flow
 
-![README](images/lab-01-01.png)   
+![README](images/lab-02-01.png)   
 <br><br>
 
 <hr>
