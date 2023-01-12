@@ -581,6 +581,7 @@ output "CODE_AND_DATA_BUCKET" {
 ******************************************/
 
 resource "google_dataproc_metastore_service" "datalake_metastore" {
+  provider = google-beta
   service_id = local.metastore_nm
   location   = local.location
   port       = 9080
@@ -594,6 +595,7 @@ resource "google_dataproc_metastore_service" "datalake_metastore" {
 
  hive_metastore_config {
     version = "3.1.2"
+   endpoint_protocol = "GRPC"
   }
   depends_on = [
     module.administrator_role_grants,
