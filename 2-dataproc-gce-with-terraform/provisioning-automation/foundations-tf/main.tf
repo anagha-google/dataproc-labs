@@ -7,7 +7,10 @@
 
 
 
-# The following are the demo specific org policy updates
+/*******************************************
+1. Apply org policy updates
+*******************************************/
+  
 resource "google_project_organization_policy" "orgPolicyUpdate_disableSerialPortLogging" {
   project     = var.project_id
   constraint = "compute.disableSerialPortLogging"
@@ -61,6 +64,10 @@ resource "google_project_organization_policy" "orgPolicyUpdate_restrictVpcPeerin
     }
   }
 }
+
+/*******************************************
+2. Enable Google APIs
+*******************************************/
 
 resource "google_project_service" "enable_orgpolicy_google_apis" {
   project = var.project_id
@@ -153,18 +160,18 @@ resource "time_sleep" "sleep_after_api_enabling" {
   create_duration = "180s"
   depends_on = [
     google_project_service.enable_orgpolicy_google_apis,
-    enable_compute_google_apis,
-    enable_container_google_apis,
-    enable_containerregistry_google_apis,
-    enable_dataproc_google_apis,
-    enable_bigquery_google_apis,
-    enable_storage_google_apis,
-    enable_composer_google_apis,
-    enable_dpms_google_apis,
-    enable_notebooks_google_apis,
-    enable_aiplatform_google_apis,
-    enable_logging_google_apis,
-    enable_monitoring_google_apis
+    google_project_service.enable_compute_google_apis,
+    google_project_service.enable_container_google_apis,
+    google_project_service.enable_containerregistry_google_apis,
+    google_project_service.enable_dataproc_google_apis,
+    google_project_service.enable_bigquery_google_apis,
+    google_project_service.enable_storage_google_apis,
+    google_project_service.enable_composer_google_apis,
+    google_project_service.enable_dpms_google_apis,
+    google_project_service.enable_notebooks_google_apis,
+    google_project_service.enable_aiplatform_google_apis,
+    google_project_service.enable_logging_google_apis,
+    google_project_service.enable_monitoring_google_apis
   ]
 }
 
