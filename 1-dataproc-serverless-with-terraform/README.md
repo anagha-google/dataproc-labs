@@ -340,6 +340,7 @@ Switch to Dataproc to check the execution under "batches". You should see a batc
 
 
 <br>
+
 ![README](images/lab-01-14.png)   
 <br><br>
 
@@ -497,7 +498,7 @@ root
  
 #### 5.1.7. Review the complete output in the Dataporc batches UI for the job
 
-![README](images/lab-01-11.png)   
+![README](images/lab-01-12.png)   
 <br><br>
  
 #### 5.1.6. Review the results in Cloud Storage
