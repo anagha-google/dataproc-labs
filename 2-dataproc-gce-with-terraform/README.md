@@ -50,7 +50,7 @@ cd ~/dataproc-labs/2-dataproc-gce-with-terraform/provisioning-automation/foundat
 terraform init
 terraform apply \
   -var="project_id=${PROJECT_ID}" \
-  -auto-approve >> dpgce-org-policy-tf.output
+  -auto-approve >> dpgce-foundations-tf.output
 ```
 
 **Note:** Wait till the provisioning completes (~10 minutes) before moving to the next section.
@@ -106,7 +106,7 @@ terraform apply \
   -var="org_id=${ORG_ID}" \
   -var="cloud_composer_image_version=${CC2_IMAGE_VERSION}" \
   -var="gcp_region=${GCP_REGION}" \
-  -auto-approve >> dpgce-demo-tf.output
+  -auto-approve >> dpgce-core-tf.output
 ```
 
 **Note:** Takes ~45 minutes to complete.
