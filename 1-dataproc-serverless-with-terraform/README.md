@@ -1084,11 +1084,20 @@ select CellName, Maintainence_Required from `cell_tower_reporting_mart.kpis_by_c
 Review the code to understand the DAG construct, variables and how serverless Spark jobs are invoked.
 [Code](provisioning-automation/core-tf/scripts/composer-dag/pipeline.py)
 
+<br>
+
+<hr>
+
 ### 6.2. Review the Airflow environment and Terraform imported Airflow variables in the Cloud Composer UI
 Navigate to the "Environment Variables" tab and review the variables that get used in the DAG at runtime.
 
  ![README](images/lab-01-09.png)   
 <br><br>
+
+
+<br>
+
+<hr>
 
 ### 6.3. Open the Airflow UI from the Cloud Composer UI on Cloud Console
 Familaize yourself with the UI if new to Airflow
