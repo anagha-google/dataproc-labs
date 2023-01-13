@@ -990,6 +990,61 @@ Click on the DAG "cell-tower-anomaly-detection-with-existing-dpgce-cluster" and 
 4. Ensure the Spark jobs/applications are visible from the PHS
 
 
+## Appendix
+
+
+### For reference: Manually creating a static cluster with gcloud command
+
+```
+PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
+PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
+PROJECT_NAME=`gcloud projects describe ${PROJECT_ID} | grep name | cut -d':' -f2 | xargs`
+LOCATION="us-central1"
+ZONE="us-central1-b"
+VPC_NM=VPC="dpgce-vpc-$PROJECT_NBR"
+SPARK_SUBNET="spark-snet"
+PERSISTENT_HISTORY_SERVER_NM="dpgce-sphs-${PROJECT_NBR}"
+UMSA_FQN="dpgce-lab-sa@$PROJECT_ID.iam.gserviceaccount.com"
+CODE_AND_DATA_BUCKET="dpgce_data_and_code_bucket-${PROJECT_NBR}"
+DPGCE_CLUSTER_NAME="dpgce-cluster-static-${PROJECT_NBR}"
+PHS_BUCKET="dpgce-sphs-${PROJECT_NBR}"
+DPMS_NM="dpgce-metastore-${PROJECT_NBR}"
+DPCGE_BUCKET="dpgce-spark-bucket-${PROJECT_NBR}"
+
+
+gcloud dataproc clusters create $DPGCE_CLUSTER_NAME \
+--region $LOCATION \
+--zone $ZONE \
+--service-account $UMSA_FQN \
+--scopes "https://www.googleapis.com/auth/cloud-platform" \
+--project $PROJECT_ID \
+--subnet $SPARK_SUBNET \
+--enable-component-gateway \
+--bucket $DPCGE_BUCKET \
+--dataproc-metastore projects/$PROJECT_ID/locations/$LOCATION/services/$DPMS_NM \
+--master-machine-type n1-standard-4 \
+--master-boot-disk-size 500 \
+--num-workers 3 \
+--worker-machine-type n1-standard-4 \
+--worker-boot-disk-size 500 \
+--image-version 2.0-debian10 \
+--optional-components JUPYTER \
+--no-address \
+--shielded-integrity-monitoring \
+--shielded-secure-boot \
+--shielded-vtpm \
+--initialization-actions gs://goog-dataproc-initialization-actions-${LOCATION}/connectors/connectors.sh \
+--metadata spark-bigquery-connector-version="0.23.2" \
+--properties "yarn:yarn.nodemanager.remote-app-log-dir=gs://$PHS_BUCKET/yarn-logs,\
+mapred:mapreduce.jobhistory.done-dir=gs://$PHS_BUCKET/events/mapreduce-job-history/done,\
+mapred:mapreduce.jobhistory.intermediate-done-dir=gs://$PHS_BUCKET/events/mapreduce-job-history/intermediate-done,\
+spark:spark.eventLog.dir=gs://$PHS_BUCKET/events/spark-job-history,\
+spark:spark.history.fs.logDirectory=gs://$PHS_BUCKET/events/spark-job-history,\
+spark:spark.history.fs.gs.outputstream.type=FLUSHABLE_COMPOSITE,\
+spark:spark.history.fs.gs.outputstream.sync.min.interval.ms=1000ms" 
+```
+
+
 ##### =====================================================================================================
 ##### THIS CONCLUDES THE LAB - CELL TOWER ANOMALY DETECTION WITH SPARK POWERED BY DATAPROC ON GCE
 ##### DONT FORGET TO DESTROY THE RESOURCES
