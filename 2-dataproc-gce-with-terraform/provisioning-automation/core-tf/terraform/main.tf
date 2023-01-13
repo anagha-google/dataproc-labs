@@ -146,7 +146,6 @@ module "umsa_impersonate_privs_to_admin" {
     "roles/iam.serviceAccountTokenCreator" = [
       "user:${local.admin_upn_fqn}"
     ]
-
   }
   depends_on = [
     module.umsa_creation
@@ -676,7 +675,7 @@ resource "google_dataproc_cluster" "gce_cluster" {
     gce_cluster_config {
       subnetwork =  "projects/${local.project_id}/regions/${local.location}/subnetworks/${local.spark_subnet_nm}"
       service_account = local.umsa_fqn
-      service_account_scopes = ["https://www.googleapis.com/auth/iam"]
+      service_account_scopes = ["https://www.googleapis.com/auth/cloud-platform"]
       internal_ip_only = true
       shielded_instance_config {
         enable_secure_boot          = true
@@ -696,8 +695,7 @@ resource "google_dataproc_cluster" "gce_cluster" {
     time_sleep.sleep_after_metastore_creation,
     time_sleep.sleep_after_network_and_storage_steps,
     google_dataproc_cluster.sphs_creation,
-    time_sleep.sleep_after_composer_creation,
-    time_sleep.sleep_after_metastore_creation
+    time_sleep.sleep_after_composer_creation
     ]
 }
 
