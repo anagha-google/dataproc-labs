@@ -77,6 +77,8 @@ module "umsa_role_grants" {
     "roles/storage.admin",
     "roles/metastore.admin",
     "roles/metastore.editor",
+    "roles/metastore.user",
+    "roles/metastore.metadataEditor",
     "roles/dataproc.worker",
     "roles/bigquery.dataEditor",
     "roles/bigquery.admin",
@@ -507,7 +509,7 @@ Introducing sleep to minimize errors from
 dependencies having not completed
 ********************************************/
 resource "time_sleep" "sleep_after_composer_creation" {
-  create_duration = "120s"
+  create_duration = "300s"
   depends_on = [
       google_composer_environment.cloud_composer_env_creation
   ]
@@ -577,12 +579,11 @@ output "CODE_AND_DATA_BUCKET" {
 ******************************************/
 
 resource "google_dataproc_metastore_service" "datalake_metastore" {
-  provider = google-beta
-  service_id = local.metastore_nm
-  location   = local.location
-  #port       = 9080
-  tier       = "DEVELOPER"
-  network    = "projects/${local.project_id}/global/networks/${local.vpc_nm}"
+  provider      = google-beta
+  service_id    = local.metastore_nm
+  location      = local.location
+  tier          = "DEVELOPER"
+  network       = "projects/${local.project_id}/global/networks/${local.vpc_nm}"
 
  maintenance_window {
     hour_of_day = 2
@@ -592,6 +593,7 @@ resource "google_dataproc_metastore_service" "datalake_metastore" {
  hive_metastore_config {
     version = "3.1.2"
     endpoint_protocol = "GRPC"
+    
   }
   depends_on = [
     module.administrator_role_grants,
@@ -604,7 +606,7 @@ Introducing sleep to minimize errors from
 dependencies having not completed
 ********************************************/
 resource "time_sleep" "sleep_after_metastore_creation" {
-  create_duration = "180s"
+  create_duration = "300s"
   depends_on = [
       google_dataproc_metastore_service.datalake_metastore
   ]
@@ -620,14 +622,20 @@ resource "google_dataproc_cluster" "gce_cluster" {
   region   = local.location
 
   cluster_config {
-
     endpoint_config {
       enable_http_port_access = true
+    }
+
+    preemptible_worker_config {
+      num_instances = 0
     }
 
     staging_bucket = "${local.dpgce_spark_bucket}"
 
     # Override or set some custom properties
+    # 1. Version
+    # 2. BYO Persistent Spark History Server - by pointing to the logs underlying the service
+    # 3. Optional componet of Jupyter
     software_config {
       image_version = "2.0"
       optional_components = [ "JUPYTER" ]
@@ -640,6 +648,10 @@ resource "google_dataproc_cluster" "gce_cluster" {
         "mapred:mapreduce.jobhistory.intermediate-done-dir"="${local.dpgce_spark_sphs_bucket_fqn}/events/mapreduce-job-history/intermediate-done"
         "yarn:yarn.nodemanager.remote-app-log-dir"="${local.dpgce_spark_sphs_bucket_fqn}/yarn-logs"
       }
+    }
+    initialization_action {
+      script      = "gs://goog-dataproc-initialization-actions-${local.location}/connectors/connectors.sh"
+      timeout_sec = 300
     }
 
     # Override or set some custom properties
@@ -664,9 +676,16 @@ resource "google_dataproc_cluster" "gce_cluster" {
     gce_cluster_config {
       subnetwork =  "projects/${local.project_id}/regions/${local.location}/subnetworks/${local.spark_subnet_nm}"
       service_account = local.umsa_fqn
-      service_account_scopes = [
-        "cloud-platform"
-      ]
+      service_account_scopes = ["https://www.googleapis.com/auth/iam"]
+      internal_ip_only = true
+      shielded_instance_config {
+        enable_secure_boot          = true
+        enable_vtpm                 = true
+        enable_integrity_monitoring = true
+        }
+      metadata = {
+        "spark-bigquery-connector-version" : "0.26.0"
+        }   
     }
     metastore_config {
     dataproc_metastore_service = "projects/${local.project_id}/locations/${local.location}/services/${local.metastore_nm}"
@@ -679,11 +698,8 @@ resource "google_dataproc_cluster" "gce_cluster" {
     google_dataproc_cluster.sphs_creation,
     time_sleep.sleep_after_composer_creation,
     time_sleep.sleep_after_metastore_creation
-
     ]
 }
-
-
 
 /******************************************
 DONE
