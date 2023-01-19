@@ -687,12 +687,11 @@ resource "google_dataproc_cluster" "gce_cluster" {
         }   
     }
     metastore_config {
-    dataproc_metastore_service = "projects/${local.project_id}/locations/${local.location}/services/${local.metastore_nm}"
+    dataproc_metastore_service = google_dataproc_metastore_service.datalake_metastore.id
   }
 
   }
   depends_on = [
-    time_sleep.sleep_after_metastore_creation,
     time_sleep.sleep_after_network_and_storage_steps,
     google_dataproc_cluster.sphs_creation,
     time_sleep.sleep_after_composer_creation
