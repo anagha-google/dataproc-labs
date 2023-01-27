@@ -80,9 +80,9 @@ module "umsa_role_grants" {
     "roles/metastore.user",
     "roles/metastore.metadataEditor",
     "roles/dataproc.worker",
+    "roles/dataproc.editor",
     "roles/bigquery.dataEditor",
     "roles/bigquery.admin",
-    "roles/dataproc.editor",
     "roles/composer.worker",
     "roles/composer.admin"
 

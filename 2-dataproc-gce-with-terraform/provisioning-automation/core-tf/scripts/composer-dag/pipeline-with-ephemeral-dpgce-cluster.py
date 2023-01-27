@@ -155,7 +155,9 @@ with models.DAG(
         cluster_config={
             "gce_cluster_config" : {
                 "service_account": umsa + "@" + project_id + ".iam.gserviceaccount.com",
-                "subnetwork_uri": subnet_uri
+                "subnetwork_uri": subnet_uri,
+                "service_account_scopes": ["https://www.googleapis.com/auth/cloud-platform"],
+                "internal_ip_only": True
             },
             "master_config": {
                 "num_instances": 1,

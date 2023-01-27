@@ -49,7 +49,6 @@ metastore_nm                = "dpgce-metastore-${local.project_nbr}"
  *****************************************/
 module "umsa_creation" {
   source     = "terraform-google-modules/service-accounts/google"
-  #version    = "4.1.1"
   project_id = local.project_id
   names      = ["${local.umsa}"]
   display_name = "User Managed Service Account"
@@ -63,25 +62,24 @@ module "umsa_creation" {
 
 module "umsa_role_grants" {
   source                  = "terraform-google-modules/iam/google//modules/member_iam"
-  #version                 = "7.4.1"
   service_account_address = "${local.umsa_fqn}"
   prefix                  = "serviceAccount"
   project_id              = local.project_id
-  project_roles = [
-    
+  project_roles = [  
     "roles/iam.serviceAccountUser",
     "roles/iam.serviceAccountTokenCreator",
     "roles/storage.objectViewer",
     "roles/storage.admin",
     "roles/metastore.admin",
     "roles/metastore.editor",
+    "roles/metastore.user",
+    "roles/metastore.metadataEditor",
     "roles/dataproc.worker",
+    "roles/dataproc.editor",
     "roles/bigquery.dataEditor",
     "roles/bigquery.admin",
-    "roles/dataproc.editor",
     "roles/composer.worker",
     "roles/composer.admin"
-
   ]
   depends_on = [
     module.umsa_creation
@@ -94,7 +92,6 @@ module "umsa_role_grants" {
 
 module "gmsa_role_grants_cc" {
   source                  = "terraform-google-modules/iam/google//modules/member_iam"
-  #version                 = "7.4.1"
   service_account_address = "${local.CC_GMSA_FQN}"
   prefix                  = "serviceAccount"
   project_id              = local.project_id
@@ -114,7 +111,6 @@ Account for Compute Engine (for Cloud Composer 2 to download images)
 
 module "gmsa_role_grants_gce" {
   source                  = "terraform-google-modules/iam/google//modules/member_iam"
-  #version                 = "7.4.1"
   service_account_address = "${local.GCE_GMSA_FQN}"
   prefix                  = "serviceAccount"
   project_id              = local.project_id
@@ -133,7 +129,6 @@ module "gmsa_role_grants_gce" {
 
 module "umsa_impersonate_privs_to_admin" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam/"
-  #version = "7.4.1"
 
   service_accounts = ["${local.umsa_fqn}"]
   project          = local.project_id
@@ -562,7 +557,7 @@ output "CODE_AND_DATA_BUCKET" {
 }
   
 /******************************************
-14. Create Dataproc Metastore
+14. Create Dataproc Metastore - Thrift endpoint
 ******************************************/
 
 resource "google_dataproc_metastore_service" "datalake_metastore" {
