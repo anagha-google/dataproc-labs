@@ -117,7 +117,7 @@ Calc_KPIs_By_Customer_Job_Config = {
 }
 
 Calc_KPIs_By_Cell_Tower_Job_Config = {
-    "reference": {"job_id": job_id_prefix  + "-kpis-customer","project_id": project_id},
+    "reference": {"job_id": job_id_prefix  + "-kpis-cell-tower","project_id": project_id},
     "placement": {"cluster_name": dpgce_cluster_name},
     "pyspark_job": {"main_python_file_uri": kpis_by_cell_tower_script,
                     "jar_file_uris": [
