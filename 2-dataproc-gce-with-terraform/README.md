@@ -856,7 +856,7 @@ gs://s8s_data_and_code_bucket-159504796045/output_data/kpis_by_customer/part-000
 ```
 This output will be used in subsequent steps.
 
-### 5.3.6. Analyze results in BigQuery
+#### 5.3.6. Analyze results in BigQuery
 
 Run the query below-
 ```
@@ -869,7 +869,7 @@ select customerID,CellName, defect_count from `cell_tower_reporting_mart.kpis_by
 
 In this section, from PySpark, we analyze the curated telecom data, and calculate the KPIs by customer and cell tower to flag cell towers needing maintenance.<br>
 
-Review the [code](cell-tower-anomaly-detection/00-scripts/kpis_by_customer.py) first.<br>
+Review the [code](provisioning-automation/core-tf/scripts/pyspark/kpis_by_customer.py) first.<br>
 
 #### 5.4.1. Abstract of the Pyspark script
 This script -<br>
