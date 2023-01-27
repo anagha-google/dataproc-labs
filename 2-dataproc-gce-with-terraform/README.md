@@ -340,7 +340,7 @@ gs://$CODE_AND_DATA_BUCKET/scripts/pyspark/curate_customer_data.py \
 ```
 
 #### 5.1.3. Review execution in the Dataproc batches UI
-Switch to Dataproc to check the execution under "batches". You should see a batch job called "s8s-lab1-curate-customer-master-..." there. Review its execution through completion. Review the code for the process and then explore the results in GCS.
+Switch to Dataproc to check the execution under "batches". You should see a batch job called "ctadws-manual-curate-customer-..." there. Review its execution through completion. Review the code for the process and then explore the results in GCS.
 
 ![README](images/lab-02-5-1-3.png)   
 <br><br>
@@ -514,6 +514,7 @@ gs://s8s_data_and_code_bucket-159504796045/output_data/customer_augmented/part-0
 <hr>
 
 ### 5.2. Curate telecom performance data
+
 In this section, from PySpark, we transform telco customer churn data, join with the augmented customer data, and persist to GCS.<br>
 
 Review the [code](provisioning-automation/core-tf/scripts/pyspark/curate_telco_performance_data.py) first.<br>
@@ -525,6 +526,12 @@ This script -<br>
 (c) Subsets each of the datasets for relevant attributes<br>
 (d) Then joins them both based on customer ID and<br> 
 (e) Persists to GCS
+
+<br>
+
+![README](images/lab-01-06.png)   
+<br><br>
+
 
 #### 5.2.2. Execute the command below
 ```
@@ -539,7 +546,10 @@ gs://$CODE_AND_DATA_BUCKET/scripts/pyspark/curate_telco_performance_data.py \
 ```
 
 #### 5.2.3. Review execution in the Dataproc batches UI
-Switch to Dataproc to check the execution under "batches". You should see a batch job called "s8s-lab1-curate-telco-..." there. Review its execution through completion. Review the code for the process and then explore the results in GCS.
+Switch to Dataproc to check the execution under "batches". You should see a batch job called "ctadws-manual-curate-cell-tower-metrics-..." there. Review its execution through completion. Review the code for the process and then explore the results in GCS.
+
+![README](images/lab-02-5-2-3.png)   
+<br><br>
 
 
 #### 5.2.4. Review the console output
@@ -714,10 +724,29 @@ gs://s8s_data_and_code_bucket-159504796045/output_data/telco_performance_augment
 ```
 This output will be used in subsequent steps.
 
+<hr>
+
 ### 5.3. Calculate Cell Tower performance metrics by customer
+
 In this section, from PySpark, we analyze the curated telecom data, and calculate the KPIs by customer.<br>
 
 Review the [code](provisioning-automation/core-tf/scripts/pyspark/kpis_by_customer.py) first.<br>
+
+#### 5.3.1. Abstract of the Pyspark script
+This script -<br>
+(a) Reads the curated telecom data <br>
+(b) Add a number of derived metrics <br>
+(c) that constitute performance indicators and <br>
+(d) persists to GCS as parquet and <br>
+(e) also creates an external table in BigQuery on the same dataset
+
+<br>
+
+![README](images/lab-01-07.png)   
+<br><br>
+
+<hr>
+
 
 #### 5.3.1. Abstract of the Pyspark script
 This script -<br>
@@ -739,7 +768,14 @@ gs://$CODE_AND_DATA_BUCKET/scripts/pyspark/kpis_by_customer.py \
 -- $PROJECT_ID "cell_tower_reporting_mart" $CODE_AND_DATA_BUCKET
 ```
 
-#### 5.3.3. Review the console output from the application
+
+#### 5.3.3. Review execution in the Dataproc batches UI
+Switch to Dataproc to check the execution under "batches". You should see a batch job called "ctadws-manual-kpis-by-customer-..." there. Review its execution through completion. Review the code for the process and then explore the results in GCS.
+
+![README](images/lab-02-5-3-3.png)   
+<br><br>
+
+#### 5.3.4. Review the console output from the application
 ```
 root
  |-- tenure: long (nullable = true)
@@ -805,7 +841,7 @@ only showing top 3 rows
 Note the defect count which is a netric derived that indicates issues with the cell tower.<br>
 
 
-#### 5.3.4. List the results in the GCS bucket
+#### 5.3.5. List the results in the GCS bucket
 ```
 gsutil ls -r gs://$CODE_AND_DATA_BUCKET/output_data/kpis_by_customer
 ```
@@ -820,18 +856,20 @@ gs://s8s_data_and_code_bucket-159504796045/output_data/kpis_by_customer/part-000
 ```
 This output will be used in subsequent steps.
 
-### 5.3.5. Analyze results in BigQuery
+### 5.3.6. Analyze results in BigQuery
 
 Run the query below-
 ```
 select customerID,CellName, defect_count from `cell_tower_reporting_mart.kpis_by_customer` limit 3
 ```
 
+<hr>
 
 ### 5.4. Calculate performance metrics by Cell Tower and flag towers needing maintenance
+
 In this section, from PySpark, we analyze the curated telecom data, and calculate the KPIs by customer and cell tower to flag cell towers needing maintenance.<br>
 
-Review the [code](provisioning-automation/core-tf/scripts/pyspark/kpis_by_customer.py) first.<br>
+Review the [code](cell-tower-anomaly-detection/00-scripts/kpis_by_customer.py) first.<br>
 
 #### 5.4.1. Abstract of the Pyspark script
 This script -<br>
@@ -840,6 +878,14 @@ This script -<br>
 (c) that constitute performance indicators and <br>
 (d) persists to GCS as parquet and <br>
 (e) also creates an external table in BigQuery on the same dataset
+
+<br>
+
+![README](images/lab-01-08.png)   
+<br><br>
+
+<hr>
+
 
 #### 5.4.2. Execute the command below
 ```
@@ -853,7 +899,15 @@ gs://$CODE_AND_DATA_BUCKET/scripts/pyspark/kpis_by_cell_tower.py \
 -- $PROJECT_ID "cell_tower_reporting_mart" $CODE_AND_DATA_BUCKET
 
 ```
-#### 5.4.3. Review the console output from the application
+
+
+#### 5.4.3. Review execution in the Dataproc batches UI
+Switch to Dataproc to check the execution under "batches". You should see a batch job called "ctadws-manual-kpis-by-cell-tower-..." there. Review its execution through completion. Review the code for the process and then explore the results in GCS.
+
+![README](images/lab-02-5-4-3.png)   
+<br><br>
+
+#### 5.4.4. Review the console output from the application
 ```
 root
  |-- tenure: long (nullable = true)
@@ -964,7 +1018,7 @@ only showing top 20 rows
 A metric has been added called "Maintenance_Required" to reflect defects beyond a threshold.<br>
 
 
-#### 5.4.4. List the results in the GCS bucket-
+#### 5.4.5. List the results in the GCS bucket-
 ```
 gsutil ls -r gs://$CODE_AND_DATA_BUCKET/output_data/kpis_by_cell_tower
 ```
@@ -977,7 +1031,7 @@ gs://s8s_data_and_code_bucket-159504796045/output_data/kpis_by_cell_tower/part-0
 ```
 This output will be used in subsequent steps.
 
-#### 5.4.5. Analyze results in BigQuery
+#### 5.4.6. Analyze results in BigQuery
 
 Run the query below-
 ```
