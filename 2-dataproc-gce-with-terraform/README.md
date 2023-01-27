@@ -1047,38 +1047,31 @@ select CellName, Maintainence_Required from `cell_tower_reporting_mart.kpis_by_c
 
 The Terraform script provisioned a Cloud Composer environment. It also copied the Airflow DAGs into the Cloud Composer environment's DAG directory. Review your Cloud Composer environment as shown below.
 
-![CC2-01](images/lab-02-cc2-01.png)   
+![CC2-01](images/lab-02-cc-1.png)   
 <br><br>
 
-![CC2-02](images/lab-02-cc2-02.png)   
+![CC2-02](images/lab-02-cc-2.png)   
 <br><br>
 
-![CC2-03](images/lab-02-cc2-03.png)   
+![CC2-03](images/lab-02-cc-3.png)   
 <br><br>
 
-![CC2-04](images/lab-02-cc2-04.png)   
+![CC2-04](images/lab-02-cc-4.png)   
 <br><br>
 
-![CC2-05](images/lab-02-cc2-05.png)   
+![CC2-05](images/lab-02-cc-5.png)   
 <br><br>
 
-![CC2-06](images/lab-02-cc2-06.png)   
+![CC2-06](images/lab-02-cc-6.png)   
 <br><br>
 
-![CC2-07](images/lab-02-cc2-07.png)   
+![CC2-07](images/lab-02-cc-7.png)   
 <br><br>
 
-![CC2-08](images/lab-02-cc2-08.png)   
+![CC2-08](images/lab-02-cc-8.png)   
 <br><br>
 
-![CC2-09](images/lab-02-cc2-09.png)   
-<br><br>
 
-![CC2-10](images/lab-02-cc2-10.png)   
-<br><br>
-
-![CC2-011](images/lab-02-cc2-11.png)   
-<br><br>
 
 <hr>
 
@@ -1086,7 +1079,11 @@ The Terraform script provisioned a Cloud Composer environment. It also copied th
 
 There are two DAGs pre-created and imported into Airflow on Cloud Composer.
 
+![CC2-08](images/lab-02-cc-8.png)   
+<br><br>
+
 ##### 1. cell-tower-anomaly-detection-on-static-dpgce-cluster
+
 Runs the Spark jobs covered in the sections above, on an existing DPGCE cluster associated with a Dataproc Metastore and Dataproc Persistent Spark History Server
 
 Review the DAG [code](provisioning-automation/core-tf/scripts/composer-dag/pipeline-with-existing-dpgce-cluster.py)
@@ -1094,6 +1091,7 @@ Review the DAG [code](provisioning-automation/core-tf/scripts/composer-dag/pipel
 <hr>
 
 ##### 2. cell-tower-anomaly-detection-with-ephemeral-dpgce-cluster
+
 Creates a new DPGCE cluster, runs the Spark jobs covered in the sections above, and then terminates the cluster; The ephemeral DPGCE cluster is associated with a Dataproc Metastore and Dataproc Persistent Spark History Server at creation time
 
 Review the DAG [code](provisioning-automation/core-tf/scripts/composer-dag/pipeline-with-ephemeral-dpgce-cluster.py)
@@ -1109,6 +1107,22 @@ Click on the DAG "cell-tower-anomaly-detection-with-create-cluster" and run thro
 3. Then validate each of the jobs to completion
 4. Run the BQ queries from 5.3.5 and 5.4.5
 5. Ensure the Spark jobs/applications are visible from the PHS
+
+
+Start the DAG-
+
+![CC2-09](images/lab-02-cc-9.png)   
+<br><br>
+
+Review the Airflow DAG code-
+
+![CC2-10](images/lab-02-cc-10.png)   
+<br><br>
+
+Review the execution of Spark jobs-
+
+![CC2-011](images/lab-02-cc-11.png)   
+<br><br>
 
 <hr>
 
