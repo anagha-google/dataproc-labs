@@ -1144,7 +1144,7 @@ Familaize yourself with the UI if new to Airflow
 
 ##### =====================================================================================================
 ##### THIS CONCLUDES THE LAB - CELL TOWER ANOMALY DETECTION WITH DATAPROC SERVERLESS
-##### SHUT DOWN THE LAB TO AVOID BILLING
+##### SHUT DOWN THE LAB TO AVOID BILLING, UNLESS YOU ARE WORKING ON OTHER LABS
 ##### =====================================================================================================
 
 
