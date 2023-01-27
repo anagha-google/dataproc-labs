@@ -1124,7 +1124,7 @@ spark:spark.history.fs.gs.outputstream.sync.min.interval.ms=1000ms"
 
 ##### =====================================================================================================
 ##### THIS CONCLUDES THE LAB - CELL TOWER ANOMALY DETECTION WITH SPARK POWERED BY DATAPROC ON GCE
-##### DONT FORGET TO DESTROY THE RESOURCES
+##### DONT FORGET TO DESTROY THE RESOURCES UNLESS YOU ARE WORKING ON LAB 3 and 4
 ##### =====================================================================================================
 
 
