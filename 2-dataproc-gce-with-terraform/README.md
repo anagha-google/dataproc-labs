@@ -105,20 +105,25 @@ Covered in section 3.1
 ![README](images/lab-01-02.png)   
 <br><br>
 
-### 0.11. The data engineering pipeline
+### 0.11. The data engineering pipeline with a static cluster
 
 ![README](images/lab-02-17.png)   
 <br><br>
 
+### 0.12. The data engineering pipeline with an ephemeral cluster
 
-### 0.12. Lab Flow
+![README](images/lab-02-18.png)   
+<br><br>
+
+
+### 0.13. Lab Flow
 
 ![README](images/lab-02-01.png)   
 <br><br>
 
 <hr>
 
-### 0.13. For success
+### 0.14. For success
 
 Read the lab - narrative below, review the code, and then start trying out the lab.
 
@@ -300,16 +305,26 @@ echo $DPGCE_CLUSTER_NAME
 
 ### 5.1. Curate customer master data
 
-In this section, from PySpark, we transform customer master data (parquet) and service threshold data (CSV) and join them, and persist to GCS.<br>
-Review the code first.<br>
+In this section, from PySpark, we transform customer master data (parquet) and service threshold data (CSV) and join them, and persist to GCS.<br><br>
 
 #### 5.1.1. Abstract of the Pyspark script
-This script -
-(a) Reads the customer master data
-(b) Reads the service threshold data
-(c) Subsets each of the datasets for relevant attributes
-(d) Then joins them both based on cell tower name and
-(e) Persists to GCS
+This script -<br>
+(a) Reads the customer master data<br>
+(b) Reads the service threshold data<br>
+(c) Subsets each of the datasets for relevant attributes<br>
+(d) Then joins them both based on cell tower name and<br>
+(e) Persists to GCS<br>
+
+![README](images/lab-01-05.png)   
+<br><br>
+
+<hr>
+
+#### 5.1.2. Code
+
+Review the [code](provisioning-automation/core-tf/scripts/pyspark/curate_customer_data.py) <br>
+
+<hr>
 
 #### 5.1.2. Run the command below in Cloud Shell
 ```
@@ -326,6 +341,9 @@ gs://$CODE_AND_DATA_BUCKET/scripts/pyspark/curate_customer_data.py \
 
 #### 5.1.3. Review execution in the Dataproc batches UI
 Switch to Dataproc to check the execution under "batches". You should see a batch job called "s8s-lab1-curate-customer-master-..." there. Review its execution through completion. Review the code for the process and then explore the results in GCS.
+
+![README](images/lab-02-5-1-3.png)   
+<br><br>
 
 
 #### 5.1.4. Review the intermediate console output
