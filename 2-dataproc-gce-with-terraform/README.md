@@ -127,19 +127,6 @@ Read the lab - narrative below, review the code, and then start trying out the l
 
 <hr>
 
-## 1. Clone this repo in Cloud Shell
-
-```
-git clone https://github.com/anagha-google/dataproc-labs.git
-```
-
-<hr>
-
-
-<hr>
-
-<hr>
-
 
 ## 1. Clone this repo in Cloud Shell
 
@@ -278,8 +265,8 @@ Validate the creation of the BigQuery dataset called cell_tower_reporting_mart f
 From the Cloud Console, navigate to the Cloud Composer service and browse all the tabs of the deployed "environment".<br>
 1. Review the Airflow variables
 2. Click on the Airflow UI and view the two DAGs
-3. Open the DAG called - "cell-tower-anomaly-detection-with-create-cluster" and click on "code" and review the same
-4. Open the DAG called - "cell-tower-anomaly-detection-with-existing-dpgce-cluster" and click on "code" and review the same
+3. Open the DAG called - "cell-tower-anomaly-detection-with-ephemeral-dpgce-cluster" and click on "code" and review the same
+4. Open the DAG called - "cell-tower-anomaly-detection-on-static-dpgce-cluster" and click on "code" and review the same
 
 <br>
 
