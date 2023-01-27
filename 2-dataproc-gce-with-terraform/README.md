@@ -8,7 +8,12 @@ This lab demonstrates orchestration of Spark applications on Dataproc on Google 
 2. Existing Dataproc Cluster: Running an Airflow DAG with Spark jobs against an existing static Dataproc on GCE cluster
 <br>
 
-**More about the lab:**
+## 0. About the lab
+
+### 0.1. Abstract
+This lab showcases running Spark on GCP and orchestration of Spark applications with Airflow.
+
+
 |  |  | 
 | -- | :--- | 
 | Use case |  Anomaly Detection |
@@ -16,21 +21,18 @@ This lab demonstrates orchestration of Spark applications on Dataproc on Google 
 | Showcased | Detection of cell towers needing maintenance with Apache Spark |
 | Technical Use-case | Data engineering at scale |
 | Technology | Spark (PySpark) |
-| Spark product | Cloud Dataproc on Google Compute Engine |
+| Product | Cloud Dataproc on Google Comepute Engine|
 | Dataset | Telco Customer Churn Public (small) Dataset |
 | Process | Rule-based, thresholds-based anomaly detection |
 | Scheduling and Orchestration | Apache Airflow on Cloud Composer 2 |
 | Focus| Data Engineering on Google Cloud |
 
-<br>
-
-**Goal:**<br>
-The goal of the lab is to demystify Spark on Cloud Dataproc on Google Compute Engine and orchestration of Spark applications on managed Airflow on GCP through a (zero fluff, zero dazzle) minimum viable end to end sample to accelerate adoption. 
+The goal of the lab is to demystify Spark on GCP and orchestration of Spark on managed Airflow on GCP through a (zero fluff, zero dazzle) minimum viable end to end sample to accelerate adoption. 
 
 <hr>
 
 ### 0.2. Duration 
-It takes ~2 hours to complete and is fully scrpited, including with Terraform for provisioning.
+It takes ~1.5 hours to complete and is fully scrpited, including with Terraform for provisioning.
 
 
 <hr>
@@ -54,7 +56,7 @@ Covered in section 3.1
 - Includes Terraform for provisioning automation
 - Is fully scripted - the entire solution is provided, and with instructions
 - Is self-paced/self-service
-- It provisions all foundational entities - network, metastore etc for the lab user, versus use pre-existing and such sharable resources
+
 
 <hr>
 
@@ -70,12 +72,13 @@ Covered in section 3.1
 
 | Functionality | Feature | 
 | -- | :--- | 
-| Spark platform |  Dataproc Serverless Spark **batches** |
+| Spark platform |  Dataproc on GCE |
 | Spark History Server |  Dataproc **Persistent** Spark History Server |
 | Data Lake Metastore |  Apache Hive Metsatore on Dataproc Metastore Service |
 | Data Lake File System |  Google Cloud Storage |
 | Scheduling and Orchestration | Apache Airflow on Cloud Composer 2 |
 | Provisioning Automation | Terraform |
+
 
 <hr>
 
@@ -88,6 +91,8 @@ Covered in section 3.1
 <hr>
 
 ### 0.9. The data
+
+
 
 ![README](images/lab-01-03.png)   
 <br><br>
@@ -102,7 +107,7 @@ Covered in section 3.1
 
 ### 0.11. The data engineering pipeline
 
-![README](images/lab-02-16.png)   
+![README](images/lab-02-17.png)   
 <br><br>
 
 
@@ -260,8 +265,8 @@ Validate the creation of the BigQuery dataset called cell_tower_reporting_mart f
 From the Cloud Console, navigate to the Cloud Composer service and browse all the tabs of the deployed "environment".<br>
 1. Review the Airflow variables
 2. Click on the Airflow UI and view the two DAGs
-3. Open the DAG called - "cell-tower-anomaly-detection-with-create-cluster" and click on "code" and review the same
-4. Open the DAG called - "cell-tower-anomaly-detection-with-existing-dpgce-cluster" and click on "code" and review the same
+3. Open the DAG called - "cell-tower-anomaly-detection-with-ephemeral-dpgce-cluster" and click on "code" and review the same
+4. Open the DAG called - "cell-tower-anomaly-detection-on-static-dpgce-cluster" and click on "code" and review the same
 
 <br>
 
