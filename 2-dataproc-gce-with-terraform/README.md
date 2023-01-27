@@ -1041,15 +1041,15 @@ select CellName, Maintainence_Required from `cell_tower_reporting_mart.kpis_by_c
 <hr>
 <hr>
 
-### 6. Automate orchestration with Apache Airflow powered by Cloud Composer 2
+## 6. Automate orchestration with Apache Airflow powered by Cloud Composer 2
 
-#### 6.1. The Cloud Composer Environment
+### 6.1. The Cloud Composer Environment
 
 The Terraform script provisioned a Cloud Composer environment. It also copied the Airflow DAGs into the Cloud Composer environment's DAG directory. Review your Cloud Composer environment as shown below.
 
 <hr>
 
-##### The Cloud Composer Environment listing
+#### 1. The Cloud Composer Environment listing
 
 ![CC2-01](images/lab-02-cc2-01.png)   
 <br><br>
@@ -1057,7 +1057,7 @@ The Terraform script provisioned a Cloud Composer environment. It also copied th
 <hr>
 
 
-##### The DAGS
+#### 2. The DAGS
 
 ![CC2-02](images/lab-02-cc2-02.png)   
 <br><br>
@@ -1065,21 +1065,21 @@ The Terraform script provisioned a Cloud Composer environment. It also copied th
 <hr>
 
 
-##### The environment configuration
+#### 3. The environment configuration
 
 ![CC2-03](images/lab-02-cc2-03.png)   
 <br><br>
 
 <hr>
 
-##### The environment variables
+#### 4. The environment variables
 
 ![CC2-04](images/lab-02-cc2-04.png)   
 <br><br>
 
 <hr>
 
-##### From the environment listing - The DAG bucket and DAGS
+#### 5. From the environment listing - The DAG bucket and DAGS
 
 ![CC2-05](images/lab-02-cc2-05.png)   
 <br><br>
@@ -1089,7 +1089,7 @@ The Terraform script provisioned a Cloud Composer environment. It also copied th
 
 <hr>
 
-##### From the environment listing - The Airflow UI
+#### 6. From the environment listing - The Airflow UI
 
 ![CC2-07](images/lab-02-cc2-07.png)   
 <br><br>
@@ -1099,14 +1099,16 @@ The Terraform script provisioned a Cloud Composer environment. It also copied th
 
 <hr>
 
-#### 6.2. The DAGs
+<br>
+
+### 6.2. The DAGs & DAG code
 
 There are two DAGs pre-created and imported into Airflow on Cloud Composer.
 
 ![CC2-08](images/lab-02-cc2-08.png)   
 <br><br>
 
-##### 1. cell-tower-anomaly-detection-on-static-dpgce-cluster
+#### 6.2.1. cell-tower-anomaly-detection-on-static-dpgce-cluster
 
 Runs the Spark jobs covered in the sections above, on an existing DPGCE cluster associated with a Dataproc Metastore and Dataproc Persistent Spark History Server
 
@@ -1114,7 +1116,7 @@ Review the DAG [code](provisioning-automation/core-tf/scripts/composer-dag/pipel
 
 <hr>
 
-##### 2. cell-tower-anomaly-detection-with-ephemeral-dpgce-cluster
+#### 6.2.2. cell-tower-anomaly-detection-with-ephemeral-dpgce-cluster
 
 Creates a new DPGCE cluster, runs the Spark jobs covered in the sections above, and then terminates the cluster; The ephemeral DPGCE cluster is associated with a Dataproc Metastore and Dataproc Persistent Spark History Server at creation time
 
@@ -1122,7 +1124,9 @@ Review the DAG [code](provisioning-automation/core-tf/scripts/composer-dag/pipel
 
 <hr>
 
-#### 6.3. Orchestrate Spark jobs on Dataproc-GCE ephemeral cluster
+<br><br>
+
+### 6.3. Orchestrate Spark jobs on Dataproc-GCE ephemeral cluster
 
 Click on the DAG "cell-tower-anomaly-detection-with-create-cluster" and run through the steps below - <br>
 
@@ -1150,7 +1154,7 @@ Review the execution of Spark jobs-
 
 <hr>
 
-#### 6.4. Orchestrate Spark jobs on Dataproc-GCE static cluster
+### 6.4. Orchestrate Spark jobs on Dataproc-GCE static cluster
 
 Click on the DAG "cell-tower-anomaly-detection-with-existing-dpgce-cluster" and run through the steps below - <br>
 
