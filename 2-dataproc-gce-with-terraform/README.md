@@ -1147,12 +1147,14 @@ Review the Airflow DAG code-
 ![CC2-10](images/lab-02-cc2-10.png)   
 <br><br>
 
-Review the execution of Spark jobs-
+Review the execution of Spark jobs in the Dataproc jobs GUI-
 
 ![CC2-011](images/lab-02-cc2-11.png)   
 <br><br>
 
 <hr>
+
+<br>
 
 ### 6.4. Orchestrate Spark jobs on Dataproc-GCE static cluster
 
@@ -1162,6 +1164,26 @@ Click on the DAG "cell-tower-anomaly-detection-with-existing-dpgce-cluster" and 
 2. Then validate each of the jobs to completion
 3. Run the BQ queries from 5.3.5 and 5.4.5
 4. Ensure the Spark jobs/applications are visible from the PHS
+
+Start the DAG-
+
+![CC2-09](images/lab-02-cc2-12.png)   
+<br><br>
+
+Note the Dataproc cluster creation in the Dataproc GUI-
+
+![CC2-10](images/lab-02-cc2-13.png)   
+<br><br>
+
+Review the Airflow DAG code-
+
+![CC2-10](images/lab-02-cc2-14.png)   
+<br><br>
+
+Review the execution of Spark jobs in the Dataproc jobs GUI-
+
+![CC2-011](images/lab-02-cc2-14.png)   
+<br><br>
 
 <hr>
 <hr>
