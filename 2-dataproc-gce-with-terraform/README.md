@@ -1047,37 +1047,37 @@ select CellName, Maintainence_Required from `cell_tower_reporting_mart.kpis_by_c
 
 The Terraform script provisioned a Cloud Composer environment. It also copied the Airflow DAGs into the Cloud Composer environment's DAG directory. Review your Cloud Composer environment as shown below.
 
-![CC2-01](images/lab-02-cc-1.png)   
+![CC2-01](images/lab-02-cc2-01.png)   
 <br><br>
 
-![CC2-02](images/lab-02-cc-2.png)   
+![CC2-02](images/lab-02-cc2-02.png)   
 <br><br>
 
-![CC2-03](images/lab-02-cc-3.png)   
+![CC2-03](images/lab-02-cc2-03.png)   
 <br><br>
 
-![CC2-04](images/lab-02-cc-4.png)   
+![CC2-04](images/lab-02-cc2-04.png)   
 <br><br>
 
-![CC2-05](images/lab-02-cc-5.png)   
+![CC2-05](images/lab-02-cc2-05.png)   
 <br><br>
 
-![CC2-06](images/lab-02-cc-6.png)   
+![CC2-06](images/lab-02-cc2-06.png)   
 <br><br>
 
-![CC2-07](images/lab-02-cc-7.png)   
+![CC2-07](images/lab-02-cc2-07.png)   
 <br><br>
 
-![CC2-08](images/lab-02-cc-8.png)   
+![CC2-08](images/lab-02-cc2-08.png)   
 <br><br>
 
-![CC2-09](images/lab-02-cc-9.png)   
+![CC2-09](images/lab-02-cc2-09.png)   
 <br><br>
 
-![CC2-10](images/lab-02-cc-10.png)   
+![CC2-10](images/lab-02-cc2-10.png)   
 <br><br>
 
-![CC2-011](images/lab-02-cc-11.png)   
+![CC2-011](images/lab-02-cc2-11.png)   
 <br><br>
 
 <hr>
