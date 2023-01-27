@@ -1047,10 +1047,14 @@ select CellName, Maintainence_Required from `cell_tower_reporting_mart.kpis_by_c
 
 The Terraform script provisioned a Cloud Composer environment. It also copied the Airflow DAGs into the Cloud Composer environment's DAG directory. Review your Cloud Composer environment as shown below.
 
+<hr>
+
 ##### The Cloud Composer Environment listing
 
 ![CC2-01](images/lab-02-cc2-01.png)   
 <br><br>
+
+<hr>
 
 
 ##### The DAGS
@@ -1058,16 +1062,22 @@ The Terraform script provisioned a Cloud Composer environment. It also copied th
 ![CC2-02](images/lab-02-cc2-02.png)   
 <br><br>
 
+<hr>
+
 
 ##### The environment configuration
 
 ![CC2-03](images/lab-02-cc2-03.png)   
 <br><br>
 
+<hr>
+
 ##### The environment variables
 
 ![CC2-04](images/lab-02-cc2-04.png)   
 <br><br>
+
+<hr>
 
 ##### From the environment listing - The DAG bucket and DAGS
 
@@ -1076,6 +1086,8 @@ The Terraform script provisioned a Cloud Composer environment. It also copied th
 
 ![CC2-06](images/lab-02-cc2-06.png)   
 <br><br>
+
+<hr>
 
 ##### From the environment listing - The Airflow UI
 
