@@ -5,7 +5,7 @@ This repo hosts minimum viable self-contained, end-to-end solutions that showcas
 | # | About | 
 | -- | :--- |  
 | [Lab-01](1-dataproc-serverless-with-terraform) |  Orchestration of Spark jobs on Dataproc Serverless with Airflow on Cloud Composer 2 | 
-| Lab-02 |  Orchestration of Spark jobs on Dataproc GCE cluster with Airflow on Cloud Composer 2 <br>Work In Progress - DO NOT USE| 
-| Lab-03 |  Dataproc Metastore Federation  <br>Work In Progress - DO NOT USE | 
+| [Lab-02](2-dataproc-gce-with-terraform) |  Orchestration of Spark jobs on Dataproc GCE cluster with Airflow on Cloud Composer 2 | 
+
 
 
