@@ -24,6 +24,7 @@ REGION=us-central1
 ZONE=us-central1-a
 NUM_GPUS=1
 NUM_WORKERS=4
+
 ```
 
 ## 2. Create Cloud Storage buckets & load upload dataset & scripts for the lab
@@ -89,4 +90,19 @@ gcloud dataproc clusters create $CLUSTER_NAME  \
 ```
 
 
-## 4. 
+## 4. Review the lab dataset
+
+The dataset is the famous Kaggle Telco Customer Churn dataset - small data. Review the same.
+
+Paste in Cloud Shell-
+```
+head -10 ~/dataproc-labs/5-dataproc-gce-with-gpu/01-datasets/telco-customer-churn.csv
+```
+
+## 5. Generate a larger dataset off of the base lab dataset
+
+
+
+
+
+
