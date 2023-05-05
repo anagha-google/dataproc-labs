@@ -50,7 +50,7 @@ gcloud dataproc clusters create $CLUSTER_NAME  \
     --optional-components=JUPYTER,ZEPPELIN \
     --metadata gpu-driver-provider="NVIDIA",rapids-runtime="SPARK" \
     --bucket $DPGCE_LOG_BUCKET \
-    --subnet=SPARK_SUBNET \
+    --subnet=$SPARK_SUBNET \
     --enable-component-gateway
     
 ```
