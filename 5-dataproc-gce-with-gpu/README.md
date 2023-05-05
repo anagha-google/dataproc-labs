@@ -15,6 +15,7 @@ PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d'
 CLUSTER_NAME=dpgce-cluster-static-gpu-${PROJECT_NBR}
 DPGCE_LOG_BUCKET=dpgce-cluster-static-gpu-${PROJECT_NBR}-logs
 DATA_BUCKET=spark-rapids-lab-data-${PROJECT_NBR}-logs
+CODE_BUCKET=spark-rapids-lab-code-${PROJECT_NBR}-logs
 VPC_NM=VPC=dpgce-vpc-$PROJECT_NBR
 SPARK_SUBNET=spark-snet
 PERSISTENT_HISTORY_SERVER_NM=dpgce-sphs-${PROJECT_NBR}
@@ -25,7 +26,7 @@ NUM_GPUS=1
 NUM_WORKERS=4
 ```
 
-## 2. Create Cloud Storage buckets & load upload dataset for the lab
+## 2. Create Cloud Storage buckets & load upload dataset & scripts for the lab
 
 ### 2.1. Create a bucket for Dataproc logs
 
@@ -34,22 +35,36 @@ Paste in Cloud Shell-
 gcloud storage buckets create gs://$DPGCE_LOG_BUCKET --project=$PROJECT_ID --location=$REGION
 ```
 
-### 2.2. Create a bucket for the dataset
+### 2.2. Create a bucket for the dataset & upload lab data to it
 
 Paste in Cloud Shell-
 ```
 gcloud storage buckets create gs://$DATA_BUCKET --project=$PROJECT_ID --location=$REGION
 ```
-
-### 2.3. Upload data to the data bucket
 
 You would have already cloned the repo. Lets navigate to the lab directory and upload the data.
 
 Paste in Cloud Shell-
 ```
-cd ~/datalake-modernization-workshops/5-dataproc-gce-with-gpu/
-gcloud storage buckets create gs://$DATA_BUCKET --project=$PROJECT_ID --location=$REGION
+cd ~/dataproc-labs/5-dataproc-gce-with-gpu/01-datasets/
+gsutil cp *.csv gs://$DATA_BUCKET/churn/input/
 ```
+
+### 2.3. Create a bucket for the scripts & upload lab scripts to it
+
+Paste in Cloud Shell-
+```
+gcloud storage buckets create gs://$CODE_BUCKET --project=$PROJECT_ID --location=$REGION
+```
+
+You would have already cloned the repo. Lets navigate to the lab directory and upload the data.
+
+Paste in Cloud Shell-
+```
+cd ~/dataproc-labs/5-dataproc-gce-with-gpu/00-scripts/
+gsutil cp *.csv gs://$CODE_BUCKET/churn/
+```
+
 
 ## 3. Create a DPGCE cluster with GPUs
 
