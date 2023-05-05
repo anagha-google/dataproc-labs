@@ -4,6 +4,7 @@ This lab showcases Spark application acceleration with Spark-RAPIDS on Dataproc 
 Specifically - [2-dataproc-gce-with-terraform](../2-dataproc-gce-with-terraform)
 
 
+
 ## 1. Declare variables
 
 Paste in Cloud Shell-
@@ -13,6 +14,7 @@ PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d'
 
 CLUSTER_NAME=dpgce-cluster-static-gpu-${PROJECT_NBR}
 DPGCE_LOG_BUCKET=dpgce-cluster-static-gpu-${PROJECT_NBR}-logs
+DATA_BUCKET=spark-rapids-lab-data-${PROJECT_NBR}-logs
 VPC_NM=VPC=dpgce-vpc-$PROJECT_NBR
 SPARK_SUBNET=spark-snet
 PERSISTENT_HISTORY_SERVER_NM=dpgce-sphs-${PROJECT_NBR}
@@ -23,11 +25,30 @@ NUM_GPUS=1
 NUM_WORKERS=4
 ```
 
-## 2. Create a bucket for Dataproc logs
+## 2. Create Cloud Storage buckets & load upload dataset for the lab
+
+### 2.1. Create a bucket for Dataproc logs
 
 Paste in Cloud Shell-
 ```
 gcloud storage buckets create gs://$DPGCE_LOG_BUCKET --project=$PROJECT_ID --location=$REGION
+```
+
+### 2.2. Create a bucket for the dataset
+
+Paste in Cloud Shell-
+```
+gcloud storage buckets create gs://$DATA_BUCKET --project=$PROJECT_ID --location=$REGION
+```
+
+### 2.3. Upload data to the data bucket
+
+You would have already cloned the repo. Lets navigate to the lab directory and upload the data.
+
+Paste in Cloud Shell-
+```
+cd ~/datalake-modernization-workshops/5-dataproc-gce-with-gpu/
+gcloud storage buckets create gs://$DATA_BUCKET --project=$PROJECT_ID --location=$REGION
 ```
 
 ## 3. Create a DPGCE cluster with GPUs
@@ -35,8 +56,6 @@ gcloud storage buckets create gs://$DPGCE_LOG_BUCKET --project=$PROJECT_ID --loc
 Paste in Cloud Shell-
 
 ```
-
-
 gcloud dataproc clusters create $CLUSTER_NAME  \
     --region $REGION \
     --zone $ZONE \
@@ -51,8 +70,7 @@ gcloud dataproc clusters create $CLUSTER_NAME  \
     --metadata gpu-driver-provider="NVIDIA",rapids-runtime="SPARK" \
     --bucket $DPGCE_LOG_BUCKET \
     --subnet=$SPARK_SUBNET \
-    --enable-component-gateway
-    
+    --enable-component-gateway    
 ```
 
 
