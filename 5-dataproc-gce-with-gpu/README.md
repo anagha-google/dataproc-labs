@@ -101,6 +101,11 @@ head -10 ~/dataproc-labs/5-dataproc-gce-with-gpu/01-datasets/telco-customer-chur
 
 ## 5. Generate a larger dataset off of the base lab dataset
 
+The script (generate_data.py) has been provided to us by Nvidia to create a larger dataset and is located as shown below. Review the script -
+```
+cd ~/dataproc-labs/5-dataproc-gce-with-gpu/00-scripts/data_generator_util
+cat generate_data.py
+```
 
 
 
