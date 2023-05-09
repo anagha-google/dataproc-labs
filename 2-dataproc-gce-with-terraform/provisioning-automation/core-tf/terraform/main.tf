@@ -421,7 +421,12 @@ resource "google_dataproc_cluster" "sphs_creation" {
         "mapred:mapreduce.jobhistory.done-dir"="${local.dpgce_spark_sphs_bucket_fqn}/events/mapreduce-job-history/done"
         "mapred:mapreduce.jobhistory.intermediate-done-dir"="${local.dpgce_spark_sphs_bucket_fqn}/events/mapreduce-job-history/intermediate-done"
         "yarn:yarn.nodemanager.remote-app-log-dir"="${local.dpgce_spark_sphs_bucket_fqn}/yarn-logs"
-
+        "dataproc:dataproc.logging.stackdriver.enable"=true
+        "dataproc:dataproc.monitoring.stackdriver.enable"=true
+        "yarn:yarn.log-aggregation.enabled"=true
+        "dataproc:dataproc.logging.stackdriver.job.yarn.container.enable"=true
+        "dataproc:jobs.file-backed-output.enable"=true
+        "dataproc:dataproc.logging.stackdriver.job.driver.enable"=true
       }      
     }
     gce_cluster_config {
