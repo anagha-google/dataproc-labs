@@ -160,6 +160,8 @@ terraform apply \
 
 **Note:** Wait till the provisioning completes (~10 minutes) before moving to the next section.
 
+
+
 <hr>
 
 ## 3. Lab resources provisioning automation with Terraform 
@@ -1247,5 +1249,37 @@ spark:spark.history.fs.gs.outputstream.sync.min.interval.ms=1000ms"
 ##### THIS CONCLUDES THE LAB - CELL TOWER ANOMALY DETECTION WITH SPARK POWERED BY DATAPROC ON GCE
 ##### DONT FORGET TO DESTROY THE RESOURCES UNLESS YOU ARE WORKING ON LAB 3 and 4
 ##### =====================================================================================================
+
+## Appendix
+
+The gcloud command equivalent for creating a cluster
+
+```
+THIS IS FYI
+DPGCE_CLUSTER_NAME=dpgce-cluster-static-420530778089
+
+
+gcloud dataproc clusters create $DPGCE_CLUSTER_NAME \
+   --service-account=$UMSA_FQN \
+   --project $PROJECT_ID \
+   --subnet spark-snet \
+   --region us-central1 \
+   --zone us-central1-a \
+   --enable-component-gateway \
+   --bucket dpgce-spark-bucket-420530778089 \
+   --dataproc-metastore projects/dpgce-airflow-lab-plus/locations/us-central1/services/dpgce-metastore-420530778089 \
+   --scopes=cloud-platform \
+   --master-machine-type n1-standard-4 \
+   --master-boot-disk-size 500 \
+   --num-workers 2 \
+   --worker-machine-type n1-standard-4 \
+   --worker-boot-disk-size 500 \
+   --image-version 2.0.53-debian10 \
+   --tags $DPGCE_CLUSTER_NAME \
+   --optional-components JUPYTER \
+   --initialization-actions gs://goog-dataproc-initialization-actions-us-central1/connectors/connectors.sh \
+   --metadata spark-bigquery-connector-version=0.26.0 \
+   --properties dataproc:dataproc.logging.stackdriver.enable=true,dataproc:dataproc.monitoring.stackdriver.enable=true,yarn:yarn.log-aggregation.enabled=true,dataproc:dataproc.logging.stackdriver.job.yarn.container.enable=true,dataproc:jobs.file-backed-output.enable=true,dataproc:dataproc.logging.stackdriver.job.driver.enable=true
+   ```
 
 
