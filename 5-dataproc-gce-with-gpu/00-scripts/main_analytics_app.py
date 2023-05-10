@@ -16,13 +16,13 @@
 # limitations under the License.
 
 import argparse
-from churn.etl import cast_and_coalesce_wide_data
+from churn_utils.etl import cast_and_coalesce_wide_data
 import os
 import sys
 import re
 import json
 
-app_name = "churn-etl"
+app_name = "churn_utils.etl"
 default_input_files = dict(
     billing="billing_events", 
     account_features="customer_account_features", 
@@ -31,7 +31,7 @@ default_input_files = dict(
     phone_features="customer_phone_features"
 )
 
-default_output_file = "churn-etl"
+default_output_file = "churn_utils.etl"
 default_output_prefix = ""
 default_input_prefix = ""
 default_output_mode = "overwrite"
@@ -41,8 +41,8 @@ default_input_kind = "parquet"
 parser = parser = argparse.ArgumentParser()
 parser.add_argument('--output-file', help='location for denormalized output data (default="%s")' % default_output_file, default=default_output_file)
 parser.add_argument('--output-mode', help='Spark data source output mode for the result (default: overwrite)', default=default_output_mode)
-parser.add_argument('--input-prefix', help='text to prepend to every input file path (e.g., "hdfs:///churn-raw-data/"; the default is empty)', default=default_input_prefix)
-parser.add_argument('--output-prefix', help='text to prepend to every output file (e.g., "hdfs:///churn-data-etl/"; the default is empty)', default=default_output_prefix)
+parser.add_argument('--input-prefix', help='text to prepend to every input file path (e.g., "hdfs:///churn_utils.raw-data/"; the default is empty)', default=default_input_prefix)
+parser.add_argument('--output-prefix', help='text to prepend to every output file (e.g., "hdfs:///churn_utils.data-etl/"; the default is empty)', default=default_output_prefix)
 parser.add_argument('--output-kind', help='output Spark data source type for the result (default: parquet)', default=default_output_kind)
 parser.add_argument('--input-kind', help='Spark data source type for the input (default: parquet)', default=default_input_kind)
 parser.add_argument('--summary-prefix', help='text to prepend to analytic reports (e.g., "reports/"; default is empty)', default='')
@@ -69,12 +69,12 @@ if __name__ == '__main__':
 
     session
 
-    import churn.etl
-    import churn.eda
+    import churn_utils.etl
+    import churn_utils.eda
 
     input_files = {k: "%s%s" % (args.input_prefix, v) for k, v in default_input_files.items()}
 
-    churn.etl.register_options(
+    churn_utils.etl.register_options(
         app_name = app_name,
         input_files = input_files,
         output_prefix = args.output_prefix,
@@ -86,45 +86,45 @@ if __name__ == '__main__':
         use_calendar_arithmetic = args.use_calendar_arithmetic
     )
 
-    from churn.etl import read_df
+    from churn_utils.etl import read_df
     billing_events = read_df(session, input_files["billing"])
 
-    from churn.etl import join_billing_data
+    from churn_utils.etl import join_billing_data
     customer_billing = join_billing_data(billing_events)
 
-    from churn.etl import customers as get_customers
+    from churn_utils.etl import customers as get_customers
     customers = get_customers()
 
     phone_features = read_df(session, input_files["phone_features"])
 
-    from churn.etl import join_phone_features
+    from churn_utils.etl import join_phone_features
     customer_phone_features = join_phone_features(phone_features)
 
     internet_features = read_df(session, input_files["internet_features"])
-    from churn.etl import join_internet_features
+    from churn_utils.etl import join_internet_features
     customer_internet_features = join_internet_features(internet_features)
 
     account_features = read_df(session, input_files["account_features"])
 
-    from churn.etl import join_account_features
+    from churn_utils.etl import join_account_features
     customer_account_features = join_account_features(account_features)
 
     account_meta = read_df(session, input_files["meta"])
 
-    from churn.etl import process_account_meta
+    from churn_utils.etl import process_account_meta
     customer_account_meta = process_account_meta(account_meta)
 
-    from churn.etl import join_wide_table
+    from churn_utils.etl import join_wide_table
 
     wide_data = join_wide_table(customer_billing, customer_phone_features, customer_internet_features, customer_account_features, customer_account_meta)
 
-    from churn.etl import write_df
+    from churn_utils.etl import write_df
     import timeit
     
-    temp_output_file = "intermediate-" + churn.etl.options['output_file']
-    output_file = churn.etl.options['output_file']
-    output_kind = churn.etl.options['output_kind']
-    output_prefix = churn.etl.options['output_prefix']
+    temp_output_file = "intermediate-" + churn_utils.etl.options['output_file']
+    output_file = churn_utils.etl.options['output_file']
+    output_kind = churn_utils.etl.options['output_kind']
+    output_prefix = churn_utils.etl.options['output_prefix']
 
     federation_time = timeit.timeit(lambda: write_df(wide_data, temp_output_file), number=1)
 
@@ -135,9 +135,9 @@ if __name__ == '__main__':
     record_nonnull_count = records.dropna().count()
 
     if not args.skip_eda:
-        analysis_time = timeit.timeit(lambda: churn.eda.output_reports(records, billing_events, args.summary_prefix), number=1)
+        analysis_time = timeit.timeit(lambda: churn_utils.eda.output_reports(records, billing_events, args.summary_prefix), number=1)
 
-    first_line = "Completed analytics pipeline (version %s)\n" % churn.etl.ETL_VERSION
+    first_line = "Completed analytics pipeline (version %s)\n" % churn_utils.etl.ETL_VERSION
 
     if not args.skip_eda:
         first_line += 'Total time was %.02f to generate and process %d records\n' % (analysis_time + federation_time + coalesce_time, record_count)
