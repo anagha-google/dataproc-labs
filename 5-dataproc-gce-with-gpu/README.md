@@ -185,12 +185,16 @@ gcloud dataproc jobs submit pyspark \
 --id data-generator-$RANDOM \
 gs://$CODE_BUCKET/churn/data_generator_util/generate_data.py \
 --py-files=gs://$CODE_BUCKET/churn/data_generator_archive.zip \
-—-properties^#^"spark.executor.cores=${NUM_EXECUTOR_CORES},spark.executor.memory=${EXECUTOR_MEMORY}G,spark.driver.memory=${DRIVER_MEMORY}G,spark.cores.max=$TOTAL_CORES" \
+--properties="spark.executor.cores=${NUM_EXECUTOR_CORES},spark.executor.memory=${EXECUTOR_MEMORY}G,spark.driver.memory=${DRIVER_MEMORY}G,spark.cores.max=$TOTAL_CORES" \
 --configuration="spark.task.cpus=1,spark.sql.files.maxPartitionBytes=2G" \
 --region $LOCATION \
 --project $PROJECT_ID \
 -- --input-file=${INPUT_FILE} --output-prefix=${OUTPUT_PREFIX} --dup-times=${SCALE}  2>&1 >> $LOGFILE
 ```
 
+### 6.4 Review the 10 scale lab dataset generated
 
+```
+gsutil ls $OUTPUT_PREFIX
+```
 
