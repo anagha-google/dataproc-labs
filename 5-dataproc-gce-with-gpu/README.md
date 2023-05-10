@@ -28,6 +28,8 @@ NUM_WORKERS=4
 
 ```
 
+<hr>
+
 ## 2. Create Cloud Storage buckets & load upload dataset & scripts for the lab
 
 ### 2.1. Create a bucket for Dataproc logs
@@ -75,6 +77,7 @@ cd ~/dataproc-labs/5-dataproc-gce-with-gpu/00-scripts/
 gsutil cp -r * gs://$CODE_BUCKET/churn/
 ```
 
+<hr>
 
 ## 3. Create a DPGCE cluster with GPUs
 
@@ -98,6 +101,7 @@ gcloud dataproc clusters create $CLUSTER_NAME  \
     --enable-component-gateway    
 ```
 
+<hr>
 
 ## 4. Review the lab dataset
 
@@ -108,6 +112,7 @@ Paste in Cloud Shell-
 head -10 ~/dataproc-labs/5-dataproc-gce-with-gpu/01-datasets/telco-customer-churn.csv
 ```
 
+<hr>
 
 ## 5. Generate a larger dataset off of the base lab dataset
 
@@ -198,8 +203,9 @@ gs://$CODE_BUCKET/churn/data_generator_util/generate_data.py \
 ```
 gsutil ls $OUTPUT_PREFIX
 ```
+<hr>
 
-## 6. Run an ETL job on CPUs
+## 6. Run an ETL job on CPUs for a baseline performance capture
 
 ### 6.1. Declare variables
 ```
@@ -250,8 +256,7 @@ INPUT_PREFIX="gs://spark-rapids-lab-data-420530778089/churn/input/10scale/"
 OUTPUT_PREFIX="gs://spark-rapids-lab-data-420530778089/churn/output/cpu-based-analytics"
 ```
 
-
-### 6.2. Run a Spark analytics application
+### 6.2. Run a Spark analytics application on CPUs for a baseline
 
 ```
 gcloud dataproc jobs submit pyspark \
