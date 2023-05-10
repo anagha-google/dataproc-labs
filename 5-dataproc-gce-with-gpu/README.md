@@ -56,9 +56,7 @@ gsutil cp *.csv gs://$DATA_BUCKET/churn/input/
 
 ```
 cd ~/dataproc-labs/5-dataproc-gce-with-gpu/00-scripts
-rm -rf data_generator_archive.zip
 rm -rf aux_etl_code_archive.zip
-zip data_generator_archive.zip -r churn_utils data_generator_util
 zip aux_etl_code_archive.zip -r churn_utils
 ```
 
@@ -187,7 +185,7 @@ gcloud dataproc jobs submit pyspark \
 --cluster $CLUSTER_NAME \
 --id data-generator-$RANDOM \
 gs://$CODE_BUCKET/churn/data_generator_util/generate_data.py \
---py-files=gs://$CODE_BUCKET/churn/data_generator_archive.zip \
+--py-files=gs://$CODE_BUCKET/churn/aux_etl_code_archive.zip \
 --properties="spark.executor.cores=${NUM_EXECUTOR_CORES},spark.executor.memory=${EXECUTOR_MEMORY}G,spark.driver.memory=${DRIVER_MEMORY}G" \
 --configuration="spark.cores.max=$TOTAL_CORES,spark.task.cpus=1,spark.sql.files.maxPartitionBytes=2G" \
 --region $LOCATION \
