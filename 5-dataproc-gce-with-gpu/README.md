@@ -260,8 +260,7 @@ gs://$CODE_BUCKET/churn/main_analytics_app.py \
 --cluster $CLUSTER_NAME \
 --region $REGION \
 --id cpu-etl-baseline-$RANDOM \
---properties="spark.executor.cores=${NUM_EXECUTOR_CORES},spark.executor.memory=${EXECUTOR_MEMORY}G,spark.driver.memory=${DRIVER_MEMORY}G" \
---configuration="spark.cores.max=$TOTAL_CORES,spark.task.cpus=$NUM_EXECUTOR_CORES,spark.sql.files.maxPartitionBytes=4G,spark.sql.autoBroadcastJoinThreshold=-1,spark.rapids.sql.enabled=false " \
+--properties="spark.executor.cores=${NUM_EXECUTOR_CORES},spark.executor.memory=${EXECUTOR_MEMORY}G,spark.driver.memory=${DRIVER_MEMORY}G,spark.cores.max=$TOTAL_CORES,spark.task.cpus=$NUM_EXECUTOR_CORES,spark.sql.files.maxPartitionBytes=4G,spark.sql.autoBroadcastJoinThreshold=-1,spark.rapids.sql.enabled=false " \
 --project $PROJECT_ID \
 -- --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX}   2>&1 >> $LOGFILE
 ```
