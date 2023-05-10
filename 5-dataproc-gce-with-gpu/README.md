@@ -64,7 +64,7 @@ You would have already cloned the repo. Lets navigate to the lab directory and u
 Paste in Cloud Shell-
 ```
 cd ~/dataproc-labs/5-dataproc-gce-with-gpu/00-scripts/
-gsutil cp * gs://$CODE_BUCKET/churn/
+gsutil cp -r * gs://$CODE_BUCKET/churn/
 ```
 
 
@@ -123,16 +123,26 @@ cat generate_data.py
 ```
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
-SPARK_SERVERLESS_SUBNET=spark-snet
+
+CLUSTER_NAME=dpgce-cluster-static-gpu-${PROJECT_NBR}
+DPGCE_LOG_BUCKET=dpgce-cluster-static-gpu-${PROJECT_NBR}-logs
+DATA_BUCKET=spark-rapids-lab-data-${PROJECT_NBR}
+CODE_BUCKET=spark-rapids-lab-code-${PROJECT_NBR}
+VPC_NM=VPC=dpgce-vpc-$PROJECT_NBR
+SPARK_SUBNET=spark-snet
 PERSISTENT_HISTORY_SERVER_NM=dpgce-sphs-${PROJECT_NBR}
 UMSA_FQN=dpgce-lab-sa@$PROJECT_ID.iam.gserviceaccount.com
-CODE_AND_DATA_BUCKET=dpgce_data_and_code_bucket-${PROJECT_NBR}
-DPGCE_CLUSTER_NAME=dpgce-cluster-static-gpu-${PROJECT_NBR}
+REGION=us-central1
+ZONE=us-central1-a
+NUM_GPUS=1
+NUM_WORKERS=4
 
 
 LOG_SECOND=`date +%s`
-LOGFILE="logs/$0.txt.$LOG_SECOND"
-mkdir -p logs
+LAB_LOG_ROOT_DIR="~/dataproc-labs/logs/lab-5/"
+mkdir -p $LAB_LOG_ROOT_DIR
+LOGFILE="$LAB_LOG_ROOT_DIR/$0.txt.$LOG_SECOND"
+
 
 # This is used to define the size of the dataset that is generated
 # 10000 will generate a dataset of roughly 25GB in size
@@ -157,17 +167,30 @@ DRIVER_MEMORY=4    # unit: GB
 EXECUTOR_MEMORY=$(($((${TOTAL_MEMORY}-$((${DRIVER_MEMORY}*1000/1024))))/${NUM_EXECUTORS}))
 
 # Source base data file to be bulked up
-INPUT_FILE="gs://[YourBucket]/data/WA_Fn-UseC_-Telco-Customer-Churn-.csv"
+INPUT_FILE="gs://spark-rapids-lab-data-${PROJECT_NBR}/churn/input/telco-customer-churn.csv"
 # *****************************************************************
 # Output prefix is where the data that is generated will be stored.
 # This path is important as it is used for the INPUT_PREFIX for
 # the cpu and gpu env files
 # *****************************************************************
 #
-OUTPUT_PREFIX="hdfs:///data/10scale/"
+OUTPUT_PREFIX="gs://spark-rapids-lab-data-420530778089/churn/input/10scale/"
 ```
 
+### 6.3. Run the script
 
+```
+gcloud dataproc jobs submit pyspark \
+--cluster $CLUSTER_NAME \
+--id data-generator-$RANDOM \
+gs://$CODE_BUCKET/churn/data_generator_util/generate_data.py \
+--py-files=gs://$CODE_BUCKET/churn/data_generator_archive.zip \
+—-properties^#^"spark.executor.cores=${NUM_EXECUTOR_CORES},spark.executor.memory=${EXECUTOR_MEMORY}G,spark.driver.memory=${DRIVER_MEMORY}G,spark.cores.max=$TOTAL_CORES" \
+--configuration="spark.task.cpus=1,spark.sql.files.maxPartitionBytes=2G" \
+--region $LOCATION \
+--project $PROJECT_ID \
+-- --input-file=${INPUT_FILE} --output-prefix=${OUTPUT_PREFIX} --dup-times=${SCALE}  2>&1 >> $LOGFILE
+```
 
 
 
