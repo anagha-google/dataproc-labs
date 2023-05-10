@@ -198,3 +198,8 @@ gs://$CODE_BUCKET/churn/data_generator_util/generate_data.py \
 gsutil ls $OUTPUT_PREFIX
 ```
 
+## 7. Run an ETL job on CPUs
+
+
+
+
