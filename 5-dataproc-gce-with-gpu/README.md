@@ -640,6 +640,11 @@ The author's application took ~5 minutes to complete across multiple tests.
 
 We ran the same Spark ETL application from Nvidia on a cluster with the following specs:
 
+||
+| :-- | :-- |
+| Dataproc | Image version 2.0.63-ubuntu18 | 
+| Apache Spark | 3.1.3 | 
+
 | About| Details |
 | :-- | :-- |
 | Workload | ETL with PySpark on Dataproc on GCE with Spark 3.1.3 | 
@@ -654,12 +659,11 @@ We ran the same Spark ETL application from Nvidia on a cluster with the followin
 | Worker Node Accelerator | nvidia-tesla-t4 with 1 gpu |
 | Worker Node Count | 4 |
 
+
 |Infrastructure| Specifics| Average execution time|
 | :-- | :-- | :-- |
 | CPU-based | Baseline performance | 32 minutes |
-| GPU-based |  Baseline performance| 8 minutes |
-| GPU-based |  Tuned with Nvidia profiler recommendations | ~5 minutes |
-
-
+| GPU-based | Baseline performance| 8 minutes |
+| GPU-based | Tuned with Nvidia profiler recommendations | ~5 minutes |
 
 <hr>
