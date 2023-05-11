@@ -522,7 +522,7 @@ CLUSTER_NAME=dpgce-cluster-static-gpu-$PROJECT_NBR
 spark_rapids_dataproc profiling --cluster $CLUSTER_NAME --region $REGION
 ```
 
-Author's sample output-
+Author's sample output (scroll to the right for full details)-
 ```
 2023-05-11 16:44:54,528 INFO qualification: Running the tool as a spark job on dataproc
 2023-05-11 16:45:32,875 INFO qualification: Downloading the tool output
@@ -535,9 +535,7 @@ Region                us-central1
 Zone                  us-central1-a
 GPU device            T4
 GPU per worker nodes  2
-2023-05-11 16:45:35,570 INFO qualification: Generating GPU Estimated Speedup and Savings as ./wrapper-output/rapids_user_tools_qualification/qual-tool-output/rapids_4_dataproc_qualification_output.csv
-Qualification tool output is saved to local disk /home/admin_/wrapper-output/rapids_user_tools_qualification/qual-tool-output/rapids_4_spark_qualification_output
-        rapids_4_spark_qualification_output/
+```
 |                                |                 | --conf spark.shuffle.manager=com.nvidia.spark.rapids.spark313.RapidsShuffleManager | spark.executor.extraClassPath settings to include the path to the Spark RAPIDS                                                   |
 |                                |                 | --conf spark.sql.files.maxPartitionBytes=4096m                                     | plugin jar.  If the Spark RAPIDS jar is being bundled with your Spark distribution,                                              |
 |                                |                 | --conf spark.sql.shuffle.partitions=200                                            | this step is not needed.                                                                                                         |
