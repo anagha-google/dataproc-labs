@@ -644,6 +644,7 @@ We ran the same Spark ETL application from Nvidia on a cluster with the followin
 | :-- | :-- |
 | Workload | ETL with PySpark on Dataproc on GCE with Spark 3.1.3 | 
 | Data size | 45 MB | 
+| Storage system | Google Cloud Storage | 
 | Processing complexity | Medium |
 
 |Infrastructure| Specification|
