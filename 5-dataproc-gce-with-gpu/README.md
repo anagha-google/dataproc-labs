@@ -118,6 +118,16 @@ head -10 ~/dataproc-labs/5-dataproc-gce-with-gpu/01-datasets/telco-customer-chur
 
 The script (generate_data.py) has been provided to us by Nvidia to create a larger dataset and is located as shown below. <br>
 
+Before we begin, lets check the size of the base dataset.
+```
+PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
+PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
+DATA_BUCKET=spark-rapids-lab-data-${PROJECT_NBR}
+
+gsutil du -s -h -a gs://$DATA_BUCKET/churn/input/telco-customer-churn.csv | cut -d' ' -f1,2
+```
+Its 954 KiB.
+
 ### 5.1. Review the script
 ```
 cd ~/dataproc-labs/5-dataproc-gce-with-gpu/00-scripts/data_generator_util
@@ -180,7 +190,7 @@ INPUT_FILE="gs://spark-rapids-lab-data-${PROJECT_NBR}/churn/input/telco-customer
 # the cpu and gpu env files
 # *****************************************************************
 #
-OUTPUT_PREFIX="gs://spark-rapids-lab-data-420530778089/churn/input/10scale/"
+OUTPUT_PREFIX="gs://spark-rapids-lab-data-${PROJECT_NBR}/churn/input/10scale/"
 ```
 
 ### 5.3. Run the script
@@ -203,6 +213,13 @@ gs://$CODE_BUCKET/churn/data_generator_util/generate_data.py \
 ```
 gsutil ls $OUTPUT_PREFIX
 ```
+
+Lets check the size-
+```
+gsutil du -s -h -a ${OUTPUT_PREFIX} | cut -d' ' -f1,2
+```
+The author's output is 45.24 MiB
+
 <hr>
 
 ## 6. Run an ETL job on CPUs for a baseline performance capture
@@ -280,7 +297,7 @@ gsutil ls -r $OUTPUT_PREFIX
 
 ### 6.4. Note the execution time
 
-The author's application took 2 hours plus to complete.
+The author's application took 32 hours plus to complete.
 
 <hr>
 
@@ -363,6 +380,7 @@ gs://$CODE_BUCKET/churn/main_analytics_app.py \
 
 ```
 gsutil ls -r $OUTPUT_PREFIX
+gsutil du -s -h -a $OUTPUT_PREFIX
 ```
 
 ### 7.4. Note the execution time
