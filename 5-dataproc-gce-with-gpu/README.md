@@ -645,6 +645,12 @@ We ran the same Spark ETL application from Nvidia on a cluster with the followin
 | Worker Node SKU | n1-standard-8| 
 | Worker Node Accelerator | nvidia-tesla-t4 with 1 gpu |
 
+|Infrastructure| Detail| Average execution time|
+| :-- | :-- | :-- |
+| CPU-based | Baseline | 32 minutes |
+| GPU-based |  Baseline | 8 minutes |
+| GPU-based |  Tuned with Nvidia profiler recommendations | ~5 minutes |
+
 
 
 <hr>
