@@ -250,16 +250,16 @@ DRIVER_MEMORY=4    # unit: GB
 EXECUTOR_MEMORY=$(($((${TOTAL_MEMORY}-$((${DRIVER_MEMORY}*1000/1024))))/${NUM_EXECUTORS}))
 
 # Input prefix designates where the data to be processed is located
-INPUT_PREFIX="gs://spark-rapids-lab-data-420530778089/churn/input/10scale/"
+INPUT_PREFIX="gs://spark-rapids-lab-data-$PROJECT_NBR/churn/input/10scale/"
 #
 # Output prefix is where results from the queries are stored
-OUTPUT_PREFIX="gs://spark-rapids-lab-data-420530778089/churn/output/cpu-based-analytics"
+OUTPUT_PREFIX="gs://spark-rapids-lab-data-$PROJECT_NBR/churn/output/cpu-based-analytics"
 ```
 
 ### 6.2. Run a Spark analytics application on CPUs for a baseline
 
 ```
-SPARK_PROPERTIES="spark.executor.cores="${NUM_EXECUTOR_CORES},spark.executor.memory=${EXECUTOR_MEMORY}G,spark.driver.memory=${DRIVER_MEMORY}G,spark.cores.max=$TOTAL_CORES,spark.task.cpus=$NUM_EXECUTOR_CORES,spark.sql.files.maxPartitionBytes=1G,spark.rapids.sql.decimalType.enabled=True,spark.sql.adaptive.enabled=True,spark.sql.autoBroadcastJoinThreshold=-1,spark.rapids.sql.enabled=false "
+SPARK_PROPERTIES="spark.executor.cores="${NUM_EXECUTOR_CORES},spark.executor.memory=${EXECUTOR_MEMORY}G,spark.driver.memory=${DRIVER_MEMORY}G,spark.cores.max=$TOTAL_CORES,spark.task.cpus=1,spark.sql.files.maxPartitionBytes=1G,spark.sql.adaptive.enabled=True,spark.sql.autoBroadcastJoinThreshold=-1,spark.rapids.sql.enabled=false "
 
 gcloud dataproc jobs submit pyspark \
 gs://$CODE_BUCKET/churn/main_analytics_app.py \
@@ -269,6 +269,7 @@ gs://$CODE_BUCKET/churn/main_analytics_app.py \
 --id cpu-etl-baseline-$RANDOM \
 --properties=${SPARK_PROPERTIES} \
 --project $PROJECT_ID \
+--coalesce-output=8 \
 -- --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX}   2>&1 >> $LOGFILE
 ```
 
@@ -280,6 +281,94 @@ gsutil ls -r $OUTPUT_PREFIX
 
 ### 6.4. Note the execution time
 
+The author's application took 2 hours plus to complete.
+
+<hr>
+
+## 7. Run an ETL job on GPUs 
+
+### 7.1. Declare variables
+```
+PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
+PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
+
+CLUSTER_NAME=dpgce-cluster-static-gpu-${PROJECT_NBR}
+DPGCE_LOG_BUCKET=dpgce-cluster-static-gpu-${PROJECT_NBR}-logs
+DATA_BUCKET=spark-rapids-lab-data-${PROJECT_NBR}
+CODE_BUCKET=spark-rapids-lab-code-${PROJECT_NBR}
+VPC_NM=VPC=dpgce-vpc-$PROJECT_NBR
+SPARK_SUBNET=spark-snet
+PERSISTENT_HISTORY_SERVER_NM=dpgce-sphs-${PROJECT_NBR}
+UMSA_FQN=dpgce-lab-sa@$PROJECT_ID.iam.gserviceaccount.com
+REGION=us-central1
+ZONE=us-central1-a
+NUM_GPUS=1
+NUM_WORKERS=4
+
+# Log for each execution
+LOG_SECOND=`date +%s`
+LAB_LOG_ROOT_DIR="~/dataproc-labs/logs/lab-5/"
+mkdir -p $LAB_LOG_ROOT_DIR
+LOGFILE="$LAB_LOG_ROOT_DIR/$0.txt.$LOG_SECOND"
+
+# Set this value to the total number of cores that you have across all
+# your worker nodes. e.g. 8 servers with 40 cores = 320 cores
+TOTAL_CORES=32
+
+# Set this value to the number of GPUs that you have within your cluster. If
+# each server has 2 GPUs count that as 2
+NUM_EXECUTORS=4   # change to fit how many GPUs you have
+
+# This setting needs to be a decimal equivalent to the ratio of cores to
+# executors. In our example we have 40 cores and 8 executors. So, this
+# would be 1/5, hench the 0.1 value.
+
+RESOURCE_GPU_AMT="0.125"
+
+#
+NUM_EXECUTOR_CORES=$((${TOTAL_CORES}/${NUM_EXECUTORS}))
+#
+# Set this to the total memory across all your worker nodes. e.g. RAM of each worker * number of worker nodes
+TOTAL_MEMORY=120   # unit: GB
+DRIVER_MEMORY=4    # unit: GB
+#
+# This takes the total memory and calculates the maximum amount of memory
+# per executor
+EXECUTOR_MEMORY=$(($((${TOTAL_MEMORY}-$((${DRIVER_MEMORY}*1000/1024))))/${NUM_EXECUTORS}))
 
 
-## 7. 
+# Input prefix designates where the data to be processed is located
+INPUT_PREFIX="gs://spark-rapids-lab-data-$PROJECT_NBR/churn/input/10scale/"
+#
+# Output prefix is where results from the queries are stored
+OUTPUT_PREFIX="gs://spark-rapids-lab-data-$PROJECT_NBR/churn/output/gpu-based-analytics"
+```
+
+### 7.2. Run a Spark analytics application on CPUs for a baseline
+
+```
+SPARK_PROPERTIES="spark.executor.cores="${NUM_EXECUTOR_CORES},spark.executor.memory=${EXECUTOR_MEMORY}G,spark.driver.memory=${DRIVER_MEMORY}G,spark.cores.max=$TOTAL_CORES,spark.task.cpus=1,spark.sql.files.maxPartitionBytes=1G,spark.sql.adaptive.enabled=True,spark.sql.autoBroadcastJoinThreshold=-1,spark.rapids.sql.enabled=True,spark.rapids.sql.decimalType.enabled=True,spark.task.resource.gpu.amount=$RESOURCE_GPU_AMT,spark.plugins=com.nvidia.spark.SQLPlugin,spark.rapids.memory.pinnedPool.size=2G,spark.rapids.sql.concurrentGpuTasks=2,spark.executor.resource.gpu.amount=1,spark.rapids.sql.variableFloatAgg.enabled=True,spark.rapids.sql.explain=NOT_ON_GPU "
+
+gcloud dataproc jobs submit pyspark \
+gs://$CODE_BUCKET/churn/main_analytics_app.py \
+--py-files=gs://$CODE_BUCKET/churn/aux_etl_code_archive.zip \
+--cluster $CLUSTER_NAME \
+--region $REGION \
+--id gpu-etl-baseline-$RANDOM \
+--properties=${SPARK_PROPERTIES} \
+--project $PROJECT_ID \
+--coalesce-output=8 \
+-- --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX}   2>&1 >> $LOGFILE
+```
+
+### 7.3. Review the results
+
+```
+gsutil ls -r $OUTPUT_PREFIX
+```
+
+### 6.4. Note the execution time
+
+The author's application took------------ to complete.
+
+<hr>
