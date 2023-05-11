@@ -640,11 +640,11 @@ The author's application took ~5 minutes to complete across multiple tests.
 
 We ran the same Spark ETL application from Nvidia on a cluster with the following specs:
 
-| | |
+| About| Details |
 | :-- | :-- |
-| Workload | ETL | 
+| Workload | ETL with PySpark on Dataproc on GCE with Spark 3.1.3 | 
 | Data size | 45 MB | 
-| Preocessing complexity | Medium |
+| Processing complexity | Medium |
 
 |Infrastructure| Specification|
 | :-- | :-- |
