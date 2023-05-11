@@ -259,14 +259,27 @@ OUTPUT_PREFIX="gs://spark-rapids-lab-data-420530778089/churn/output/cpu-based-an
 ### 6.2. Run a Spark analytics application on CPUs for a baseline
 
 ```
+SPARK_PROPERTIES="spark.executor.cores="${NUM_EXECUTOR_CORES},spark.executor.memory=${EXECUTOR_MEMORY}G,spark.driver.memory=${DRIVER_MEMORY}G,spark.cores.max=$TOTAL_CORES,spark.task.cpus=$NUM_EXECUTOR_CORES,spark.sql.files.maxPartitionBytes=1G,spark.rapids.sql.decimalType.enabled=True,spark.sql.adaptive.enabled=True,spark.sql.autoBroadcastJoinThreshold=-1,spark.rapids.sql.enabled=false "
+
 gcloud dataproc jobs submit pyspark \
 gs://$CODE_BUCKET/churn/main_analytics_app.py \
 --py-files=gs://$CODE_BUCKET/churn/aux_etl_code_archive.zip \
 --cluster $CLUSTER_NAME \
 --region $REGION \
 --id cpu-etl-baseline-$RANDOM \
---properties="spark.executor.cores=${NUM_EXECUTOR_CORES},spark.executor.memory=${EXECUTOR_MEMORY}G,spark.driver.memory=${DRIVER_MEMORY}G,spark.cores.max=$TOTAL_CORES,spark.task.cpus=$NUM_EXECUTOR_CORES,spark.sql.files.maxPartitionBytes=4G,spark.sql.autoBroadcastJoinThreshold=-1,spark.rapids.sql.enabled=false " \
+--properties=${SPARK_PROPERTIES} \
 --project $PROJECT_ID \
 -- --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX}   2>&1 >> $LOGFILE
 ```
 
+### 6.3. Review the results
+
+```
+gsutil ls -r $OUTPUT_PREFIX
+```
+
+### 6.4. Note the execution time
+
+
+
+## 7. 
