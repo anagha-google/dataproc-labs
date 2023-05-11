@@ -632,3 +632,19 @@ gs://$CODE_BUCKET/churn/main_analytics_app.py \
 -- --coalesce-output=8 --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX}   2>&1 >> $LOGFILE
 ```
 
+### 9.3. Note the execution time
+
+The author's application took ~5 minutes to complete across multiple tests.
+
+## 10.0. Summary
+
+We ran the same Spark ETL application from Nvidia on a cluster with the following specs:
+|:--|:--|
+| Master Node SKU | n1-standard-4 | 
+| Worker Node SKU | n1-standard-8| 
+| Worker Node Accelerator | nvidia-tesla-t4 with 1 gpu |
+
+
+
+
+<hr>
