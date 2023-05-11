@@ -415,7 +415,7 @@ To launch a GPU-accelerated cluster with RAPIDS Accelerator for Apache Spark, ad
 
 <hr>
 
-## 8. Run an ETL job on GPUs 
+## 8. Run the same ETL job on GPUs 
 
 ### 8.1. Declare variables
 
@@ -476,7 +476,7 @@ INPUT_PREFIX="gs://spark-rapids-lab-data-$PROJECT_NBR/churn/input/10scale/"
 OUTPUT_PREFIX="gs://spark-rapids-lab-data-$PROJECT_NBR/churn/output/gpu-based-analytics"
 ```
 
-### 8.2. Run a Spark analytics application on CPUs for a baseline
+### 8.2. Run the Spark ETL analytics application on GPUs
 
 Paste in Cloud Shell-
 ```
