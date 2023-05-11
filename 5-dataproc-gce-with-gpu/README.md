@@ -365,8 +365,8 @@ gs://$CODE_BUCKET/churn/main_analytics_app.py \
 gsutil ls -r $OUTPUT_PREFIX
 ```
 
-### 6.4. Note the execution time
+### 7.4. Note the execution time
 
-The author's application took------------ to complete.
+The author's application took ~8 minutes to complete.
 
 <hr>
