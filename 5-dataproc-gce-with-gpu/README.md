@@ -308,9 +308,116 @@ The author's application took ~ 32 minutes to complete across multiple runs.
 
 <hr>
 
-## 7. Run an ETL job on GPUs 
+## 7. Run the Nvidia Qualification Tool to see if the Spark application qualifies for GPUs
 
-### 7.1. Declare variables
+### 7.1. Find the Public IP address of your Cloud Shell terminal
+
+```
+MY_IP_ADDRESS=`curl -s checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'`
+echo $MY_IP_ADDRESS
+```
+
+### 7.2. Add an ingress firewall rule to allow yourself SSH access to the cluster
+First and foremost, you need to allow yourself ingress to SSH into the cluster. If you use Cloud Shell, the IP address varies with each session. Use the commad below to allow ingress to your IP address.
+```
+PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
+PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
+VPC_NM=dpgce-vpc-$PROJECT_NBR
+REGION=us-central1
+ZONE=$REGION-a
+CLUSTER_NAME=dpgce-cluster-static-gpu-$PROJECT_NBR
+
+
+gcloud compute --project=$PROJECT_ID firewall-rules create allow-me-to-ingress-into-vpc --direction=INGRESS --priority=1000 --network=$VPC_NM --action=ALLOW --rules=all --source-ranges=$MY_IP_ADDRESS/32
+```
+
+### 7.3. Install RAPIDS user tools in Cloud Shell
+
+paste in Cloud Shell-
+```
+python -m venv .venv
+source .venv/bin/activate
+
+pip install spark-rapids-user-tools
+```
+
+Check to see if you can run the Nvidia qualification tool, immediately after-
+```
+spark_rapids_dataproc qualification --help
+```
+
+
+### 7.4 Run the Qualification tool to find workloads that can benefit from GPU based acceleration
+
+You can run this only after you run a few Spark applications. The tool will review the logs and provide recommendations based on YARN application IDs-
+```
+# Variables
+PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
+PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
+REGION=us-central1
+ZONE=$REGION-a
+CLUSTER_NAME=dpgce-cluster-static-gpu-$PROJECT_NBR
+
+
+# Run the tool to check previous Spark applications for qualification-
+spark_rapids_dataproc qualification --cluster $CLUSTER_NAME --region $REGION
+```
+
+Here are the author's results, that correctly call out the two Spark applications run without GPU acceleration, while omiiting the ones that used GPUs and the speed up is accurate as well-
+```
+2023-05-11 16:44:50,560 INFO qualification: The original CPU cluster is the same as the submission cluster on which the tool runs. To update the configuration of the CPU cluster, make sure to pass the properties file to the CLI arguments.
+2023-05-11 16:44:50,561 INFO qualification: Estimating the GPU cluster based on the submission cluster on which the RAPIDS tool is running [dpgce-cluster-static-gpu-420530778089]. To update the configuration of the GPU cluster, make sure to pass the properties file to the CLI arguments.
+2023-05-11 16:44:50,845 INFO qualification: Preparing remote work env
+2023-05-11 16:44:52,560 INFO qualification: Upload dependencies to remote cluster
+2023-05-11 16:44:54,527 INFO qualification: Executing the tool
+2023-05-11 16:44:54,528 INFO qualification: Running the tool as a spark job on dataproc
+2023-05-11 16:45:32,875 INFO qualification: Downloading the tool output
+2023-05-11 16:45:35,479 INFO qualification: Processing tool output
+2023-05-11 16:45:35,503 INFO qualification: Downloading the price catalog from URL https://cloudpricingcalculator.appspot.com/static/data/pricelist.json
+2023-05-11 16:45:35,561 INFO qualification: Building cost model based on:
+Worker Properties
+--------------------  -------------
+Workers               4
+Worker Machine Type   n1-standard-8
+Region                us-central1
+Zone                  us-central1-a
+GPU device            T4
+GPU per worker nodes  2
+2023-05-11 16:45:35,570 INFO qualification: Generating GPU Estimated Speedup and Savings as ./wrapper-output/rapids_user_tools_qualification/qual-tool-output/rapids_4_dataproc_qualification_output.csv
+Qualification tool output is saved to local disk /home/admin_/wrapper-output/rapids_user_tools_qualification/qual-tool-output/rapids_4_spark_qualification_output
+        rapids_4_spark_qualification_output/
+                ├── rapids_4_spark_qualification_output.csv
+                ├── rapids_4_spark_qualification_output_execs.csv
+                ├── rapids_4_spark_qualification_output.log
+                └── ui/
+                ├── rapids_4_spark_qualification_output_stages.csv
+- To learn more about the output details, visit https://nvidia.github.io/spark-rapids/docs/spark-qualification-tool.html#understanding-the-qualification-tool-output
+Full savings and speedups CSV report: /home/admin_/wrapper-output/rapids_user_tools_qualification/qual-tool-output/rapids_4_dataproc_qualification_output.csv
++----+--------------------------------+-----------------+----------------------+-----------------+-----------------+---------------+-----------------+
+|    | App ID                         | App Name        | Recommendation       |   Estimated GPU |   Estimated GPU |           App |   Estimated GPU |
+|    |                                |                 |                      |         Speedup |     Duration(s) |   Duration(s) |      Savings(%) |
+|----+--------------------------------+-----------------+----------------------+-----------------+-----------------+---------------+-----------------|
+|  0 | application_1683730151313_0009 | churn_utils.etl | Strongly Recommended |            4.18 |          472.65 |       1977.57 |           40.59 |
+|  1 | application_1683730151313_0008 | churn_utils.etl | Strongly Recommended |            4.17 |          458.58 |       1914.39 |           40.45 |
++----+--------------------------------+-----------------+----------------------+-----------------+-----------------+---------------+-----------------+
+Report Summary:
+------------------------------  ------
+Total applications                   2
+RAPIDS candidates                    2
+Overall estimated speedup         4.18
+Overall estimated cost savings  40.52%
+------------------------------  ------
+To launch a GPU-accelerated cluster with RAPIDS Accelerator for Apache Spark, add the following to your cluster creation script:
+        --initialization-actions=gs://goog-dataproc-initialization-actions-us-central1/spark-rapids/spark-rapids.sh \ 
+        --worker-accelerator type=nvidia-tesla-t4,count=2
+
+```
+
+<hr>
+
+## 8. Run an ETL job on GPUs 
+
+### 8.1. Declare variables
 
 Paste in Cloud Shell-
 ```
@@ -369,7 +476,7 @@ INPUT_PREFIX="gs://spark-rapids-lab-data-$PROJECT_NBR/churn/input/10scale/"
 OUTPUT_PREFIX="gs://spark-rapids-lab-data-$PROJECT_NBR/churn/output/gpu-based-analytics"
 ```
 
-### 7.2. Run a Spark analytics application on CPUs for a baseline
+### 8.2. Run a Spark analytics application on CPUs for a baseline
 
 Paste in Cloud Shell-
 ```
@@ -386,7 +493,7 @@ gs://$CODE_BUCKET/churn/main_analytics_app.py \
 -- --coalesce-output=8 --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX}   2>&1 >> $LOGFILE
 ```
 
-### 7.3. Review the results
+### 8.3. Review the results
 
 Paste in Cloud Shell-
 ```
@@ -394,7 +501,7 @@ gsutil ls -r $OUTPUT_PREFIX
 gsutil du -s -h -a $OUTPUT_PREFIX
 ```
 
-### 7.4. Note the execution time
+### 8.4. Note the execution time
 
 The author's application took ~8 minutes to complete across multiple tests.
 
