@@ -640,7 +640,7 @@ The author's application took ~5 minutes to complete across multiple tests.
 
 We ran the same Spark ETL application from Nvidia on a cluster with the following specs:
 
-||
+|||
 | :-- | :-- |
 | Dataproc | Image version 2.0.63-ubuntu18 | 
 | Apache Spark | 3.1.3 | 
