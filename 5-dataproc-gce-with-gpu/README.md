@@ -233,16 +233,16 @@ LOGFILE="$LAB_LOG_ROOT_DIR/$0.txt.$LOG_SECOND"
 
 # Set this value to the total number of cores that you have across all
 # your worker nodes. e.g. 8 servers with 40 cores = 320 cores
-TOTAL_CORES=32
+TOTAL_CORES=16
 #
 # Set this value to 1/4 the number of cores listed above. Generally,
 # we have found that 4 cores per executor performs well.
-NUM_EXECUTORS=8  # 1/4 the number of cores in the cluster
+NUM_EXECUTORS=4  # 1/4 the number of cores in the cluster
 #
 NUM_EXECUTOR_CORES=$((${TOTAL_CORES}/${NUM_EXECUTORS}))
 #
 # Set this to the total memory across all your worker nodes. e.g. RAM of each worker * number of worker nodes
-TOTAL_MEMORY=120   # unit: GB
+TOTAL_MEMORY=60   # unit: GB
 DRIVER_MEMORY=4    # unit: GB
 #
 # This takes the total memory and calculates the maximum amount of memory
@@ -312,7 +312,7 @@ LOGFILE="$LAB_LOG_ROOT_DIR/$0.txt.$LOG_SECOND"
 
 # Set this value to the total number of cores that you have across all
 # your worker nodes. e.g. 8 servers with 40 cores = 320 cores
-TOTAL_CORES=32
+TOTAL_CORES=16
 
 # Set this value to the number of GPUs that you have within your cluster. If
 # each server has 2 GPUs count that as 2
@@ -322,13 +322,13 @@ NUM_EXECUTORS=4   # change to fit how many GPUs you have
 # executors. In our example we have 40 cores and 8 executors. So, this
 # would be 1/5, hench the 0.1 value.
 
-RESOURCE_GPU_AMT="0.125"
+RESOURCE_GPU_AMT="0.25"
 
 #
 NUM_EXECUTOR_CORES=$((${TOTAL_CORES}/${NUM_EXECUTORS}))
 #
 # Set this to the total memory across all your worker nodes. e.g. RAM of each worker * number of worker nodes
-TOTAL_MEMORY=120   # unit: GB
+TOTAL_MEMORY=60   # unit: GB
 DRIVER_MEMORY=4    # unit: GB
 #
 # This takes the total memory and calculates the maximum amount of memory
