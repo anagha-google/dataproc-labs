@@ -3,7 +3,7 @@
 This lab showcases Spark application acceleration with Spark-RAPIDS on Dataproc on GCE powered by GPUs. This lab uses the environment from the prior labs-
 Specifically - [2-dataproc-gce-with-terraform](../2-dataproc-gce-with-terraform)
 
-To use RAPIDS accelerator For Apache Spark with Dataproc, GCP and NVIDIA maintain init action scripts and the cluster creation step in this lab, includes the init scripts. 
+To use RAPIDS accelerator for Apache Spark with Dataproc on GCE, GCP and NVIDIA maintain init action scripts and the cluster creation step in this lab, includes the init scripts. This lab is an adaptation of the lab from Nvidia in our Data Lake Modernization repo that has been simplified to provide a quickstart experience. 
 
 
 ## 1. Declare variables
