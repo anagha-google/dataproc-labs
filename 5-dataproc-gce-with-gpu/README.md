@@ -512,7 +512,11 @@ The author's application took ~8 minutes to complete across multiple tests.
 <hr>
 
 ## 9. Tuning GPU based applications - profiling and recommednations from Nvidia
+
+### 9.1. Run the Nvidia profiler on the Spark on GPU applications run already
 This unit uses Nvidia's tooling to tune GPU based Spark applications and needs to be run after your initial attempts of runnng GPU based Spark applications.
+
+
 <br>
 Run the below in Cloud Shell-
 ```
@@ -555,6 +559,9 @@ GPU per worker nodes  2
 |                                |                 | --conf spark.task.resource.gpu.amount=0.125                                        |                                                                                                                                  |
 +--------------------------------+-----------------+--------------------------------------------------------------------------
 ```
+
+
+### 9.2. Tune the Spark application with the recommedations from the profiler
 
 Lets tune our Spark application parameters based on the recommendation above and run the same Spark application as follows-
 ```
