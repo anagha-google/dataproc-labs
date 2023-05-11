@@ -649,9 +649,10 @@ We ran the same Spark ETL application from Nvidia on a cluster with the followin
 
 |Infrastructure| Specification|
 | :-- | :-- |
-| Master Node SKU | n1-standard-4 | 
-| Worker Node SKU | n1-standard-8| 
+| Master Node SKU | n1-standard-4  (4 vCPUs, 15 GB RAM)| 
+| Worker Node SKU | n1-standard-8 (8 vCPUs, 30 GB RAM) | 
 | Worker Node Accelerator | nvidia-tesla-t4 with 1 gpu |
+| Worker Node Count | 4 |
 
 |Infrastructure| Specifics| Average execution time|
 | :-- | :-- | :-- |
