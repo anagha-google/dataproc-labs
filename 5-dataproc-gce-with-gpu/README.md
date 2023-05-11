@@ -385,6 +385,6 @@ gsutil du -s -h -a $OUTPUT_PREFIX
 
 ### 7.4. Note the execution time
 
-The author's application took ~8 minutes to complete.
+The author's application took ~8 minutes to complete across multiple tests.
 
 <hr>
