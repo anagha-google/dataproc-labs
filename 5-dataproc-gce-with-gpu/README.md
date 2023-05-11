@@ -56,6 +56,7 @@ gsutil cp *.csv gs://$DATA_BUCKET/churn/input/
 
 ## 2.3. Create an archive with the requisite scripts
 
+Paste in Cloud Shell-
 ```
 cd ~/dataproc-labs/5-dataproc-gce-with-gpu/00-scripts
 rm -rf aux_etl_code_archive.zip
@@ -118,7 +119,7 @@ head -10 ~/dataproc-labs/5-dataproc-gce-with-gpu/01-datasets/telco-customer-chur
 
 The script (generate_data.py) has been provided to us by Nvidia to create a larger dataset and is located as shown below. <br>
 
-Before we begin, lets check the size of the base dataset.
+Before we begin, lets check the size of the base dataset. Paste in Cloud Shell-
 ```
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
@@ -129,13 +130,14 @@ gsutil du -s -h -a gs://$DATA_BUCKET/churn/input/telco-customer-churn.csv | cut 
 Its 954 KiB.
 
 ### 5.1. Review the script
+Paste in Cloud Shell-
 ```
 cd ~/dataproc-labs/5-dataproc-gce-with-gpu/00-scripts/data_generator_util
 cat generate_data.py
 ```
 
 ### 5.2. Declare variables
-
+Paste in Cloud Shell-
 ```
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
@@ -195,6 +197,7 @@ OUTPUT_PREFIX="gs://spark-rapids-lab-data-${PROJECT_NBR}/churn/input/10scale/"
 
 ### 5.3. Run the script
 
+Paste in Cloud Shell-
 ```
 gcloud dataproc jobs submit pyspark \
 --cluster $CLUSTER_NAME \
@@ -210,6 +213,7 @@ gs://$CODE_BUCKET/churn/data_generator_util/generate_data.py \
 
 ### 5.4 Review the 10 scale lab dataset generated
 
+Paste in Cloud Shell-
 ```
 gsutil ls $OUTPUT_PREFIX
 ```
@@ -225,6 +229,8 @@ The author's output is 45.24 MiB
 ## 6. Run an ETL job on CPUs for a baseline performance capture
 
 ### 6.1. Declare variables
+
+Paste in Cloud Shell-
 ```
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
@@ -275,6 +281,7 @@ OUTPUT_PREFIX="gs://spark-rapids-lab-data-$PROJECT_NBR/churn/output/cpu-based-an
 
 ### 6.2. Run a Spark analytics application on CPUs for a baseline
 
+Paste in Cloud Shell-
 ```
 SPARK_PROPERTIES="spark.executor.cores=${NUM_EXECUTOR_CORES},spark.executor.memory=${EXECUTOR_MEMORY}G,spark.driver.memory=${DRIVER_MEMORY}G,spark.cores.max=$TOTAL_CORES,spark.task.cpus=1,spark.sql.files.maxPartitionBytes=1G,spark.sql.adaptive.enabled=True,spark.sql.autoBroadcastJoinThreshold=-1,spark.rapids.sql.enabled=false "
 
@@ -290,20 +297,22 @@ gs://$CODE_BUCKET/churn/main_analytics_app.py \
 ```
 
 ### 6.3. Review the results
-
+Paste in Cloud Shell-
 ```
 gsutil ls -r $OUTPUT_PREFIX
 ```
 
 ### 6.4. Note the execution time
 
-The author's application took 32 hours plus to complete.
+The author's application took ~ 32 minutes to complete across multiple runs.
 
 <hr>
 
 ## 7. Run an ETL job on GPUs 
 
 ### 7.1. Declare variables
+
+Paste in Cloud Shell-
 ```
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
@@ -362,6 +371,7 @@ OUTPUT_PREFIX="gs://spark-rapids-lab-data-$PROJECT_NBR/churn/output/gpu-based-an
 
 ### 7.2. Run a Spark analytics application on CPUs for a baseline
 
+Paste in Cloud Shell-
 ```
 SPARK_PROPERTIES="spark.executor.cores=${NUM_EXECUTOR_CORES},spark.executor.memory=${EXECUTOR_MEMORY}G,spark.driver.memory=${DRIVER_MEMORY}G,spark.cores.max=$TOTAL_CORES,spark.task.cpus=1,spark.sql.files.maxPartitionBytes=1G,spark.sql.adaptive.enabled=True,spark.sql.autoBroadcastJoinThreshold=-1,spark.rapids.sql.enabled=True,spark.rapids.sql.decimalType.enabled=True,spark.task.resource.gpu.amount=$RESOURCE_GPU_AMT,spark.plugins=com.nvidia.spark.SQLPlugin,spark.rapids.memory.pinnedPool.size=2G,spark.rapids.sql.concurrentGpuTasks=2,spark.executor.resource.gpu.amount=1,spark.rapids.sql.variableFloatAgg.enabled=True,spark.rapids.sql.explain=NOT_ON_GPU "
 
@@ -378,6 +388,7 @@ gs://$CODE_BUCKET/churn/main_analytics_app.py \
 
 ### 7.3. Review the results
 
+Paste in Cloud Shell-
 ```
 gsutil ls -r $OUTPUT_PREFIX
 gsutil du -s -h -a $OUTPUT_PREFIX
