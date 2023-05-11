@@ -1,11 +1,11 @@
 # About
 
 This lab showcases Spark application acceleration with Spark-RAPIDS on Dataproc on GCE powered by GPUs. This lab uses the environment from the prior labs-
-Specifically - [2-dataproc-gce-with-terraform](../2-dataproc-gce-with-terraform)
+specifically - [2-dataproc-gce-with-terraform](../2-dataproc-gce-with-terraform).
+
+The lab is an adaptation of the lab from Nvidia in our Data Lake Modernization repo that has been simplified to provide a quickstart experience. 
 
 To use RAPIDS accelerator for Apache Spark with Dataproc on GCE, GCP and NVIDIA maintain init action scripts and the cluster creation step in this lab, includes the init scripts. 
-
-This lab is an adaptation of the lab from Nvidia in our Data Lake Modernization repo that has been simplified to provide a quickstart experience. 
 
 
 ## 1. Declare variables
@@ -508,3 +508,51 @@ gsutil du -s -h -a $OUTPUT_PREFIX
 The author's application took ~8 minutes to complete across multiple tests.
 
 <hr>
+
+## 9. Tuning GPU based applications - profiling and recommednations from Nvidia
+This unit uses Nvidia's tooling to tune GPU based Spark applications and needs to be run after your initial attempts of runnng GPU based Spark applications.
+<br>
+Run the below in Cloud Shell-
+```
+PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
+PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
+REGION=us-central1
+CLUSTER_NAME=dpgce-cluster-static-gpu-$PROJECT_NBR
+
+spark_rapids_dataproc profiling --cluster $CLUSTER_NAME --region $REGION
+```
+
+Author's sample output-
+```
+2023-05-11 16:44:54,528 INFO qualification: Running the tool as a spark job on dataproc
+2023-05-11 16:45:32,875 INFO qualification: Downloading the tool output
+2023-05-11 16:45:35,479 INFO qualification: Processing tool output
+2023-05-11 16:45:35,503 INFO qualification: Downloading the price catalog from URL https://cloudpricingcalculator.appspot.com/static/data/pricelist.json
+2023-05-11 16:45:35,561 INFO qualification: Building cost model based on:
+Worker Properties
+--------------------  -------------
+Region                us-central1
+Zone                  us-central1-a
+GPU device            T4
+GPU per worker nodes  2
+2023-05-11 16:45:35,570 INFO qualification: Generating GPU Estimated Speedup and Savings as ./wrapper-output/rapids_user_tools_qualification/qual-tool-output/rapids_4_dataproc_qualification_output.csv
+Qualification tool output is saved to local disk /home/admin_/wrapper-output/rapids_user_tools_qualification/qual-tool-output/rapids_4_spark_qualification_output
+        rapids_4_spark_qualification_output/
+|                                |                 | --conf spark.shuffle.manager=com.nvidia.spark.rapids.spark313.RapidsShuffleManager | spark.executor.extraClassPath settings to include the path to the Spark RAPIDS                                                   |
+|                                |                 | --conf spark.sql.files.maxPartitionBytes=4096m                                     | plugin jar.  If the Spark RAPIDS jar is being bundled with your Spark distribution,                                              |
+|                                |                 | --conf spark.sql.shuffle.partitions=200                                            | this step is not needed.                                                                                                         |
+|                                |                 | --conf spark.task.resource.gpu.amount=0.125                                        |                                                                                                                                  |
++--------------------------------+-----------------+------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+
+| application_1683730151313_0007 | churn_utils.etl | --conf spark.executor.cores=8                                                      | - 'spark.executor.memoryOverhead' must be set if using 'spark.rapids.memory.pinnedPool.size                                      |
+|                                |                 | --conf spark.executor.instances=4                                                  | - 'spark.executor.memoryOverhead' was not set.                                                                                   |
+|                                |                 | --conf spark.executor.memory=16384m                                                | - 'spark.rapids.shuffle.multiThreaded.reader.threads' was not set.                                                               |
+|                                |                 | --conf spark.executor.memoryOverhead=5734m                                         | - 'spark.rapids.shuffle.multiThreaded.writer.threads' was not set.                                                               |
+|                                |                 | --conf spark.rapids.memory.pinnedPool.size=4096m                                   | - 'spark.shuffle.manager' was not set.                                                                                           |
+|                                |                 | --conf spark.rapids.shuffle.multiThreaded.reader.threads=8                         | - 'spark.sql.shuffle.partitions' was not set.                                                                                    |
+|                                |                 | --conf spark.rapids.shuffle.multiThreaded.writer.threads=8                         | - The RAPIDS Shuffle Manager requires the spark.driver.extraClassPath and                                                        |
+|                                |                 | --conf spark.shuffle.manager=com.nvidia.spark.rapids.spark313.RapidsShuffleManager | spark.executor.extraClassPath settings to include the path to the Spark RAPIDS                                                   |
+|                                |                 | --conf spark.sql.files.maxPartitionBytes=4096m                                     | plugin jar.  If the Spark RAPIDS jar is being bundled with your Spark distribution,                                              |
+|                                |                 | --conf spark.sql.shuffle.partitions=200                                            | this step is not needed.                                                                                                         |
+|                                |                 | --conf spark.task.resource.gpu.amount=0.125                                        |                                                                                                                                  |
++--------------------------------+-----------------+--------------------------------------------------------------------------
+```
