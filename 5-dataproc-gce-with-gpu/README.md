@@ -639,11 +639,11 @@ The author's application took ~5 minutes to complete across multiple tests.
 ## 10.0. Summary
 
 We ran the same Spark ETL application from Nvidia on a cluster with the following specs:
-|:--|:--|
+|Infrastructure| Specification|
+| :-- | :-- |
 | Master Node SKU | n1-standard-4 | 
 | Worker Node SKU | n1-standard-8| 
 | Worker Node Accelerator | nvidia-tesla-t4 with 1 gpu |
-
 
 
 
