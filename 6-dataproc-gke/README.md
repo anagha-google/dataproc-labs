@@ -1,6 +1,6 @@
 # About
 
-This lab demonstrates running Spark on Dataproc on GKE. It reuses the setup from Lab 2 - Dataproc on GCE.
+This lab demonstrates running Spark on Dataproc on GKE. It reuses the foundational setup from Lab 2 - Dataproc on GCE.
 
 ## 1. Foundational setup
 
@@ -124,4 +124,17 @@ gcloud dataproc clusters gke create ${DP_CLUSTER_NAME} \
   --setup-workload-identity
 
 
+```
+
+## 3. Submit the SparkPi job on the cluster
+
+```
+gcloud dataproc jobs submit spark \
+  --project=${PROJECT_ID} \
+  --region=${REGION} \
+  --id="dpgke-sparkpi-$RANDOM" \
+  --cluster=${DP_CLUSTER_NAME} \
+  --class=org.apache.spark.examples.SparkPi \
+  --jars=local:///usr/lib/spark/examples/jars/spark-examples.jar \
+  -- 1000
 ```
