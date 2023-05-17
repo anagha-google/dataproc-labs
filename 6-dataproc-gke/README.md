@@ -107,10 +107,10 @@ gcloud projects add-iam-policy-binding \
 
 ```
 # Set the following variables from the USER variable.
-DP_CLUSTER_NAME="gaia-$PROJECT_NBR"
-DPGKE_NAMESPACE="gaia"
+DP_CLUSTER_NAME="dpgke-$PROJECT_NBR"
+DPGKE_NAMESPACE="dpgke"
+DPGKE_POOLNAME="dpgke-pool"
 DPGKE_LOG_BUCKET=dpgke-dataproc-bucket-${PROJECT_NBR}-logs
-DP_POOLNAME="gaia-pool"
 
 gcloud storage buckets create gs://$DPGKE_LOG_BUCKET --project=$PROJECT_ID --location=$REGION
 
@@ -122,8 +122,6 @@ gcloud dataproc clusters gke create ${DP_CLUSTER_NAME} \
   --staging-bucket=${DPGKE_LOG_BUCKET} \
   --pools="name=${DP_POOLNAME},roles=default,machineType=n2-standard-8" \
   --setup-workload-identity
-
-
 ```
 
 ## 3. Submit the SparkPi job on the cluster
