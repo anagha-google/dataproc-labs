@@ -90,7 +90,8 @@ gcloud container clusters create \
   --subnetwork $SPARK_SUBNET \
   --num-nodes 2 \
   --min-nodes 0 \
-  --max-nodes 3
+  --max-nodes 6 \
+  --local-ssd-count 2
 ```
 
 ### 1.7. Get credentials to connect to the GKE cluster
