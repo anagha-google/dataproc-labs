@@ -1,13 +1,13 @@
 # About
 
-This lab is primer and demystifies running Spark on Dataproc on GKE.<br> 
-It reuses the foundational setup from Lab 2 - Dataproc on GCE. This includes the network, subnet, and persistent history server.<br>
+This lab is primer intended to demystify running Spark on Dataproc on GKE with a minimum viable Spark application.<br> 
+It reuses the foundational setup from Lab 2 - Dataproc on GCE. This includes the network, subnet, Dataproc Metatsore and Dataproc Persistent History Server.<br>
 We will eventually make this a standalone lab with no dependency on other labs.<br>
 
 In this lab-
 1. We will first create a GKE cluster 
-2. And then create a basic Dataproc on GKE cluster on it 
-3. And run a basic Spark application on it.
+2. And then create a basic Dataproc on GKE cluster on it.
+3. And run a basic Spark application on it
 4. We will review logging
 5. Monitoring for GKE clusters
 
@@ -37,19 +37,32 @@ This is helpful when creating custom images.
 Get an account-
 https://docs.docker.com/get-docker/
 
-Sign-in to Docker from the command line-
+Sign-in to Docker from Cloud Shell--
 ```
 docker login --username <your docker-username>
 ```
 
 ### 1.4. Enable APIs
 
+Enable any APIs needed for this lab, over and above what was enabled as part of Lab 2.
+
+
+Paste in Cloud Shell-
 ```
 gcloud services enable container.googleapis.com
 gcloud services enable artifactregistry.googleapis.com
 ```
 
-### 1.5. Create a base GKE cluster
+### 1.5. Create a bucket for use by dataproc on GKE
+
+Paste in Cloud Shell-
+```
+DPGKE_LOG_BUCKET=dpgke-dataproc-bucket-${PROJECT_NBR}-logs
+
+gcloud storage buckets create gs://$DPGKE_LOG_BUCKET --project=$PROJECT_ID --location=$REGION
+```
+
+### 1.6. Create a base GKE cluster
 
 Paste in Cloud Shell-
 ```
@@ -60,7 +73,6 @@ GKE_CLUSTER_NAME=dataproc-gke-base-${PROJECT_NBR}
 VPC_NM=dpgce-vpc-$PROJECT_NBR
 SPARK_SUBNET=spark-snet
 PERSISTENT_HISTORY_SERVER_NM=dpgce-sphs-${PROJECT_NBR}
-UMSA_FQN=dpgce-lab-sa@$PROJECT_ID.iam.gserviceaccount.com
 REGION=us-central1
 ZONE=us-central1-a
 GSA="${PROJECT_NBR}-compute@developer.gserviceaccount.com"
@@ -81,21 +93,24 @@ gcloud container clusters create \
   --max-nodes 3
 ```
 
-### 1.6. Get credentials to connect to the GKE cluster
+### 1.7. Get credentials to connect to the GKE cluster
 
 Paste in Cloud Shell-
 ```
 gcloud container clusters get-credentials ${GKE_CLUSTER_NAME} --region $REGION
 ```
 
-### 1.7. Connect to the cluster
+### 1.8. Connect to the cluster and list entities created
 
+
+Paste in Cloud Shell-
 ```
 kubectl get namespaces
 ```
 
-### 1.8. Grant requisite permissions to identities
+### 1.9. Grant requisite permissions to Dataproc agent
 
+Paste in Cloud Shell-
 ```
 gcloud projects add-iam-policy-binding \
   --role roles/container.admin \
@@ -103,6 +118,7 @@ gcloud projects add-iam-policy-binding \
   "${PROJECT_ID}"
 ```
 
+# TODO - remove the below and test as 
 ```
 GMSA="${PROJECT_NBR}-compute@developer.gserviceaccount.com"
 
@@ -114,6 +130,70 @@ gcloud projects add-iam-policy-binding \
 
 ```
 
+### 1.10. Create a User Managed Service Account and grant it requisite permissions to create Dataproc GKE cluster and submit jobs
+
+#### 1.10.1. Create a User Managed Service Account 
+
+Paste in Cloud Shell-
+```
+UMSA=dpgke-umsa
+gcloud iam service-accounts create "$UMSA_FQN" \
+    --description "UMSA for use with DPGKE for the lab 6+"
+```
+#### 1.10.2. Grant youself impersonation privileges to the service account
+
+Paste in Cloud Shell-
+```
+UMSA_FQN="${UMSA}@${PROJECT_ID}.iam.gserviceaccount.com"
+YOUR_USER_PRINICPAL_NAME=`gcloud auth list --filter=status:ACTIVE --format="value(account)"`
+
+gcloud iam service-accounts add-iam-policy-binding \
+    ${UMSA_FQN} \
+    --member="user:${YOUR_USER_PRINICPAL_NAME}" \
+    --role="roles/iam.serviceAccountUser"
+
+gcloud iam service-accounts add-iam-policy-binding \
+    ${UMSA_FQN} \
+    --member="user:${YOUR_USER_PRINICPAL_NAME}" \
+    --role="roles/iam.serviceAccountTokenCreator"
+```
+
+#### 1.10.3. Grant permissions for the User Managed Service Account to work with GKE and Kubernetes SAs
+
+Run the following commands to assign necessary Workload Identity permissions to the user managed service account. <br>
+
+```
+DPGKE_NAMESPACE="dpgke-$PROJECT_NBR" 
+
+#1. Assign your User Managed Service Account the dataproc.worker role to allow it to act as agent
+gcloud projects add-iam-policy-binding \
+    --role=roles/dataproc.worker \
+    --member="serviceAccount:${UMSA_FQN}" \
+    "${PROJECT_ID}"
+
+#2. Assign the "agent" Kubernetes Service Account the iam.workloadIdentityUser role to allow it to act as your User Managed Service Account
+gcloud iam service-accounts add-iam-policy-binding \
+    "${UMSA_FQN}" \
+    --member="serviceAccount:${PROJECT_ID}.svc.id.goog[${DPGKE_NAMESPACE}/agent]" \
+    --role=roles/iam.workloadIdentityUser 
+    
+#3. Grant the "spark-driver" Kubernetes Service Account the iam.workloadIdentityUser role to allow it to act as your User Managed Service Account
+gcloud iam service-accounts add-iam-policy-binding \
+     "${UMSA_FQN}" \
+    --member="serviceAccount:${PROJECT_ID}.svc.id.goog[${DPGKE_NAMESPACE}/spark-driver]" \
+    --role=roles/iam.workloadIdentityUser 
+
+#4. Grant the "spark-executor" Kubernetes Service Account the iam.workloadIdentityUser role to allow it to act as your User Managed Service Account
+gcloud iam service-accounts add-iam-policy-binding \
+    "${UMSA_FQN}" \
+    --member="serviceAccount:${PROJECT_ID}.svc.id.goog[${DPGKE_NAMESPACE}/spark-executor]" \
+    --role=roles/iam.workloadIdentityUser 
+```
+
+
+
+<hr>
+
 ## 2. Create a basic Dataproc virtual cluster on GKE & submit a Spark job to it
 
 ### 2.1. Create a basic Dataproc virtual cluster on GKE
@@ -121,11 +201,12 @@ gcloud projects add-iam-policy-binding \
 # Set the following variables from the USER variable.
 DP_CLUSTER_NAME="dpgke-cluster-static-$PROJECT_NBR"
 DPGKE_NAMESPACE="dpgke-$PROJECT_NBR"
-DPGKE_POOLNAME="dpgke-pool"
-DPGKE_LOG_BUCKET=dpgke-dataproc-bucket-${PROJECT_NBR}-logs
+DPGKE_CONTROLLER_POOLNAME="dpgke-pool-default"
+DPGKE_DRIVER_POOLNAME="dpgke-pool-driver"
+DPGKE_EXECUTOR_POOLNAME="dpgke-pool-executor"
+ZONE="us-central1-a"
 
-# 
-gcloud storage buckets create gs://$DPGKE_LOG_BUCKET --project=$PROJECT_ID --location=$REGION
+
 
 gcloud dataproc clusters gke create ${DP_CLUSTER_NAME} \
   --project=${PROJECT_ID} \
@@ -133,8 +214,15 @@ gcloud dataproc clusters gke create ${DP_CLUSTER_NAME} \
   --gke-cluster=${GKE_CLUSTER_NAME} \
   --spark-engine-version='latest' \
   --staging-bucket=${DPGKE_LOG_BUCKET} \
-  --pools="name=${DP_POOLNAME},roles=default,machineType=n2-standard-8" \
-  --setup-workload-identity
+  --pools="name=${DPGKE_CONTROLLER_POOLNAME},roles=default,machineType=n1-standard-4,min=0,max=3,locations=${ZONE}" \
+  --pools="name=${DPGKE_DRIVER_POOLNAME},roles=spark-driver,machineType=n2-highmem-4,locations=${ZONE},minCpuPlatform=AMD Milan,preemptible=true,min=0,max=10" \
+  --pools="name=${DPGKE_EXECUTOR_POOLNAME},roles=spark-executor,roles=spark-executor,machineType=n2-highmem-16,locations=${ZONE},minCpuPlatform=AMD Milan,preemptible=true,localSsdCount=1,min=0,max=13" \
+  --setup-workload-identity \
+  --
+  --properties "dataproc:dataproc.gke.agent.google-service-account=${DPGKE_GSA}" \
+  --properties "dataproc:dataproc.gke.spark.driver.google-service-account=${DPGKE_GSA}" \
+  --properties "dataproc:dataproc.gke.spark.executor.google-service-account=${DPGKE_GSA}" \
+  
 ```
 
 ### 2.2. Submit the SparkPi job on the cluster
