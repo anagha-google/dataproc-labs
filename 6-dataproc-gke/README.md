@@ -213,6 +213,8 @@ DPGKE_EXECUTOR_POOLNAME="dpgke-pool-executor"
 DPGKE_LOG_BUCKET=dpgke-dataproc-bucket-${PROJECT_NBR}-logs
 UMSA=dpgke-umsa
 UMSA_FQN="${UMSA}@${PROJECT_ID}.iam.gserviceaccount.com"
+REGION="us-central1"
+ZONE=${REGION}-a
 
 
 gcloud dataproc clusters gke create ${DP_CLUSTER_NAME} \
@@ -221,14 +223,14 @@ gcloud dataproc clusters gke create ${DP_CLUSTER_NAME} \
   --gke-cluster=${GKE_CLUSTER_NAME} \
   --spark-engine-version='latest' \
   --staging-bucket=${DPGKE_LOG_BUCKET} \
-  --pools="name=${DPGKE_CONTROLLER_POOLNAME},roles=default,machineType=n1-standard-4,min=0,max=3,locations=${REGION}" \
-  --pools="name=${DPGKE_DRIVER_POOLNAME},roles=spark-driver,machineType=n2-highmem-4,locations=${REGION},minCpuPlatform=AMD Milan,preemptible=true,min=0,max=10" \
-  --pools="name=${DPGKE_EXECUTOR_POOLNAME},roles=spark-executor,roles=spark-executor,machineType=n2-highmem-16,locations=${REGION},minCpuPlatform=AMD Milan,preemptible=true,localSsdCount=1,min=0,max=13" \
   --setup-workload-identity \
   --properties "dataproc:dataproc.gke.agent.google-service-account=${UMSA_FQN}" \
   --properties "dataproc:dataproc.gke.spark.driver.google-service-account=${UMSA_FQN}" \
-  --properties "dataproc:dataproc.gke.spark.executor.google-service-account=${UMSA_FQN}" 
-  
+  --properties "dataproc:dataproc.gke.spark.executor.google-service-account=${UMSA_FQN}" \
+  --pools="name=${DPGKE_CONTROLLER_POOLNAME},roles=default,machineType=n1-standard-4,min=0,max=3,locations=${ZONE}" \  
+  --pools="name=${DPGKE_DRIVER_POOLNAME},roles=spark-driver,machineType=n1-standard-4,min=0,max=3,locations=${ZONE}" \  
+  --pools="name=${DPGKE_EXECUTOR_POOLNAME},roles=spark-executor,machineType=n1-standard-4,min=0,max=3,locations=${ZONE},localSsdCount=1" 
+
 ```
 
 ### 2.2. Submit the SparkPi job on the cluster
