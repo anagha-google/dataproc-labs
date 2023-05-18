@@ -1,6 +1,8 @@
 # About
 
-This lab demonstrates running Spark on Dataproc on GKE. It reuses the foundational setup from Lab 2 - Dataproc on GCE.
+This lab demonstrates running Spark on Dataproc on GKE. It reuses the foundational setup from Lab 2 - Dataproc on GCE.<br>
+
+We will first create a GKE cluster and then create a Dataproc on GKE cluster on it.
 
 ## 1. Foundational setup
 
@@ -15,7 +17,7 @@ Then check the version-
 kubectl version
 ```
 
-### 1.2. Install required plugins
+### 1.2. Install required plugins/check version
 kubectl and other Kubernetes clients require an authentication plugin, gke-gcloud-auth-plugin, which uses the Client-go Credential Plugins framework to provide authentication tokens to communicate with GKE clusters.
 
 ```
@@ -23,6 +25,8 @@ gke-gcloud-auth-plugin --version
 ```
 
 ### 1.3. Create an account for Docker if you dont have one already, and sign-in to Docker on Cloud Shell
+This is helpful when creating custom images.
+
 Get an account-
 https://docs.docker.com/get-docker/
 
@@ -83,7 +87,7 @@ gcloud container clusters get-credentials ${GKE_CLUSTER_NAME} --region $REGION
 kubectl get namespaces
 ```
 
-### 1.8. 
+### 1.8. Grant requisite permissions to identities
 
 ```
 gcloud projects add-iam-policy-binding \
@@ -103,15 +107,17 @@ gcloud projects add-iam-policy-binding \
 
 ```
 
-## 2. Create Dataproc Virtual Cluster on GKE
+## 2. Create a basic Dataproc virtual cluster on GKE & submit a Spark job to it
 
+### 2.1. Create a basic Dataproc virtual cluster on GKE
 ```
 # Set the following variables from the USER variable.
-DP_CLUSTER_NAME="dpgke-$PROJECT_NBR"
-DPGKE_NAMESPACE="dpgke"
+DP_CLUSTER_NAME="dpgke-cluster-static-$PROJECT_NBR"
+DPGKE_NAMESPACE="dpgke-$PROJECT_NBR"
 DPGKE_POOLNAME="dpgke-pool"
 DPGKE_LOG_BUCKET=dpgke-dataproc-bucket-${PROJECT_NBR}-logs
 
+# 
 gcloud storage buckets create gs://$DPGKE_LOG_BUCKET --project=$PROJECT_ID --location=$REGION
 
 gcloud dataproc clusters gke create ${DP_CLUSTER_NAME} \
@@ -124,7 +130,7 @@ gcloud dataproc clusters gke create ${DP_CLUSTER_NAME} \
   --setup-workload-identity
 ```
 
-## 3. Submit the SparkPi job on the cluster
+### 2.2. Submit the SparkPi job on the cluster
 
 ```
 gcloud dataproc jobs submit spark \
