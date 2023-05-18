@@ -1,8 +1,15 @@
 # About
 
-This lab demonstrates running Spark on Dataproc on GKE. It reuses the foundational setup from Lab 2 - Dataproc on GCE.<br>
+This lab is primer and demystifies running Spark on Dataproc on GKE.<br> 
+It reuses the foundational setup from Lab 2 - Dataproc on GCE. This includes the network, subnet, and persistent history server.<br>
+We will eventually make this a standalone lab with no dependency on other labs.<br>
 
-We will first create a GKE cluster and then create a Dataproc on GKE cluster on it and run some Spark applications on it.
+In this lab-
+1. We will first create a GKE cluster 
+2. And then create a basic Dataproc on GKE cluster on it 
+3. And run a basic Spark application on it.
+4. We will review logging
+5. Monitoring for GKE clusters
 
 ## 1. Foundational setup
 
