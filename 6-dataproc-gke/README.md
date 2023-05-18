@@ -105,6 +105,7 @@ REGION=us-central1
 ZONE=us-central1-a
 GSA="${PROJECT_NBR}-compute@developer.gserviceaccount.com"
 MACHINE_SKU="n2d-standard-4"
+UMSA=dpgke-umsa
 UMSA_FQN="${UMSA}@${PROJECT_ID}.iam.gserviceaccount.com"
 
 # Create a GKE cluster
@@ -201,7 +202,7 @@ gcloud iam service-accounts add-iam-policy-binding \
 
 ### 2.1. Create a basic Dataproc virtual cluster on GKE
 ```
-
+gcloud container clusters get-credentials ${GKE_CLUSTER_NAME} --region $REGION
 
 # Set the following variables from the USER variable.
 DP_CLUSTER_NAME="dpgke-cluster-static-$PROJECT_NBR"
@@ -209,8 +210,10 @@ DPGKE_NAMESPACE="dpgke-$PROJECT_NBR"
 DPGKE_CONTROLLER_POOLNAME="dpgke-pool-default"
 DPGKE_DRIVER_POOLNAME="dpgke-pool-driver"
 DPGKE_EXECUTOR_POOLNAME="dpgke-pool-executor"
+DPGKE_LOG_BUCKET=dpgke-dataproc-bucket-${PROJECT_NBR}-logs
+UMSA=dpgke-umsa
+UMSA_FQN="${UMSA}@${PROJECT_ID}.iam.gserviceaccount.com"
 
-gcloud container clusters get-credentials ${GKE_CLUSTER_NAME} --region $REGION
 
 gcloud dataproc clusters gke create ${DP_CLUSTER_NAME} \
   --project=${PROJECT_ID} \
@@ -218,9 +221,9 @@ gcloud dataproc clusters gke create ${DP_CLUSTER_NAME} \
   --gke-cluster=${GKE_CLUSTER_NAME} \
   --spark-engine-version='latest' \
   --staging-bucket=${DPGKE_LOG_BUCKET} \
-  --pools="name=${DPGKE_CONTROLLER_POOLNAME},roles=default,machineType=n1-standard-4,min=0,max=3,locations=${ZONE}" \
-  --pools="name=${DPGKE_DRIVER_POOLNAME},roles=spark-driver,machineType=n2-highmem-4,locations=${ZONE},minCpuPlatform=AMD Milan,preemptible=true,min=0,max=10" \
-  --pools="name=${DPGKE_EXECUTOR_POOLNAME},roles=spark-executor,roles=spark-executor,machineType=n2-highmem-16,locations=${ZONE},minCpuPlatform=AMD Milan,preemptible=true,localSsdCount=1,min=0,max=13" \
+  --pools="name=${DPGKE_CONTROLLER_POOLNAME},roles=default,machineType=n1-standard-4,min=0,max=3,locations=${REGION}" \
+  --pools="name=${DPGKE_DRIVER_POOLNAME},roles=spark-driver,machineType=n2-highmem-4,locations=${REGION},minCpuPlatform=AMD Milan,preemptible=true,min=0,max=10" \
+  --pools="name=${DPGKE_EXECUTOR_POOLNAME},roles=spark-executor,roles=spark-executor,machineType=n2-highmem-16,locations=${REGION},minCpuPlatform=AMD Milan,preemptible=true,localSsdCount=1,min=0,max=13" \
   --setup-workload-identity \
   --properties "dataproc:dataproc.gke.agent.google-service-account=${UMSA_FQN}" \
   --properties "dataproc:dataproc.gke.spark.driver.google-service-account=${UMSA_FQN}" \
