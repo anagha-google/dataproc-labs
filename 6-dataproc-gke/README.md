@@ -49,7 +49,7 @@ Paste in Cloud Shell-
 # Set variables.
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
-GKE_CLUSTER_NAME=gke-base-${PROJECT_NBR}
+GKE_CLUSTER_NAME=dataproc-gke-base-${PROJECT_NBR}
 VPC_NM=dpgce-vpc-$PROJECT_NBR
 SPARK_SUBNET=spark-snet
 PERSISTENT_HISTORY_SERVER_NM=dpgce-sphs-${PROJECT_NBR}
