@@ -227,8 +227,8 @@ gcloud dataproc clusters gke create ${DP_CLUSTER_NAME} \
   --properties "dataproc:dataproc.gke.agent.google-service-account=${UMSA_FQN}" \
   --properties "dataproc:dataproc.gke.spark.driver.google-service-account=${UMSA_FQN}" \
   --properties "dataproc:dataproc.gke.spark.executor.google-service-account=${UMSA_FQN}" \
-  --pools="name=${DPGKE_CONTROLLER_POOLNAME},roles=default,machineType=n1-standard-4,min=0,max=3,locations=${ZONE}" \  
-  --pools="name=${DPGKE_DRIVER_POOLNAME},roles=spark-driver,machineType=n1-standard-4,min=0,max=3,locations=${ZONE}" \  
+  --pools="name=${DPGKE_CONTROLLER_POOLNAME},roles=default,machineType=n1-standard-4,min=0,max=3,locations=${ZONE}" \
+  --pools="name=${DPGKE_DRIVER_POOLNAME},roles=spark-driver,machineType=n1-standard-4,min=0,max=3,locations=${ZONE}" \
   --pools="name=${DPGKE_EXECUTOR_POOLNAME},roles=spark-executor,machineType=n1-standard-4,min=0,max=3,locations=${ZONE},localSsdCount=1" 
 
 ```
