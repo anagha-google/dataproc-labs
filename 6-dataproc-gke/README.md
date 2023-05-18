@@ -62,7 +62,35 @@ DPGKE_LOG_BUCKET=dpgke-dataproc-bucket-${PROJECT_NBR}-logs
 gcloud storage buckets create gs://$DPGKE_LOG_BUCKET --project=$PROJECT_ID --location=$REGION
 ```
 
-### 1.6. Create a base GKE cluster
+### 1.6. Create a User Managed Service Account and grant yourself impersonation privileges
+
+#### 1.6.1. Create a User Managed Service Account 
+
+Paste in Cloud Shell-
+```
+UMSA=dpgke-umsa
+gcloud iam service-accounts create "$UMSA_FQN" \
+    --description "UMSA for use with DPGKE for the lab 6+"
+```
+#### 1.6.2. Grant youself impersonation privileges to the service account
+
+Paste in Cloud Shell-
+```
+UMSA_FQN="${UMSA}@${PROJECT_ID}.iam.gserviceaccount.com"
+YOUR_USER_PRINICPAL_NAME=`gcloud auth list --filter=status:ACTIVE --format="value(account)"`
+
+gcloud iam service-accounts add-iam-policy-binding \
+    ${UMSA_FQN} \
+    --member="user:${YOUR_USER_PRINICPAL_NAME}" \
+    --role="roles/iam.serviceAccountUser"
+
+gcloud iam service-accounts add-iam-policy-binding \
+    ${UMSA_FQN} \
+    --member="user:${YOUR_USER_PRINICPAL_NAME}" \
+    --role="roles/iam.serviceAccountTokenCreator"
+```
+
+### 1.7. Create a base GKE cluster
 
 Paste in Cloud Shell-
 ```
@@ -77,6 +105,7 @@ REGION=us-central1
 ZONE=us-central1-a
 GSA="${PROJECT_NBR}-compute@developer.gserviceaccount.com"
 MACHINE_SKU="n2d-standard-4"
+UMSA_FQN="${UMSA}@${PROJECT_ID}.iam.gserviceaccount.com"
 
 # Create a GKE cluster
 gcloud container clusters create \
@@ -93,17 +122,18 @@ gcloud container clusters create \
   --num-nodes 2 \
   --min-nodes 0 \
   --max-nodes 2 \
-  --local-ssd-count 2
+  --local-ssd-count 2 \
+  --service-account ${UMSA_FQN}
 ```
 
-### 1.7. Get credentials to connect to the GKE cluster
+### 1.8. Get credentials to connect to the GKE cluster
 
 Paste in Cloud Shell-
 ```
 gcloud container clusters get-credentials ${GKE_CLUSTER_NAME} --region $REGION
 ```
 
-### 1.8. Connect to the cluster and list entities created
+### 1.9. Connect to the cluster and list entities created
 
 
 Paste in Cloud Shell-
@@ -111,7 +141,7 @@ Paste in Cloud Shell-
 kubectl get namespaces
 ```
 
-### 1.9. Grant requisite permissions to Dataproc agent
+### 1.10. Grant requisite permissions to Dataproc agent
 
 Paste in Cloud Shell-
 ```
@@ -133,35 +163,7 @@ gcloud projects add-iam-policy-binding \
 
 ```
 
-### 1.10. Create a User Managed Service Account and grant it requisite permissions to create Dataproc GKE cluster and submit jobs
-
-#### 1.10.1. Create a User Managed Service Account 
-
-Paste in Cloud Shell-
-```
-UMSA=dpgke-umsa
-gcloud iam service-accounts create "$UMSA_FQN" \
-    --description "UMSA for use with DPGKE for the lab 6+"
-```
-#### 1.10.2. Grant youself impersonation privileges to the service account
-
-Paste in Cloud Shell-
-```
-UMSA_FQN="${UMSA}@${PROJECT_ID}.iam.gserviceaccount.com"
-YOUR_USER_PRINICPAL_NAME=`gcloud auth list --filter=status:ACTIVE --format="value(account)"`
-
-gcloud iam service-accounts add-iam-policy-binding \
-    ${UMSA_FQN} \
-    --member="user:${YOUR_USER_PRINICPAL_NAME}" \
-    --role="roles/iam.serviceAccountUser"
-
-gcloud iam service-accounts add-iam-policy-binding \
-    ${UMSA_FQN} \
-    --member="user:${YOUR_USER_PRINICPAL_NAME}" \
-    --role="roles/iam.serviceAccountTokenCreator"
-```
-
-#### 1.10.3. Grant permissions for the User Managed Service Account to work with GKE and Kubernetes SAs
+### 1.11. Grant permissions for the User Managed Service Account to work with GKE and Kubernetes SAs
 
 Run the following commands to assign necessary Workload Identity permissions to the user managed service account. <br>
 
@@ -192,8 +194,6 @@ gcloud iam service-accounts add-iam-policy-binding \
     --member="serviceAccount:${PROJECT_ID}.svc.id.goog[${DPGKE_NAMESPACE}/spark-executor]" \
     --role=roles/iam.workloadIdentityUser 
 ```
-
-
 
 <hr>
 
