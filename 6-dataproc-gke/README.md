@@ -76,6 +76,7 @@ PERSISTENT_HISTORY_SERVER_NM=dpgce-sphs-${PROJECT_NBR}
 REGION=us-central1
 ZONE=us-central1-a
 GSA="${PROJECT_NBR}-compute@developer.gserviceaccount.com"
+MACHINE_SKU="n2d-standard-4"
 
 # Create a GKE cluster
 gcloud container clusters create \
@@ -84,13 +85,14 @@ gcloud container clusters create \
   "${GKE_CLUSTER_NAME}" \
   --autoscaling-profile optimize-utilization \
   --workload-pool "${PROJECT_ID}.svc.id.goog" \
+  --machine-type "${MACHINE_SKU}" \
   --enable-autoscaling \
   --enable-image-streaming \
   --network $VPC_NM \
   --subnetwork $SPARK_SUBNET \
   --num-nodes 2 \
   --min-nodes 0 \
-  --max-nodes 6 \
+  --max-nodes 2 \
   --local-ssd-count 2
 ```
 
