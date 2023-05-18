@@ -201,15 +201,16 @@ gcloud iam service-accounts add-iam-policy-binding \
 
 ### 2.1. Create a basic Dataproc virtual cluster on GKE
 ```
+
+
 # Set the following variables from the USER variable.
 DP_CLUSTER_NAME="dpgke-cluster-static-$PROJECT_NBR"
 DPGKE_NAMESPACE="dpgke-$PROJECT_NBR"
 DPGKE_CONTROLLER_POOLNAME="dpgke-pool-default"
 DPGKE_DRIVER_POOLNAME="dpgke-pool-driver"
 DPGKE_EXECUTOR_POOLNAME="dpgke-pool-executor"
-ZONE="us-central1-a"
 
-
+gcloud container clusters get-credentials ${GKE_CLUSTER_NAME} --region $REGION
 
 gcloud dataproc clusters gke create ${DP_CLUSTER_NAME} \
   --project=${PROJECT_ID} \
@@ -221,10 +222,9 @@ gcloud dataproc clusters gke create ${DP_CLUSTER_NAME} \
   --pools="name=${DPGKE_DRIVER_POOLNAME},roles=spark-driver,machineType=n2-highmem-4,locations=${ZONE},minCpuPlatform=AMD Milan,preemptible=true,min=0,max=10" \
   --pools="name=${DPGKE_EXECUTOR_POOLNAME},roles=spark-executor,roles=spark-executor,machineType=n2-highmem-16,locations=${ZONE},minCpuPlatform=AMD Milan,preemptible=true,localSsdCount=1,min=0,max=13" \
   --setup-workload-identity \
-  --
-  --properties "dataproc:dataproc.gke.agent.google-service-account=${DPGKE_GSA}" \
-  --properties "dataproc:dataproc.gke.spark.driver.google-service-account=${DPGKE_GSA}" \
-  --properties "dataproc:dataproc.gke.spark.executor.google-service-account=${DPGKE_GSA}" \
+  --properties "dataproc:dataproc.gke.agent.google-service-account=${UMSA_FQN}" \
+  --properties "dataproc:dataproc.gke.spark.driver.google-service-account=${UMSA_FQN}" \
+  --properties "dataproc:dataproc.gke.spark.executor.google-service-account=${UMSA_FQN}" 
   
 ```
 
