@@ -473,11 +473,20 @@ gcloud dataproc clusters gke create ${DP_CLUSTER_NAME} \
 ----THIS IS INFORMATIONAL---
 ```
 
+As shown above, for History Server (Spark UI), include the line -
+```
+  --history-server-cluster=${PERSISTENT_HISTORY_SERVER_NAME} \
+```
+And for Dataproc Metastore/Hive Metastore-
+```
+--properties="spark:spark.sql.catalogImplementation=hive,spark:spark.hive.metastore.uris=thrift://<METASTORE_HOST>:<PORT>,spark:spark.hive.metastore.warehouse.dir=<WAREHOUSE_DIR>"
+```
+
 <hr>
 
 ## 5. Custom images
 
-TODO
+Documentation is below; Lab module to be added in the near future.
 https://cloud.google.com/dataproc/docs/guides/dpgke/dataproc-gke-custom-images
 
 <hr>
@@ -496,7 +505,7 @@ resource.labels.namespace_name="dpgke-cluster-static-420530778089"
 resource.labels.container_name="controller"
 ```
 
-Navigate into the logs and search for drivers, executors.
+Navigate into the logs and search for drivers, executors by playing with the ```resource.labels.container_name``` filter value (```executor```, ```driver```).
 <hr>
 
 This concludes the lab. Dont forget to shut down the project.
