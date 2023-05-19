@@ -431,7 +431,12 @@ NAME                                                   READY   STATUS      RESTA
 agent-6b6b69458f-4scmr                                 1/1     Running     0          31m
 dp-spark-79821ac2-26f5-3218-90fd-88f84cdc666e-driver   0/2     Completed   0          4m3s
 spark-engine-6577d5497f-mftx2                          1/1     Running     0          31m
-----INFORMATIONAL----
+-------------------------------------------------------------------------------------------
+# After several minutes of idle time
+NAME                                                   READY   STATUS      RESTARTS   AGE
+agent-6b6b69458f-4scmr                                 1/1     Running     0          31m
+spark-engine-6577d5497f-mftx2                          1/1     Running     0          31m
+-------------------------------------------------------------------------------------------
 ```
 
 ### 3.5. Driver logs in GKE
