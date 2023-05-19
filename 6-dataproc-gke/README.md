@@ -355,6 +355,8 @@ gke-dataproc-gke-base-42-default-pool-aa627942-s50g   Ready    <none>   8h      
 ----INFORMATIONAL----
 ```
 
+<hr>
+
 ## 3. Run a Spark job on the cluster
 
 ### 3.1. Submit the SparkPi job on the cluster
@@ -439,6 +441,8 @@ DRIVER=`kubectl get pods -n $DPGKE_CLUSTER_NAMESPACE | grep driver | cut -d' ' -
 kubectl logs $DRIVER -n $DPGKE_CLUSTER_NAMESPACE -f
 ```
 
+<hr>
+
 ## 4. BYO Peristent History Server & Hive Metastore
 
 In Lab 2, we created a Persistent History Server and a Dataproc Metastore. To use the two, we just need to reference it during cluster creation.
@@ -465,3 +469,16 @@ gcloud dataproc clusters gke create ${DP_CLUSTER_NAME} \
 ----THIS IS INFORMATIONAL---
 ```
 
+<hr>
+
+## 5. Custom images
+
+TODO
+https://cloud.google.com/dataproc/docs/guides/dpgke/dataproc-gke-custom-images
+
+
+<hr>
+
+This concludes the lab. Dont forget to shut down the project.
+
+<hr>
