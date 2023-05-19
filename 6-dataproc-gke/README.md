@@ -69,9 +69,12 @@ gcloud storage buckets create gs://$DPGKE_LOG_BUCKET --project=$PROJECT_ID --loc
 Paste in Cloud Shell-
 ```
 UMSA=dpgke-umsa
-gcloud iam service-accounts create "$UMSA_FQN" \
+UMSA_FQN="${UMSA}@${PROJECT_ID}.iam.gserviceaccount.com"
+gcloud iam service-accounts create "$UMSA" \
     --description "UMSA for use with DPGKE for the lab 6+"
 ```
+
+
 #### 1.6.2. Grant youself impersonation privileges to the service account
 
 Paste in Cloud Shell-
@@ -136,11 +139,53 @@ gcloud container clusters get-credentials ${GKE_CLUSTER_NAME} --region $REGION
 
 ### 1.9. Connect to the cluster and list entities created
 
+#### 1.9.1. Namespaces
 
 Paste in Cloud Shell-
 ```
 kubectl get namespaces
 ```
+
+Here is the author's output-
+```
+----INFORMATIONAL----
+NAME              STATUS   AGE
+default           Active   8h
+kube-node-lease   Active   8h
+kube-public       Active   8h
+kube-system       Active   8h
+----INFORMATIONAL----
+```
+
+#### 1.9.2. Node pools
+
+After creation of the GKE cluster in our lab, there should only be one node pool.
+
+Paste in Cloud Shell-
+```
+kubectl get nodes -L cloud.google.com/gke-nodepool | grep -v GKE-NODEPOOL | awk '{print $6}' | sort | uniq -c | sort -r
+```
+Here is the author's output-
+```
+----INFORMATIONAL----
+      1 default-pool
+----INFORMATIONAL----
+```
+
+#### 1.9.3. Nodes
+
+Paste in Cloud Shell-
+```
+kubectl get nodes -L cloud.google.com/gke-nodepool
+```
+Here is the author's output-
+```
+----INFORMATIONAL----
+NAME                                                  STATUS   ROLES    AGE   VERSION           GKE-NODEPOOL
+gke-dataproc-gke-base-42-default-pool-aa627942-s50g   Ready    <none>   8h    v1.25.8-gke.500   default-pool
+----INFORMATIONAL----
+```
+
 
 ### 1.10. Grant requisite permissions to Dataproc agent
 
@@ -150,18 +195,6 @@ gcloud projects add-iam-policy-binding \
   --role roles/container.admin \
   --member "serviceAccount:service-${PROJECT_NBR}@dataproc-accounts.iam.gserviceaccount.com" \
   "${PROJECT_ID}"
-```
-
-# TODO - remove the below and test as 
-```
-GMSA="${PROJECT_NBR}-compute@developer.gserviceaccount.com"
-
-gcloud projects add-iam-policy-binding \
-  --role roles/storage.objectAdmin \
-  --role roles/bigquery.dataEditor \
-  --member "serviceAccount:${GMSA}" \
-  "${PROJECT_ID}"
-
 ```
 
 ### 1.11. Grant permissions for the User Managed Service Account to work with GKE and Kubernetes SAs
@@ -202,9 +235,10 @@ gcloud iam service-accounts add-iam-policy-binding \
 
 ### 2.1. Create a basic Dataproc virtual cluster on GKE
 ```
-gcloud container clusters get-credentials ${GKE_CLUSTER_NAME} --region $REGION
-
-# Set the following variables from the USER variable.
+# Variables
+PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
+PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
+GKE_CLUSTER_NAME=dataproc-gke-base-${PROJECT_NBR}
 DP_CLUSTER_NAME="dpgke-cluster-static-$PROJECT_NBR"
 DPGKE_NAMESPACE="dpgke-$PROJECT_NBR"
 DPGKE_CONTROLLER_POOLNAME="dpgke-pool-default"
@@ -216,7 +250,10 @@ UMSA_FQN="${UMSA}@${PROJECT_ID}.iam.gserviceaccount.com"
 REGION="us-central1"
 ZONE=${REGION}-a
 
+# Get credentials to the GKE cluster
+gcloud container clusters get-credentials ${GKE_CLUSTER_NAME} --region $REGION
 
+# Create the Dataproc on GKE cluster
 gcloud dataproc clusters gke create ${DP_CLUSTER_NAME} \
   --project=${PROJECT_ID} \
   --region=${REGION} \
@@ -230,10 +267,97 @@ gcloud dataproc clusters gke create ${DP_CLUSTER_NAME} \
   --pools="name=${DPGKE_CONTROLLER_POOLNAME},roles=default,machineType=n1-standard-4,min=0,max=3,locations=${ZONE}" \
   --pools="name=${DPGKE_DRIVER_POOLNAME},roles=spark-driver,machineType=n1-standard-4,min=0,max=3,locations=${ZONE}" \
   --pools="name=${DPGKE_EXECUTOR_POOLNAME},roles=spark-executor,machineType=n1-standard-4,min=0,max=3,locations=${ZONE},localSsdCount=1" 
-
 ```
 
-### 2.2. Submit the SparkPi job on the cluster
+Known issues and workarounds:
+1. If the node pools dont exist, you may see an error with the creation of the second node pool. <br>
+Workaround: 
+```
+# 1a. Delete namespace
+kubectl delete namespace $DPGKE_NAMESPACE
+
+# 1b. Delete Dataproc GKE cluster
+gcloud dataproc clusters delete ${DP_CLUSTER_NAME}
+
+# 1c. Rerun the command at section 2.1 - create a Dataproc GKE cluster
+```
+
+### 2.2. Review namespaces created
+
+#### 2.2.1. Namespaces
+
+Paste in Cloud Shell-
+```
+kubectl get namespaces
+```
+
+Here is the author's output-
+```
+----THIS IS INFORMATIONAL---
+NAME                                STATUS   AGE
+default                             Active   8h
+dpgke-cluster-static-420530778089   Active   14m
+kube-node-lease                     Active   8h
+kube-public                         Active   8h
+kube-system                         Active   8h
+----INFORMATIONAL----
+```
+The dpgke* namespace is the Dataproc GKE cluster namespace
+
+#### 2.2.2. Pods
+
+Paste in Cloud Shell-
+```
+DPGKE_CLUSTER_NAMESPACE=`kubectl get namespaces | grep dpgke | cut -d' ' -f1`
+kubectl get pods -n $DPGKE_CLUSTER_NAMESPACE
+```
+Here is the author's output-
+```
+----THIS IS INFORMATIONAL---
+NAME                                                   READY   STATUS    RESTARTS   AGE
+agent-6b6b69458f-4scmr                                 1/1     Running   0          30m
+spark-engine-6577d5497f-mftx2                          1/1     Running   0          30m
+----INFORMATIONAL----
+```
+
+
+#### 2.2.3. Node pools
+
+After creation of the Dataproc GKE cluster in our lab, there should only be an extra node pool.
+
+Paste in Cloud Shell-
+```
+kubectl get nodes -L cloud.google.com/gke-nodepool | grep -v GKE-NODEPOOL | awk '{print $6}' | sort | uniq -c | sort -r
+```
+Here is the author's output-
+```
+----THIS IS INFORMATIONAL---
+      1 dpgke-pool-default
+      1 default-pool
+----INFORMATIONAL----
+```
+dpgke-pool-default is the new one created for the Dataproc GKE cluster.
+
+
+#### 2.2.4. Nodes with node pool name
+
+Paste in Cloud Shell-
+```
+kubectl get nodes -L cloud.google.com/gke-nodepool
+```
+
+Here is the author's output-
+```
+----THIS IS INFORMATIONAL---
+NAME                                                  STATUS   ROLES    AGE     VERSION           GKE-NODEPOOL
+gke-dataproc-gke-bas-dpgke-pool-defau-61a73f7d-xw5k   Ready    <none>   30m     v1.25.8-gke.500   dpgke-pool-default
+gke-dataproc-gke-base-42-default-pool-aa627942-s50g   Ready    <none>   8h      v1.25.8-gke.500   default-pool
+----INFORMATIONAL----
+```
+
+## 3. Run a Spark job on the cluster
+
+### 3.1. Submit the SparkPi job on the cluster
 
 ```
 gcloud dataproc jobs submit spark \
@@ -245,3 +369,99 @@ gcloud dataproc jobs submit spark \
   --jars=local:///usr/lib/spark/examples/jars/spark-examples.jar \
   -- 1000
 ```
+
+### 3.2. Node pools as the job runs
+
+Paste in Cloud Shell-
+```
+kubectl get nodes -L cloud.google.com/gke-nodepool | grep -v GKE-NODEPOOL | awk '{print $6}' | sort | uniq -c | sort -r
+```
+Here is the author's output-
+```
+----THIS IS INFORMATIONAL---
+      1 dpgke-pool-executor
+      1 dpgke-pool-driver
+      1 dpgke-pool-default
+      1 default-pool
+----INFORMATIONAL----
+```
+
+### 3.3. Nodes as the job runs
+Paste in Cloud Shell-
+```
+kubectl get nodes -L cloud.google.com/gke-nodepool
+```
+
+Here is the author's output-
+```
+----THIS IS INFORMATIONAL---
+NAME                                                  STATUS   ROLES    AGE     VERSION           GKE-NODEPOOL
+gke-dataproc-gke-bas-dpgke-pool-defau-61a73f7d-xw5k   Ready    <none>   30m     v1.25.8-gke.500   dpgke-pool-default
+gke-dataproc-gke-bas-dpgke-pool-drive-2d585a56-flgf   Ready    <none>   2m44s   v1.25.8-gke.500   dpgke-pool-driver
+gke-dataproc-gke-bas-dpgke-pool-execu-ae26574b-fs2l   Ready    <none>   26s     v1.25.8-gke.500   dpgke-pool-executor
+gke-dataproc-gke-base-42-default-pool-aa627942-s50g   Ready    <none>   8h      v1.25.8-gke.500   default-pool
+----INFORMATIONAL----
+```
+
+Note that the executor and drive node pools show up
+
+### 3.4. Pods
+
+Paste in Cloud Shell-
+```
+DPGKE_CLUSTER_NAMESPACE=`kubectl get namespaces | grep dpgke | cut -d' ' -f1`
+kubectl get pods -n $DPGKE_CLUSTER_NAMESPACE
+```
+
+Here is the author's output-
+```
+----THIS IS INFORMATIONAL---
+# While running
+NAME                                                   READY   STATUS    RESTARTS   AGE
+agent-6b6b69458f-4scmr                                 1/1     Running   0          42m
+dp-spark-c56d7f4c-18ae-3c96-9690-0ec23b44d3f0-driver   2/2     Running   0          2m20s
+dp-spark-c56d7f4c-18ae-3c96-9690-0ec23b44d3f0-exec-1   0/1     Pending   0          15s
+dp-spark-c56d7f4c-18ae-3c96-9690-0ec23b44d3f0-exec-2   0/1     Pending   0          15s
+spark-engine-6577d5497f-mftx2                          1/1     Running   0          42m
+-------------------------------------------------------------------------------------------
+# After completion
+NAME                                                   READY   STATUS      RESTARTS   AGE
+agent-6b6b69458f-4scmr                                 1/1     Running     0          31m
+dp-spark-79821ac2-26f5-3218-90fd-88f84cdc666e-driver   0/2     Completed   0          4m3s
+spark-engine-6577d5497f-mftx2                          1/1     Running     0          31m
+----INFORMATIONAL----
+```
+
+### 3.5. Driver logs in GKE
+
+```
+DRIVER=`kubectl get pods -n $DPGKE_CLUSTER_NAMESPACE | grep driver | cut -d' ' -f1`
+kubectl logs $DRIVER -n $DPGKE_CLUSTER_NAMESPACE -f
+```
+
+## 4. BYO Peristent History Server & Hive Metastore
+
+In Lab 2, we created a Persistent History Server and a Dataproc Metastore. To use the two, we just need to reference it during cluster creation.
+
+```
+----THIS IS INFORMATIONAL---
+PERSISTENT_HISTORY_SERVER_NAME="dpgce-sphs-$PROJECT_NBR"
+
+gcloud dataproc clusters gke create ${DP_CLUSTER_NAME} \
+  --project=${PROJECT_ID} \
+  --region=${REGION} \
+  --gke-cluster=${GKE_CLUSTER_NAME} \
+  --history-server-cluster=${PERSISTENT_HISTORY_SERVER_NAME} \
+  --properties="spark:spark.sql.catalogImplementation=hive,spark:spark.hive.metastore.uris=thrift://<METASTORE_HOST>:<PORT>,spark:spark.hive.metastore.warehouse.dir=<WAREHOUSE_DIR>"
+  --spark-engine-version='latest' \
+  --staging-bucket=${DPGKE_LOG_BUCKET} \
+  --setup-workload-identity \
+  --properties "dataproc:dataproc.gke.agent.google-service-account=${UMSA_FQN}" \
+  --properties "dataproc:dataproc.gke.spark.driver.google-service-account=${UMSA_FQN}" \
+  --properties "dataproc:dataproc.gke.spark.executor.google-service-account=${UMSA_FQN}" \
+  --pools="name=${DPGKE_CONTROLLER_POOLNAME},roles=default,machineType=n1-standard-4,min=0,max=3,locations=${ZONE}" \
+  --pools="name=${DPGKE_DRIVER_POOLNAME},roles=spark-driver,machineType=n1-standard-4,min=0,max=3,locations=${ZONE}" \
+  --pools="name=${DPGKE_EXECUTOR_POOLNAME},roles=spark-executor,machineType=n1-standard-4,min=0,max=3,locations=${ZONE},localSsdCount=1" 
+----THIS IS INFORMATIONAL---
+```
+
