@@ -441,6 +441,10 @@ DRIVER=`kubectl get pods -n $DPGKE_CLUSTER_NAMESPACE | grep driver | cut -d' ' -
 kubectl logs $DRIVER -n $DPGKE_CLUSTER_NAMESPACE -f
 ```
 
+### 3.6. Executor logs in GKE
+
+Similar to the above. Identify the executor of your choice and run the ```kubectl logs``` command.
+
 <hr>
 
 ## 4. BYO Peristent History Server & Hive Metastore
