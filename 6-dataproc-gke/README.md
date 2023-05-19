@@ -480,7 +480,23 @@ gcloud dataproc clusters gke create ${DP_CLUSTER_NAME} \
 TODO
 https://cloud.google.com/dataproc/docs/guides/dpgke/dataproc-gke-custom-images
 
+<hr>
 
+## 6. Spark UI
+Is the Persistent Histroy Server covered in the section 4.
+
+## 7. Logging
+
+When a job is executing, go to the Dataproc cluster UI, click on the Dataproc on GKE cluster, and then and click on the job running. Click on "View logs". You will see the following filters-
+```
+----THIS IS INFORMATIONAL AND IS THE AUTHOR'S DETAILS---
+resource.type="k8s_container"
+resource.labels.cluster_name="dataproc-gke-base-420530778089"
+resource.labels.namespace_name="dpgke-cluster-static-420530778089"
+resource.labels.container_name="controller"
+```
+
+Navigate into the logs and search for drivers, executors.
 <hr>
 
 This concludes the lab. Dont forget to shut down the project.
