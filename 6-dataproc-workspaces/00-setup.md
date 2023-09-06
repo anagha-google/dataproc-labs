@@ -394,7 +394,8 @@ gcloud metastore services create $DATAPROC_METASTORE_SERVICE_NM \
     --port=9083 \
     --tier=Developer \
     --hive-metastore-version=3.1.2 \
-    --impersonate-service-account=$UMSA_FQN 
+    --impersonate-service-account=$UMSA_FQN \
+    --network=$VPC_NM
 ```
 <br><br>
 
