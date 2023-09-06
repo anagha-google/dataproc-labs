@@ -5,7 +5,7 @@ It includes the foundational setup - the network, subnet, Dataproc Persistent Hi
 
 
 In this lab, we will-
-1. Run the foundational setup for Dataproc - APIs, org policies, buckets, the network, subnet, Dataproc Persistent History Server
+1. Run the foundational setup for Dataproc - APIs, org policies, buckets, the network, subnet, (optional) Dataproc Persistent History Server, (optional) Dataproc Metastore Service
 2. Run the foundational setup for GKE  
 3. Create a basic Dataproc on GKE cluster.
 4. Run a basic Spark application on it
