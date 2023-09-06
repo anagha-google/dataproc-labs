@@ -17,7 +17,7 @@ This repo hosts minimum viable self-contained, end-to-end solutions that showcas
 | [Lab-11](https://github.com/anagha-google/ts22-just-enough-terraform-for-da) | Just enough Terraform for Data Analytics on Google Cloud | 
 | [Lab-12](https://github.com/anagha-google/spark-on-gcp-with-confluent-kafka) | Near Real Time processing with Spark on Google Cloud and Confluent Cloud |
 | [Lab-13](https://github.com/anagha-google/techcon23-datalake-lab) | Code free integration with Dataproc Templates powered by Dataproc Serverless Spark |
-| [Lab-14](https://github.com/anagha-google/techcon23-datalake-lab](https://github.com/GoogleCloudPlatform/dataplex-labs/tree/main/dataplex-quickstart-labs) | Data Governance on Google Cloud for OSS Analytics |
+| [Lab-14](https://github.com/GoogleCloudPlatform/dataplex-labs/tree/main/dataplex-quickstart-labs) | Data Governance on Google Cloud for OSS Analytics |
 | [Lab-15](..) | Lineage for Dataproc Spark jobs|
 
 
