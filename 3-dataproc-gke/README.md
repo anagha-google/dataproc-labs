@@ -10,7 +10,7 @@ In this lab, we will-
 3. Create a basic Dataproc on GKE cluster.
 4. Run a basic Spark application on it
 5. Review logging
-6. review monitoring for GKE clusters
+
 
 ## 1. Foundational setup for Dataproc
 
