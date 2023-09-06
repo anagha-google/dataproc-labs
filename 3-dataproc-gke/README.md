@@ -787,6 +787,55 @@ DRIVER=`kubectl get pods -n $DPGKE_CLUSTER_NAMESPACE | grep driver | cut -d' ' -
 kubectl logs $DRIVER -n $DPGKE_CLUSTER_NAMESPACE -f
 ```
 
+Author's output:
+```
+Defaulted container "driver" out of: driver, logging-sidecar, init (init)
+PYSPARK_PYTHON=/opt/conda/bin/python
+JAVA_HOME=/usr/lib/jvm/temurin-8-jdk-amd64
+SPARK_EXTRA_CLASSPATH=
+Merging Spark configs
+Skipping merging /opt/spark/conf/spark-defaults.conf, file does not exist.
+Skipping merging /opt/spark/conf/log4j.properties, file does not exist.
+Skipping merging /opt/spark/conf/spark-env.sh, file does not exist.
+Skipping custom init script, file does not exist.
+Running heartbeat loop
+23/09/06 18:10:05 INFO org.sparkproject.jetty.util.log: Logging initialized @6081ms to org.sparkproject.jetty.util.log.Slf4jLog
+23/09/06 18:10:05 INFO org.sparkproject.jetty.server.Server: jetty-9.4.40.v20210413; built: 2021-04-13T20:42:42.668Z; git: b881a572662e1943a14ae12e7e1207989f218b74; jvm 1.8.0_322-b06
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.Server: Started @6383ms
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.AbstractConnector: Started ServerConnector@21680803{HTTP/1.1, (http/1.1)}{0.0.0.0:4040}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@74d7184a{/jobs,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@22ee2d0{/jobs/json,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@3e792ce3{/jobs/job,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@4b770e40{/jobs/job/json,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@54a3ab8f{/stages,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@6a1ebcff{/stages/json,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@50b0bc4c{/stages/stage,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@6b739528{/stages/stage/json,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@41de5768{/stages/pool,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@28fa700e{/stages/pool/json,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@e041f0c{/storage,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@11963225{/storage/json,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@11ee02f8{/storage/rdd,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@61a5b4ae{/storage/rdd/json,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@5b69fd74{/environment,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@437e951d{/environment/json,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@63a5e46c{/executors,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@49ef32e0{/executors/json,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@6bd51ed8{/executors/threadDump,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@51abf713{/executors/threadDump/json,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@4d4d48a6{/static,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@1c4ee95c{/,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@5aa360ea{/api,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@35e52059{/jobs/job/kill,null,AVAILABLE,@Spark}
+23/09/06 18:10:06 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@49bd54f7{/stages/stage/kill,null,AVAILABLE,@Spark}
+23/09/06 18:10:10 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@78054f54{/metrics/json,null,AVAILABLE,@Spark}
+23/09/06 18:10:55 WARN org.apache.spark.scheduler.TaskSchedulerImpl: Initial job has not accepted any resources; check your cluster UI to ensure that workers are registered and have sufficient resources
+23/09/06 18:11:10 WARN org.apache.spark.scheduler.TaskSchedulerImpl: Initial job has not accepted any resources; check your cluster UI to ensure that workers are registered and have sufficient resources
+Pi is roughly 3.1414571514145715
+23/09/06 18:11:38 INFO org.sparkproject.jetty.server.AbstractConnector: Stopped Spark@21680803{HTTP/1.1, (http/1.1)}{0.0.0.0:4040}
+23/09/06 18:11:38 WARN org.apache.spark.scheduler.cluster.k8s.ExecutorPodsWatchSnapshotSource: Kubernetes client has been closed (this is expected if the application is shutting down.)
+```
+
 ### 4.6. Executor logs in GKE
 
 Similar to the above. Identify the executor of your choice and run the ```kubectl logs``` command.
