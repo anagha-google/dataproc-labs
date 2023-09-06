@@ -1,4 +1,4 @@
-# Dataproc Labs
+# Open Data Analytics Labs on GCP
 
 This repo hosts minimum viable self-contained, end-to-end solutions that showcase Spark on GCP and its integration with other GCP services. They are intended to demystify our products and their integration.
 
