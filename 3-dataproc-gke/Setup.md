@@ -21,12 +21,8 @@ echo $MY_IP_ADDRESS
 UMSA="lab-sa"
 UMSA_FQN=$UMSA@$PROJECT_ID.iam.gserviceaccount.com
 
-PERSISTENT_HISTORY_SERVER_NM=sphs-$PROJECT_NBR
 SPARK_BUCKET=dataproc-spark-bucket-$PROJECT_NBR
 SPARK_BUCKET_FQN=gs://$SPARK_BUCKET-bucket
-PERSISTENT_HISTORY_SERVER_BUCKET_FQN=gs://$PERSISTENT_HISTORY_SERVER_NM-bucket
-
-DATAPROC_METASTORE_SERVICE_NM=dpms-$PROJECT_NBR
 
 VPC_NM=vpc-$PROJECT_NBR
 SPARK_SUBNET_NM=spark-snet
@@ -173,7 +169,6 @@ gcloud iam service-accounts create ${UMSA} \
     --display-name=$UMSA 
 ```
  
-  
 <br><br>
 
 ### 3.b. Grant IAM permissions for the UMSA
@@ -198,15 +193,6 @@ gcloud projects add-iam-policy-binding $PROJECT_ID --member=serviceAccount:$UMSA
 --role="roles/dataproc.worker"
 
 gcloud projects add-iam-policy-binding $PROJECT_ID --member=serviceAccount:$UMSA_FQN \
---role="roles/metastore.admin"
-
-gcloud projects add-iam-policy-binding $PROJECT_ID --member=serviceAccount:$UMSA_FQN \
---role="roles/metastore.editor"
-
-gcloud projects add-iam-policy-binding $PROJECT_ID --member serviceAccount:$UMSA_FQN \
---role "roles/metastore.serviceAgent" 
-
-gcloud projects add-iam-policy-binding $PROJECT_ID --member=serviceAccount:$UMSA_FQN \
 --role="roles/storage.objectCreator"
 
 gcloud projects add-iam-policy-binding $PROJECT_ID --member=serviceAccount:$UMSA_FQN \
@@ -228,20 +214,10 @@ gcloud iam service-accounts add-iam-policy-binding \
     --member="user:${YOUR_ACCOUNT_NAME}" \
     --role="roles/iam.serviceAccountTokenCreator"
     
-```
-
-
-  
+``` 
 <br><br>
 
-### 3.d. Grant permissions to the Dataproc Service Agent to interact with the Dataproc Metastore
-Paste these and run in cloud shell-
-```
-gcloud projects add-iam-policy-binding $PROJECT_ID --member=serviceAccount:$UMSA_FQN \
---role="roles/metastore.editor"
-```
 
-<hr>
 
 ## 4.0. Create VPC, Subnets and Firewall Rules
 
@@ -297,8 +273,8 @@ gcloud compute firewall-rules create allow-ssh-$SPARK_SUBNET_NM \
 
 <hr>
 
-## 4.c. Create subnet & firewall rules for Dataproc - PSHS & DPMS
-Further in the lab, we will create a persistent Spark History Server where the logs for serverless Spark jobs can be accessible beyond 24 hours (default without). We will also create a Dataproc Metastore Service for persistent Apache Hive Metastore.<br>
+## 4.c. Create subnet & firewall rules for Dataproc - PSHS 
+Further in the lab, we will create a persistent Spark History Server where the logs for serverless Spark jobs can be accessible beyond 24 hours (default without). <br>
 Paste these and run in cloud shell-
 
 ```
@@ -320,8 +296,6 @@ gcloud compute --project=$PROJECT_ID firewall-rules create allow-intra-$SPARK_CA
 --rules=all \
 --source-ranges=$SPARK_CATCH_ALL_SUBNET_CIDR
 ```
-
-
 
 <hr>
 
@@ -382,22 +356,4 @@ gcloud dataproc clusters create $PERSISTENT_HISTORY_SERVER_NM \
 <hr>
 
 
-## 7.0. Create common Dataproc Metastore Service
-
-A common Dataproc Metastore Service can be leveraged across clusters and serverless for Hive metadata.<br>
-This service does not support BYO subnet currently.<br>
-
-Run the command below to provision-
-```
-gcloud metastore services create $DATAPROC_METASTORE_SERVICE_NM \
-    --location=$LOCATION \
-    --port=9083 \
-    --tier=Developer \
-    --hive-metastore-version=3.1.2 \
-    --impersonate-service-account=$UMSA_FQN \
-    --network=$VPC_NM
-```
-<br><br>
-
-This takes about 30 minutes to create.
 
