@@ -34,6 +34,8 @@ UMSA_FQN=$UMSA@$PROJECT_ID.iam.gserviceaccount.com
 
 SPARK_BUCKET=dataproc-spark-bucket-$PROJECT_NBR
 SPARK_BUCKET_FQN=gs://$SPARK_BUCKET-bucket
+PERSISTENT_HISTORY_SERVER_BUCKET_FQN=gs://dataproc-phs-bucket-$PROJECT_NBR
+PERSISTENT_HISTORY_SERVER_NM=dataproc-phs-$PROJECT_NBR
 
 VPC_NM=vpc-$PROJECT_NBR
 SPARK_SUBNET_NM=spark-snet
@@ -414,7 +416,7 @@ Paste in Cloud Shell-
 ```
 DPGKE_LOG_BUCKET=dpgke-dataproc-bucket-${PROJECT_NBR}-logs
 
-gcloud storage buckets create gs://$DPGKE_LOG_BUCKET --project=$PROJECT_ID --location=$REGION
+gcloud storage buckets create gs://$DPGKE_LOG_BUCKET --project=$PROJECT_ID --location=$LOCATION
 ```
 
 ### 2.5. Create a base GKE cluster
@@ -427,7 +429,7 @@ PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d'
 GKE_CLUSTER_NAME=dataproc-gke-base-${PROJECT_NBR}
 VPC_NM=dpgce-vpc-$PROJECT_NBR
 SPARK_SUBNET=spark-snet
-PERSISTENT_HISTORY_SERVER_NM=dpgce-sphs-${PROJECT_NBR}
+PERSISTENT_HISTORY_SERVER_NM=dataproc-phs-${PROJECT_NBR}
 REGION=us-central1
 ZONE=us-central1-a
 GSA="${PROJECT_NBR}-compute@developer.gserviceaccount.com"
