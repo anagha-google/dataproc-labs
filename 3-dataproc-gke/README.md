@@ -14,7 +14,366 @@ In this lab, we will-
 
 ## 1. Foundational setup for Dataproc
 
+### 1.1. Variables
 
+```
+PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
+PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
+PROJECT_NAME=`gcloud projects describe ${PROJECT_ID} | grep name | cut -d':' -f2 | xargs`
+YOUR_ACCOUNT_NAME=`gcloud auth list --filter=status:ACTIVE --format="value(account)"`
+ORG_ID=`gcloud organizations list --format="value(name)"`
+LOCATION=us-central1
+ZONE=us-central1-a
+
+# The public IP address of your Cloud Shell, to add to the firewall
+MY_IP_ADDRESS=`curl -s checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'`
+echo $MY_IP_ADDRESS
+
+UMSA="lab-sa"
+UMSA_FQN=$UMSA@$PROJECT_ID.iam.gserviceaccount.com
+
+SPARK_BUCKET=dataproc-spark-bucket-$PROJECT_NBR
+SPARK_BUCKET_FQN=gs://$SPARK_BUCKET-bucket
+
+VPC_NM=vpc-$PROJECT_NBR
+SPARK_SUBNET_NM=spark-snet
+```
+
+### 1.2. Enable APIs
+
+Enable APIs of services in scope for the lab, and their dependencies.<br>
+Paste these and run in cloud shell-
+```
+gcloud services enable dataproc.googleapis.com
+gcloud services enable orgpolicy.googleapis.com
+gcloud services enable compute.googleapis.com
+gcloud services enable container.googleapis.com
+gcloud services enable containerregistry.googleapis.com
+gcloud services enable bigquery.googleapis.com 
+gcloud services enable storage.googleapis.com
+gcloud services enable metastore.googleapis.com
+gcloud services enable artifactregistry.googleapis.com
+```
+
+<br><br>
+
+<hr>
+
+### 1.3. Update Organization Policies
+
+The organization policies include the superset applicable for all flavors of Dataproc, required in Argolis.<br>
+Paste these and run in cloud shell-
+
+#### 1.3.a. Relax require OS Login
+```
+rm -rf os_login.yaml
+
+cat > os_login.yaml << ENDOFFILE
+name: projects/${PROJECT_ID}/policies/compute.requireOsLogin
+spec:
+  rules:
+  - enforce: false
+ENDOFFILE
+
+gcloud org-policies set-policy os_login.yaml 
+
+rm os_login.yaml
+```
+
+#### 1.3.b. Disable Serial Port Logging
+
+```
+rm -rf disableSerialPortLogging.yaml
+
+cat > disableSerialPortLogging.yaml << ENDOFFILE
+name: projects/${PROJECT_ID}/policies/compute.disableSerialPortLogging
+spec:
+  rules:
+  - enforce: false
+ENDOFFILE
+
+gcloud org-policies set-policy disableSerialPortLogging.yaml 
+
+rm disableSerialPortLogging.yaml
+```
+
+#### 1.3.c. Disable Shielded VM requirement
+
+```
+rm -rf shieldedVm.yaml 
+
+cat > shieldedVm.yaml << ENDOFFILE
+name: projects/$PROJECT_ID/policies/compute.requireShieldedVm
+spec:
+  rules:
+  - enforce: false
+ENDOFFILE
+
+gcloud org-policies set-policy shieldedVm.yaml 
+
+rm shieldedVm.yaml 
+```
+
+#### 1.3.d. Disable VM can IP forward requirement
+
+```
+rm -rf vmCanIpForward.yaml
+
+cat > vmCanIpForward.yaml << ENDOFFILE
+name: projects/$PROJECT_ID/policies/compute.vmCanIpForward
+spec:
+  rules:
+  - allowAll: true
+ENDOFFILE
+
+gcloud org-policies set-policy vmCanIpForward.yaml
+
+rm vmCanIpForward.yaml
+```
+
+#### 1.3.e. Enable VM external access
+
+```
+rm -rf vmExternalIpAccess.yaml
+
+cat > vmExternalIpAccess.yaml << ENDOFFILE
+name: projects/$PROJECT_ID/policies/compute.vmExternalIpAccess
+spec:
+  rules:
+  - allowAll: true
+ENDOFFILE
+
+gcloud org-policies set-policy vmExternalIpAccess.yaml
+
+rm vmExternalIpAccess.yaml
+```
+
+#### 1.3.f. Enable restrict VPC peering
+
+```
+rm -rf restrictVpcPeering.yaml
+
+cat > restrictVpcPeering.yaml << ENDOFFILE
+name: projects/$PROJECT_ID/policies/compute.restrictVpcPeering
+spec:
+  rules:
+  - allowAll: true
+ENDOFFILE
+
+gcloud org-policies set-policy restrictVpcPeering.yaml
+
+rm restrictVpcPeering.yaml
+```
+
+<br><br>
+
+<hr>
+
+
+### 1.4. Create a User Managed Service Account (UMSA) & grant it requisite permissions
+
+The User Managed Service Account (UMSA) is to avoid using default Google Managed Service Accounts where supported for tighter security and control.<br>
+Paste these and run in cloud shell-
+
+#### 1.4.a. Create UMSA
+```
+gcloud iam service-accounts create ${UMSA} \
+    --description="User Managed Service Account for the project" \
+    --display-name=$UMSA 
+```
+ 
+<br><br>
+
+#### 1.4.b. Grant IAM permissions for the UMSA
+
+```
+gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+    --member=serviceAccount:${UMSA_FQN} \
+    --role=roles/iam.serviceAccountUser
+    
+gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+    --member=serviceAccount:${UMSA_FQN} \
+    --role=roles/iam.serviceAccountTokenCreator 
+    
+gcloud projects add-iam-policy-binding $PROJECT_ID --member=serviceAccount:$UMSA_FQN \
+--role="roles/bigquery.dataEditor"
+
+
+gcloud projects add-iam-policy-binding $PROJECT_ID --member=serviceAccount:$UMSA_FQN \
+--role="roles/bigquery.admin"
+
+gcloud projects add-iam-policy-binding $PROJECT_ID --member=serviceAccount:$UMSA_FQN \
+--role="roles/dataproc.worker"
+
+gcloud projects add-iam-policy-binding $PROJECT_ID --member=serviceAccount:$UMSA_FQN \
+--role="roles/storage.objectCreator"
+
+gcloud projects add-iam-policy-binding $PROJECT_ID --member=serviceAccount:$UMSA_FQN \
+--role="roles/dataproc.admin"
+
+```
+<br>
+
+#### 1.4.c. Grant permissions for the lab attendee (yourself)
+Paste these and run in cloud shell-
+```
+gcloud iam service-accounts add-iam-policy-binding \
+    ${UMSA_FQN} \
+    --member="user:${YOUR_ACCOUNT_NAME}" \
+    --role="roles/iam.serviceAccountUser"
+    
+gcloud iam service-accounts add-iam-policy-binding \
+    ${UMSA_FQN} \
+    --member="user:${YOUR_ACCOUNT_NAME}" \
+    --role="roles/iam.serviceAccountTokenCreator"
+    
+``` 
+<br><br>
+
+<hr>
+
+### 1.5. Create VPC, Subnets and Firewall Rules
+
+Dataproc is a VPC native service, therefore needs a VPC subnet.<br>
+Paste these and run in cloud shell-
+
+#### 1.5.a. Create VPC
+
+```
+gcloud compute networks create $VPC_NM \
+--project=$PROJECT_ID \
+--subnet-mode=custom \
+--mtu=1460 \
+--bgp-routing-mode=regional
+```
+
+<br><br>
+
+#### 1.5.b. Create subnet & firewall rules for Dataproc - GCE
+
+Dataproc serverless Spark needs intra subnet open ingress. <br>
+Paste these and run in cloud shell-
+```
+SPARK_SUBNET_CIDR=10.0.0.0/16
+
+gcloud compute networks subnets create $SPARK_SUBNET_NM \
+ --network $VPC_NM \
+ --range $SPARK_SUBNET_CIDR  \
+ --region $LOCATION \
+ --enable-private-ip-google-access \
+ --project $PROJECT_ID 
+ 
+gcloud compute --project=$PROJECT_ID firewall-rules create allow-intra-$SPARK_SUBNET_NM \
+--direction=INGRESS \
+--priority=1000 \
+--network=$VPC_NM \
+--action=ALLOW \
+--rules=all \
+--source-ranges=$SPARK_SUBNET_CIDR
+
+gcloud compute firewall-rules create allow-ssh-$SPARK_SUBNET_NM \
+--project=$PROJECT_ID \
+--network=$VPC_NM \
+--direction=INGRESS \
+--priority=65534 \
+--source-ranges=0.0.0.0/0 \
+--action=ALLOW \
+--rules=tcp:22
+
+```
+
+<br><br>
+
+<hr>
+
+#### 1.5.c. Create subnet & firewall rules for Dataproc - PSHS 
+Further in the lab, we will create a persistent Spark History Server where the logs for serverless Spark jobs can be accessible beyond 24 hours (default without). <br>
+Paste these and run in cloud shell-
+
+```
+SPARK_CATCH_ALL_SUBNET_CIDR=10.6.0.0/24
+SPARK_CATCH_ALL_SUBNET_NM=spark-catch-all-snet
+
+gcloud compute networks subnets create $SPARK_CATCH_ALL_SUBNET_NM \
+ --network $VPC_NM \
+ --range $SPARK_CATCH_ALL_SUBNET_CIDR \
+ --region $LOCATION \
+ --enable-private-ip-google-access \
+ --project $PROJECT_ID 
+ 
+gcloud compute --project=$PROJECT_ID firewall-rules create allow-intra-$SPARK_CATCH_ALL_SUBNET_NM \
+--direction=INGRESS \
+--priority=1000 \
+--network=$VPC_NM \
+--action=ALLOW \
+--rules=all \
+--source-ranges=$SPARK_CATCH_ALL_SUBNET_CIDR
+```
+
+<hr>
+
+#### 1.5.d. Grant access to your IP address
+
+```
+MY_IP_ADDRESS=`curl -s checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'`
+echo $MY_IP_ADDRESS
+
+
+MY_FIREWALL_RULE="allow-me-to-ingress-into-vpc"
+
+gcloud compute firewall-rules delete $MY_FIREWALL_RULE
+
+gcloud compute --project=$PROJECT_ID firewall-rules create $MY_FIREWALL_RULE --direction=INGRESS --priority=1000 --network=$VPC_NM --action=ALLOW --rules=all --source-ranges="$MY_IP_ADDRESS/32"
+
+```
+ 
+<br><br>
+
+<hr>
+
+### 1.6. [OPTIONAL] Create common Persistent Spark History Server
+
+A common Persistent Spark History Server can be leveraged across Dataproc clusters and Dataproc serverless for log persistence/retention and providing support personnel the familiar Spark UI for Spark applications that were run, even after ephemeral clusters and jobs have completed.<br>
+Docs: https://cloud.google.com/dataproc/docs/concepts/jobs/history-server<br>
+
+Run the command below to provision-
+```
+gsutil mb -p $PROJECT_ID -c STANDARD -l $LOCATION -b on $PERSISTENT_HISTORY_SERVER_BUCKET_FQN
+
+gcloud dataproc clusters create $PERSISTENT_HISTORY_SERVER_NM \
+    --single-node \
+    --region=$LOCATION \
+    --image-version=1.4-debian10 \
+    --enable-component-gateway \
+    --properties="dataproc:job.history.to-gcs.enabled=true,spark:spark.history.fs.logDirectory=$PERSISTENT_HISTORY_SERVER_BUCKET_FQN/*/spark-job-history,mapred:mapreduce.jobhistory.read-only.dir-pattern=$PERSISTENT_HISTORY_SERVER_BUCKET/*/mapreduce-job-history/done" \
+    --service-account=$UMSA_FQN \
+--single-node \
+--subnet=projects/$PROJECT_ID/regions/$LOCATION/subnetworks/$SPARK_CATCH_ALL_SUBNET_NM
+```
+<br><br>
+
+<hr>
+
+### 1.7. [OPTIONAL] Create common Dataproc Metastore Service
+
+A common Dataproc Metastore Service can be leveraged across clusters and serverless for Hive metadata.<br>
+This service does not support BYO subnet currently.<br>
+
+Run the command below to provision-
+```
+gcloud metastore services create $DATAPROC_METASTORE_SERVICE_NM \
+    --location=$LOCATION \
+    --port=9083 \
+    --tier=Developer \
+    --hive-metastore-version=3.1.2 \
+    --impersonate-service-account=$UMSA_FQN \
+    --network=$VPC_NM
+```
+<br><br>
+
+This takes about 30 minutes to create.
+
+<hr>
 
 
 ## 2. Foundational setup for GKE
@@ -48,18 +407,8 @@ Sign-in to Docker from Cloud Shell--
 docker login --username <your docker-username>
 ```
 
-### 2.4. Enable APIs
 
-Enable any APIs needed for this lab, over and above what was enabled as part of Lab 2.
-
-
-Paste in Cloud Shell-
-```
-gcloud services enable container.googleapis.com
-gcloud services enable artifactregistry.googleapis.com
-```
-
-### 2.5. Create a bucket for use by dataproc on GKE
+### 2.4. Create a bucket for use by dataproc on GKE
 
 Paste in Cloud Shell-
 ```
@@ -68,38 +417,7 @@ DPGKE_LOG_BUCKET=dpgke-dataproc-bucket-${PROJECT_NBR}-logs
 gcloud storage buckets create gs://$DPGKE_LOG_BUCKET --project=$PROJECT_ID --location=$REGION
 ```
 
-### 2.6. Create a User Managed Service Account and grant yourself impersonation privileges
-
-#### 2.6.1. Create a User Managed Service Account 
-
-Paste in Cloud Shell-
-```
-UMSA=dpgke-umsa
-UMSA_FQN="${UMSA}@${PROJECT_ID}.iam.gserviceaccount.com"
-gcloud iam service-accounts create "$UMSA" \
-    --description "UMSA for use with DPGKE for the lab 6+"
-```
-
-
-#### 2.6.2. Grant youself impersonation privileges to the service account
-
-Paste in Cloud Shell-
-```
-UMSA_FQN="${UMSA}@${PROJECT_ID}.iam.gserviceaccount.com"
-YOUR_USER_PRINICPAL_NAME=`gcloud auth list --filter=status:ACTIVE --format="value(account)"`
-
-gcloud iam service-accounts add-iam-policy-binding \
-    ${UMSA_FQN} \
-    --member="user:${YOUR_USER_PRINICPAL_NAME}" \
-    --role="roles/iam.serviceAccountUser"
-
-gcloud iam service-accounts add-iam-policy-binding \
-    ${UMSA_FQN} \
-    --member="user:${YOUR_USER_PRINICPAL_NAME}" \
-    --role="roles/iam.serviceAccountTokenCreator"
-```
-
-### 2.7. Create a base GKE cluster
+### 2.5. Create a base GKE cluster
 
 Paste in Cloud Shell-
 ```
@@ -136,16 +454,16 @@ gcloud container clusters create \
   --service-account ${UMSA_FQN}
 ```
 
-### 2.8. Get credentials to connect to the GKE cluster
+### 2.6. Get credentials to connect to the GKE cluster
 
 Paste in Cloud Shell-
 ```
 gcloud container clusters get-credentials ${GKE_CLUSTER_NAME} --region $REGION
 ```
 
-### 2.9. Connect to the cluster and list entities created
+### 2.7. Connect to the cluster and list entities created
 
-#### 2.9.1. Namespaces
+#### 2.7.1. Namespaces
 
 Paste in Cloud Shell-
 ```
@@ -163,7 +481,7 @@ kube-system       Active   8h
 ----INFORMATIONAL----
 ```
 
-#### 2.9.2. Node pools
+#### 2.7.2. Node pools
 
 After creation of the GKE cluster in our lab, there should only be one node pool.
 
@@ -178,7 +496,7 @@ Here is the author's output-
 ----INFORMATIONAL----
 ```
 
-#### 2.9.3. Nodes
+#### 2.7.3. Nodes
 
 Paste in Cloud Shell-
 ```
@@ -193,7 +511,7 @@ gke-dataproc-gke-base-42-default-pool-aa627942-s50g   Ready    <none>   8h    v1
 ```
 
 
-### 2.10. Grant requisite permissions to Dataproc agent
+### 2.8. Grant requisite permissions to Dataproc agent
 
 Paste in Cloud Shell-
 ```
@@ -203,7 +521,7 @@ gcloud projects add-iam-policy-binding \
   "${PROJECT_ID}"
 ```
 
-### 2.11. Grant permissions for the User Managed Service Account to work with GKE and Kubernetes SAs
+### 2.9. Grant permissions for the User Managed Service Account to work with GKE and Kubernetes SAs
 
 Run the following commands to assign necessary Workload Identity permissions to the user managed service account. <br>
 
@@ -460,7 +778,7 @@ Similar to the above. Identify the executor of your choice and run the ```kubect
 
 ## 5. BYO Peristent History Server 
 
-In Lab 2, we created a Persistent History Server and a Dataproc Metastore. To use the two, we just need to reference it during cluster creation.
+In Lab 2, we created a Persistent History Server and a Dataproc Metastore. To use the two, we just need to reference it during Dataproc cluster creation.
 
 ```
 ----THIS IS INFORMATIONAL---
@@ -470,7 +788,6 @@ gcloud dataproc clusters gke create ${DP_CLUSTER_NAME} \
   --project=${PROJECT_ID} \
   --region=${REGION} \
   --gke-cluster=${GKE_CLUSTER_NAME} \
-  --history-server-cluster=${PERSISTENT_HISTORY_SERVER_NAME} \
   --properties="spark:spark.sql.catalogImplementation=hive,spark:spark.hive.metastore.uris=thrift://<METASTORE_HOST>:<PORT>,spark:spark.hive.metastore.warehouse.dir=<WAREHOUSE_DIR>"
   --spark-engine-version='latest' \
   --staging-bucket=${DPGKE_LOG_BUCKET} \
@@ -484,9 +801,9 @@ gcloud dataproc clusters gke create ${DP_CLUSTER_NAME} \
 ----THIS IS INFORMATIONAL---
 ```
 
-As shown above, for History Server (Spark UI), include the line -
+To use a Persistent History Server (Spark UI), include the line -
 ```
-  --history-server-cluster=${PERSISTENT_HISTORY_SERVER_NAME} \
+--history-server-cluster=${PERSISTENT_HISTORY_SERVER_NAME} \
 ```
 And for Dataproc Metastore/Hive Metastore-
 ```
