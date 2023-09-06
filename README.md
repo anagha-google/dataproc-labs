@@ -26,6 +26,8 @@ This repo hosts minimum viable self-contained, end-to-end solutions that showcas
 | # | Google Cloud Collaborators | Contribution  | 
 | -- | :--- | :--- |
 | 1. | Anagha Khanolkar | Creator |
+| 2. | Rick (Rugui) Chen | Support for GKE aspects for the lab on Dataproc on GKE |
+| 3. | Dagang Wei | (Google Engineering) Support for Apache Hudi lab |
 
 
 
