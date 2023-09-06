@@ -427,14 +427,14 @@ Paste in Cloud Shell-
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
 GKE_CLUSTER_NAME=dataproc-gke-base-${PROJECT_NBR}
-VPC_NM=dpgce-vpc-$PROJECT_NBR
+VPC_NM=vpc-$PROJECT_NBR
 SPARK_SUBNET=spark-snet
 PERSISTENT_HISTORY_SERVER_NM=dataproc-phs-${PROJECT_NBR}
 REGION=us-central1
 ZONE=us-central1-a
 GSA="${PROJECT_NBR}-compute@developer.gserviceaccount.com"
 MACHINE_SKU="n2d-standard-4"
-UMSA=dpgke-umsa
+UMSA="lab-sa"
 UMSA_FQN="${UMSA}@${PROJECT_ID}.iam.gserviceaccount.com"
 
 # Create a GKE cluster
@@ -571,7 +571,7 @@ DPGKE_CONTROLLER_POOLNAME="dpgke-pool-default"
 DPGKE_DRIVER_POOLNAME="dpgke-pool-driver"
 DPGKE_EXECUTOR_POOLNAME="dpgke-pool-executor"
 DPGKE_LOG_BUCKET=dpgke-dataproc-bucket-${PROJECT_NBR}-logs
-UMSA=dpgke-umsa
+UMSA=lab-sa
 UMSA_FQN="${UMSA}@${PROJECT_ID}.iam.gserviceaccount.com"
 REGION="us-central1"
 ZONE=${REGION}-a
@@ -698,6 +698,21 @@ gcloud dataproc jobs submit spark \
   -- 1000
 ```
 
+Author's output-
+```
+23/09/06 18:00:13 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@1c4ee95c{/,null,AVAILABLE,@Spark}
+23/09/06 18:00:13 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@5aa360ea{/api,null,AVAILABLE,@Spark}
+23/09/06 18:00:13 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@35e52059{/jobs/job/kill,null,AVAILABLE,@Spark}
+23/09/06 18:00:13 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@49bd54f7{/stages/stage/kill,null,AVAILABLE,@Spark}
+23/09/06 18:00:18 INFO org.sparkproject.jetty.server.handler.ContextHandler: Started o.s.j.s.ServletContextHandler@78054f54{/metrics/json,null,AVAILABLE,@Spark}
+23/09/06 18:01:04 WARN org.apache.spark.scheduler.TaskSchedulerImpl: Initial job has not accepted any resources; check your cluster UI to ensure that workers are registered and have sufficient resources
+23/09/06 18:01:19 WARN org.apache.spark.scheduler.TaskSchedulerImpl: Initial job has not accepted any resources; check your cluster UI to ensure that workers are registered and have sufficient resources
+23/09/06 18:01:34 WARN org.apache.spark.scheduler.TaskSchedulerImpl: Initial job has not accepted any resources; check your cluster UI to ensure that workers are registered and have sufficient resources
+Pi is roughly 3.141682791416828
+23/09/06 18:01:54 INFO org.sparkproject.jetty.server.AbstractConnector: Stopped Spark@21680803{HTTP/1.1, (http/1.1)}{0.0.0.0:4040}
+23/09/06 18:01:54 WARN org.apache.spark.scheduler.cluster.k8s.ExecutorPodsWatchSnapshotSource: Kubernetes client has been closed (this is expected if the application is shutting down.)
+```
+
 ### 4.2. Node pools as the job runs
 
 Paste in Cloud Shell-
@@ -778,7 +793,7 @@ Similar to the above. Identify the executor of your choice and run the ```kubect
 
 <hr>
 
-## 5. BYO Peristent History Server 
+## 5. BYO Peristent History Server & Dataproc Metastore Service
 
 In Lab 2, we created a Persistent History Server and a Dataproc Metastore. To use the two, we just need to reference it during Dataproc cluster creation.
 
