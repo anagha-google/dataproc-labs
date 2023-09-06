@@ -1,19 +1,25 @@
 # About
 
 This lab is primer intended to demystify running Spark on Dataproc on GKE with a minimum viable Spark application.<br> 
-It reuses the foundational setup from Lab 2 - Dataproc on GCE. This includes the network, subnet, Dataproc Metatsore and Dataproc Persistent History Server.<br>
-We will eventually make this a standalone lab with no dependency on other labs.<br>
+It includes the foundational setup - the network, subnet, Dataproc Persistent History Server.<br>
 
-In this lab-
-1. We will first create a GKE cluster 
-2. And then create a basic Dataproc on GKE cluster on it.
-3. And run a basic Spark application on it
-4. We will review logging
-5. Monitoring for GKE clusters
 
-## 1. Foundational setup
+In this lab, we will-
+1. Run the foundational setup for Dataproc - APIs, org policies, buckets, the network, subnet, Dataproc Persistent History Server
+2. Run the foundational setup for GKE  
+3. Create a basic Dataproc on GKE cluster.
+4. Run a basic Spark application on it
+5. Review logging
+6. review monitoring for GKE clusters
 
-### 1.1. Install kubectl
+## 1. Foundational setup for Dataproc
+
+
+
+
+## 2. Foundational setup for GKE
+
+### 2.1. Install kubectl
 In Cloud Shell, lets install kubectl-
 ```
 sudo apt-get install kubectl
@@ -24,14 +30,14 @@ Then check the version-
 kubectl version
 ```
 
-### 1.2. Install required plugins/check version
+### 2.2. Install required plugins/check version
 kubectl and other Kubernetes clients require an authentication plugin, gke-gcloud-auth-plugin, which uses the Client-go Credential Plugins framework to provide authentication tokens to communicate with GKE clusters.
 
 ```
 gke-gcloud-auth-plugin --version
 ```
 
-### 1.3. Create an account for Docker if you dont have one already, and sign-in to Docker on Cloud Shell
+### 2.3. Create an account for Docker if you dont have one already, and sign-in to Docker on Cloud Shell
 This is helpful when creating custom images.
 
 Get an account-
@@ -42,7 +48,7 @@ Sign-in to Docker from Cloud Shell--
 docker login --username <your docker-username>
 ```
 
-### 1.4. Enable APIs
+### 2.4. Enable APIs
 
 Enable any APIs needed for this lab, over and above what was enabled as part of Lab 2.
 
@@ -53,7 +59,7 @@ gcloud services enable container.googleapis.com
 gcloud services enable artifactregistry.googleapis.com
 ```
 
-### 1.5. Create a bucket for use by dataproc on GKE
+### 2.5. Create a bucket for use by dataproc on GKE
 
 Paste in Cloud Shell-
 ```
@@ -62,9 +68,9 @@ DPGKE_LOG_BUCKET=dpgke-dataproc-bucket-${PROJECT_NBR}-logs
 gcloud storage buckets create gs://$DPGKE_LOG_BUCKET --project=$PROJECT_ID --location=$REGION
 ```
 
-### 1.6. Create a User Managed Service Account and grant yourself impersonation privileges
+### 2.6. Create a User Managed Service Account and grant yourself impersonation privileges
 
-#### 1.6.1. Create a User Managed Service Account 
+#### 2.6.1. Create a User Managed Service Account 
 
 Paste in Cloud Shell-
 ```
@@ -75,7 +81,7 @@ gcloud iam service-accounts create "$UMSA" \
 ```
 
 
-#### 1.6.2. Grant youself impersonation privileges to the service account
+#### 2.6.2. Grant youself impersonation privileges to the service account
 
 Paste in Cloud Shell-
 ```
@@ -93,7 +99,7 @@ gcloud iam service-accounts add-iam-policy-binding \
     --role="roles/iam.serviceAccountTokenCreator"
 ```
 
-### 1.7. Create a base GKE cluster
+### 2.7. Create a base GKE cluster
 
 Paste in Cloud Shell-
 ```
@@ -130,16 +136,16 @@ gcloud container clusters create \
   --service-account ${UMSA_FQN}
 ```
 
-### 1.8. Get credentials to connect to the GKE cluster
+### 2.8. Get credentials to connect to the GKE cluster
 
 Paste in Cloud Shell-
 ```
 gcloud container clusters get-credentials ${GKE_CLUSTER_NAME} --region $REGION
 ```
 
-### 1.9. Connect to the cluster and list entities created
+### 2.9. Connect to the cluster and list entities created
 
-#### 1.9.1. Namespaces
+#### 2.9.1. Namespaces
 
 Paste in Cloud Shell-
 ```
@@ -157,7 +163,7 @@ kube-system       Active   8h
 ----INFORMATIONAL----
 ```
 
-#### 1.9.2. Node pools
+#### 2.9.2. Node pools
 
 After creation of the GKE cluster in our lab, there should only be one node pool.
 
@@ -172,7 +178,7 @@ Here is the author's output-
 ----INFORMATIONAL----
 ```
 
-#### 1.9.3. Nodes
+#### 2.9.3. Nodes
 
 Paste in Cloud Shell-
 ```
@@ -187,7 +193,7 @@ gke-dataproc-gke-base-42-default-pool-aa627942-s50g   Ready    <none>   8h    v1
 ```
 
 
-### 1.10. Grant requisite permissions to Dataproc agent
+### 2.10. Grant requisite permissions to Dataproc agent
 
 Paste in Cloud Shell-
 ```
@@ -197,7 +203,7 @@ gcloud projects add-iam-policy-binding \
   "${PROJECT_ID}"
 ```
 
-### 1.11. Grant permissions for the User Managed Service Account to work with GKE and Kubernetes SAs
+### 2.11. Grant permissions for the User Managed Service Account to work with GKE and Kubernetes SAs
 
 Run the following commands to assign necessary Workload Identity permissions to the user managed service account. <br>
 
@@ -231,9 +237,9 @@ gcloud iam service-accounts add-iam-policy-binding \
 
 <hr>
 
-## 2. Create a basic Dataproc virtual cluster on GKE & submit a Spark job to it
+## 3. Create a basic Dataproc virtual cluster on GKE & submit a Spark job to it
 
-### 2.1. Create a basic Dataproc virtual cluster on GKE
+### 3.1. Create a basic Dataproc virtual cluster on GKE
 ```
 # Variables
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
@@ -282,9 +288,9 @@ gcloud dataproc clusters delete ${DP_CLUSTER_NAME}
 # 1c. Rerun the command at section 2.1 - create a Dataproc GKE cluster
 ```
 
-### 2.2. Review namespaces created
+### 3.2. Review namespaces created
 
-#### 2.2.1. Namespaces
+#### 3.2.1. Namespaces
 
 Paste in Cloud Shell-
 ```
@@ -304,7 +310,7 @@ kube-system                         Active   8h
 ```
 The dpgke* namespace is the Dataproc GKE cluster namespace
 
-#### 2.2.2. Pods
+#### 3.2.2. Pods
 
 Paste in Cloud Shell-
 ```
@@ -321,7 +327,7 @@ spark-engine-6577d5497f-mftx2                          1/1     Running   0      
 ```
 
 
-#### 2.2.3. Node pools
+#### 3.2.3. Node pools
 
 After creation of the Dataproc GKE cluster in our lab, there should only be an extra node pool.
 
@@ -339,7 +345,7 @@ Here is the author's output-
 dpgke-pool-default is the new one created for the Dataproc GKE cluster.
 
 
-#### 2.2.4. Nodes with node pool name
+#### 3.2.4. Nodes with node pool name
 
 Paste in Cloud Shell-
 ```
@@ -357,9 +363,9 @@ gke-dataproc-gke-base-42-default-pool-aa627942-s50g   Ready    <none>   8h      
 
 <hr>
 
-## 3. Run a Spark job on the cluster
+## 4. Run a Spark job on the cluster
 
-### 3.1. Submit the SparkPi job on the cluster
+### 4.1. Submit the SparkPi job on the cluster
 
 ```
 gcloud dataproc jobs submit spark \
@@ -372,7 +378,7 @@ gcloud dataproc jobs submit spark \
   -- 1000
 ```
 
-### 3.2. Node pools as the job runs
+### 4.2. Node pools as the job runs
 
 Paste in Cloud Shell-
 ```
@@ -388,7 +394,7 @@ Here is the author's output-
 ----INFORMATIONAL----
 ```
 
-### 3.3. Nodes as the job runs
+### 4.3. Nodes as the job runs
 Paste in Cloud Shell-
 ```
 kubectl get nodes -L cloud.google.com/gke-nodepool
@@ -407,7 +413,7 @@ gke-dataproc-gke-base-42-default-pool-aa627942-s50g   Ready    <none>   8h      
 
 Note that the executor and drive node pools show up
 
-### 3.4. Pods
+### 4.4. Pods
 
 Paste in Cloud Shell-
 ```
@@ -439,20 +445,20 @@ spark-engine-6577d5497f-mftx2                          1/1     Running     0    
 -------------------------------------------------------------------------------------------
 ```
 
-### 3.5. Driver logs in GKE
+### 4.5. Driver logs in GKE
 
 ```
 DRIVER=`kubectl get pods -n $DPGKE_CLUSTER_NAMESPACE | grep driver | cut -d' ' -f1`
 kubectl logs $DRIVER -n $DPGKE_CLUSTER_NAMESPACE -f
 ```
 
-### 3.6. Executor logs in GKE
+### 4.6. Executor logs in GKE
 
 Similar to the above. Identify the executor of your choice and run the ```kubectl logs``` command.
 
 <hr>
 
-## 4. BYO Peristent History Server & Hive Metastore
+## 5. BYO Peristent History Server 
 
 In Lab 2, we created a Persistent History Server and a Dataproc Metastore. To use the two, we just need to reference it during cluster creation.
 
@@ -489,17 +495,17 @@ And for Dataproc Metastore/Hive Metastore-
 
 <hr>
 
-## 5. Custom images
+## 6. Custom images
 
 Documentation is below; Lab module to be added in the near future.
 https://cloud.google.com/dataproc/docs/guides/dpgke/dataproc-gke-custom-images
 
 <hr>
 
-## 6. Spark UI
+## 7. Spark UI
 Is the Persistent Histroy Server covered in the section 4.
 
-## 7. Logging
+## 8. Logging
 
 When a job is executing, go to the Dataproc cluster UI, click on the Dataproc on GKE cluster, and then and click on the job running. Click on "View logs". You will see the following filters-
 ```
