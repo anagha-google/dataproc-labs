@@ -84,7 +84,9 @@ TODO
 ### B.1.1. Clone this repo in Cloud Shell
 
 ```
+cd ~
 git clone https://github.com/anagha-google/dataproc-labs.git
+cp -r dataproc-labs-new/7-dataproc-jupyter-plugin .
 ```
 
 <hr>
@@ -95,7 +97,7 @@ The Terraform in this section updates organization policies and enables Google A
 1. Paste this in Cloud Shell
 ```
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
-cd ~/dataproc-labs/7-dataproc-jupyter-plugin/provisioning-automation/foundations-tf
+cd ~/7-dataproc-jupyter-plugin/provisioning-automation/foundations-tf
 ```
 
 2. Run the Terraform for organization policy edits and enabling Google APIs
