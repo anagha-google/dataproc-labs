@@ -151,6 +151,35 @@ The following are screenshots from the author's environment-
 ![README](images/jupyter-02c.png)   
 <br><br>
 
+#### B2.2. Storage
+
+![README](images/jupyter-03.png)   
+<br><br>
+
+![README](images/jupyter-04.png)   
+<br><br>
+
+
+![README](images/jupyter-05.png)   
+<br><br>
+
+
+![README](images/jupyter-06.png)   
+<br><br>
+
+#### B2.3. Dataproc on GCE cluster
+
+![README](images/jupyter-07.png)   
+<br><br>
+
+
+#### B2.4. Dataproc Metastore Service
+
+![README](images/jupyter-08.png)   
+<br><br>
+
+<hr>
+
 
 <br>
 
