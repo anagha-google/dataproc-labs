@@ -86,7 +86,7 @@ TODO
 ```
 cd ~
 git clone https://github.com/anagha-google/dataproc-labs.git
-cp -r dataproc-labs-new/7-dataproc-jupyter-plugin .
+cp -r dataproc-labs/7-dataproc-jupyter-plugin .
 ```
 
 <hr>
