@@ -44,7 +44,6 @@ TODO
 - A quick read for architects
 - Targeted for hands on practitioners, especially data scientists and data engineers
 
-
 <hr>
 
 ### A.7. Features covered
@@ -57,11 +56,9 @@ TODO
 | Data Lake File System |  Google Cloud Storage |
 | Provisioning Automation | Terraform |
 
-
 <hr>
 
 ### A.8. Lab Architecture
-
 
 ![README](./images/lab-07-04.png)   
 <br><br>
