@@ -243,6 +243,10 @@ pip3 install --upgrade jupyterlab
 jupyter lab
 ```
 
+![README](images/jupyter-09.png)   
+<br><br>
+
+
 3. Update PATH varaiable as needed
    
 If it does not launch, you need to add the installation path to your PATH variable.<br>
@@ -259,7 +263,30 @@ Remember to edit the above to reflect your installation path...
 4. Shut down JupyterLab
 
 
-### 2.4. Install the plugin on your local machine
+### 2.4. Install the plugin on your local machine & launch JupyterLab
+
+1. Install plugin and launch JupyterLab
+```
+# Install the plugin. 
+pip3 install dataproc-jupyter-plugin
+
+# Enable the plugin extension. You can skip this step if the version of jupyterlab you have installed is greater than or equal to 4.0.0
+jupyter server extension enable dataproc_jupyter_plugin --user
+
+# Launch JupyterLab
+jupyter lab  
+```
+
+
+2. What to expect
+
+In the Jupyter launcher, you should see a new section called Dataproc Jobs and Sessions. Additionally, you might see two more sections called Dataproc Serverless Notebooks and Dataproc Cluster Notebooks if you have access to Dataproc serverless notebooks and/or have Dataproc clusters with “Jupyter Notebook” optional component running in your project.
+
+3. Quick visuals from the author's environment
+
+![README](images/jupyter-10.png)   
+<br><br>
+
 
 <br>
 
