@@ -70,6 +70,8 @@ It takes ~1 hour to complete and is fully scrpited, including with Terraform for
 
 ## B.1. Infrastructure provisioning
 
+We will use Terraform for infrastructure provisioning.
+
 ### B.1.1. Clone this repo in Cloud Shell
 
 ```
@@ -80,7 +82,7 @@ git clone https://github.com/anagha-google/dataproc-labs.git
 <hr>
 
 ### B.1.2. Foundational provisioning automation with Terraform 
-The Terraform in this section updates organization policies and enables Google APIs.<br>
+The Terraform in this section updates organization policies and enables Google APIs. Study the ```~/dataproc-labs/7-dataproc-jupyter-plugin/provisioning-automation/foundations-tf/configure-preferences.sh``` script and set the boolean for update organization policies to false if you dont need to update them. If you dont know about organization policies, just run as is. <br>
 
 1. Configure preferences by running this in Cloud Shell
 ```
@@ -103,7 +105,7 @@ terraform apply \
 ### B.1.3. Lab resources provisioning automation with Terraform 
 
 #### B.1.3.1. Resources provisioned
-In this section, we will provision-
+In this section, we will provision the core components for the lab-
 1. Network, subnet, firewall rule
 2. Storage buckets for code/data/logs 
 3. Dataproc on GCE cluster
@@ -130,7 +132,9 @@ terraform apply \
   -auto-approve >> dataproc-jupyter-plugin-core-tf.output
 ```
 
-**Note:** Takes ~10 minutes to complete.
+You can open another tab in Cloud Shell and tail the output file above to monitor progress.
+
+**Note:** Takes ~40 minutes to complete (largely due to time taken to provision Dataproc Metastore).
 
 <br>
 
@@ -179,6 +183,8 @@ The following are screenshots from the author's environment-
 <br><br>
 
 <hr>
+
+
 
 
 <br>
