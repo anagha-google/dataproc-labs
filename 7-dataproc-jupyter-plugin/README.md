@@ -17,7 +17,8 @@ It takes ~1.5 hours to complete and is fully scrpited, including with Terraform 
 
 ### A.3. Resources provisioned
 
-TODO
+![README](./images/jupyter-00.png)   
+<br><br>
 
 
 <hr>
