@@ -13,9 +13,6 @@ variable "project_number" {
 variable "gcp_account_name" {
  description = "lab user's FQN"
 }
-variable "deployment_service_account_name" {
- description = "Cloudbuild_Service_account/lab user having permission to deploy terraform resources"
-}
 variable "org_id" {
  description = "Organization ID in which project created"
 }
