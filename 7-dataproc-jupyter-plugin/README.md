@@ -99,11 +99,15 @@ PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 cd ~/dataproc-labs/7-dataproc-jupyter-plugin/provisioning-automation/foundations-tf
 ```
 
-2. Run the Terraform for organization policy edits and enabling Google APIs
+2. Configure preferences by running this in Cloud Shell
+```
+./configure-preferences.sh
+```
+
+3. Run the Terraform for organization policy edits and enabling Google APIs
 ```
 terraform init
 terraform apply \
-  -var="project_id=${PROJECT_ID}" \
   -auto-approve >> dataproc-jupyter-plugin-foundations-tf.output
 ```
 
