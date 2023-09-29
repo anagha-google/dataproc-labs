@@ -438,9 +438,7 @@ resource "google_dataproc_cluster" "gce_cluster" {
 
   }
   depends_on = [
-    time_sleep.sleep_after_network_and_storage_steps,
-    google_dataproc_cluster.sphs_creation,
-    time_sleep.sleep_after_composer_creation
+    time_sleep.sleep_after_network_and_storage_steps
     ]
 }
 
