@@ -274,7 +274,7 @@ resource "time_sleep" "sleep_after_bucket_creation" {
 8. Copy of data to dataproc_data_and_code_bucket
  *****************************************/
 
-resource "google_storage_bucket_object" "csv_files_upload_to_gcs" {
+resource "google_storage_bucket_object" "data_upload_to_gcs" {
   for_each = fileset("../datasets/", "*")
   source = "../datasets/${each.value}"
   name = "datasets/${each.value}"
@@ -284,10 +284,10 @@ resource "google_storage_bucket_object" "csv_files_upload_to_gcs" {
   ]
 }
 
-resource "google_storage_bucket_object" "other_files_upload_to_gcs" {
-  for_each = fileset("../datasets/cust_raw_data/", "*")
-  source = "../datasets/cust_raw_data/${each.value}"
-  name = "datasets/cust_raw_data/${each.value}"
+resource "google_storage_bucket_object" "notebook_upload_to_gcs" {
+  for_each = fileset("../notebooks/", "*")
+  source = "../datasets/${each.value}"
+  name = "datasets/${each.value}"
   bucket = "${local.dataproc_data_and_code_bucket}"
   depends_on = [
     time_sleep.sleep_after_bucket_creation
@@ -379,9 +379,6 @@ resource "google_dataproc_cluster" "gce_cluster" {
     staging_bucket = "${local.dataproc_spark_bucket}"
 
     # Override or set some custom properties
-    # 1. Version
-    # 2. BYO Persistent Spark History Server - by pointing to the logs underlying the service
-    # 3. Optional componet of Jupyter
     software_config {
       image_version = "2.0"
       override_properties = {
