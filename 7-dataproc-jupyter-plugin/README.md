@@ -93,25 +93,14 @@ git clone https://github.com/anagha-google/dataproc-labs.git
 ### B.1.2. Foundational provisioning automation with Terraform 
 The Terraform in this section updates organization policies and enables Google APIs.<br>
 
-1. Paste this in Cloud Shell
+1. Configure preferences by running this in Cloud Shell
 ```
-PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
-PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
-PROJECT_NAME=`gcloud projects describe ${PROJECT_ID} | grep name | cut -d':' -f2 | xargs`
-YOUR_GCP_ACCOUNT_NAME=`gcloud auth list --filter=status:ACTIVE --format="value(account)"`
-YOUR_GCP_ORG_ID=`gcloud organizations list --format="value(name)"`
-GCP_REGION="us-central1"
-
 cd ~/dataproc-labs/7-dataproc-jupyter-plugin/provisioning-automation/foundations-tf
-```
-
-2. Configure preferences by running this in Cloud Shell
-```
 chmod +x configure-preferences.sh 
 ./configure-preferences.sh
 ```
 
-3. Run the Terraform for organization policy edits and enabling Google APIs
+2. Run the Terraform for organization policy edits and enabling Google APIs
 ```
 terraform init
 terraform apply \
