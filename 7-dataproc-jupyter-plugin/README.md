@@ -288,9 +288,14 @@ In the Jupyter launcher, you should see a new section called Dataproc Jobs and S
 <br><br>
 
 
+**NOTE:** Do not shut down the terminal session on your local machine from where you launched Jupyter.
+
+
 <br>
 
 <hr>
+
+
 
 
 
