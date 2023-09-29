@@ -96,11 +96,18 @@ The Terraform in this section updates organization policies and enables Google A
 1. Paste this in Cloud Shell
 ```
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
+PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
+PROJECT_NAME=`gcloud projects describe ${PROJECT_ID} | grep name | cut -d':' -f2 | xargs`
+YOUR_GCP_ACCOUNT_NAME=`gcloud auth list --filter=status:ACTIVE --format="value(account)"`
+YOUR_GCP_ORG_ID=`gcloud organizations list --format="value(name)"`
+GCP_REGION="us-central1"
+
 cd ~/dataproc-labs/7-dataproc-jupyter-plugin/provisioning-automation/foundations-tf
 ```
 
 2. Configure preferences by running this in Cloud Shell
 ```
+chmod +x configure-preferences.sh 
 ./configure-preferences.sh
 ```
 
@@ -111,9 +118,7 @@ terraform apply \
   -auto-approve >> dataproc-jupyter-plugin-foundations-tf.output
 ```
 
-**Note:** Wait till the provisioning completes (~10 minutes or less) before moving to the next section.
-
-
+**Note:** Wait till the provisioning completes (~5 minutes or less) before moving to the next section.
 
 <hr>
 
@@ -136,23 +141,14 @@ In this section, we will provision-
 ```
 cd ~/dataproc-labs/7-dataproc-jupyter-plugin/provisioning-automation/core-tf/terraform
 
-PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
-PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
-PROJECT_NAME=`gcloud projects describe ${PROJECT_ID} | grep name | cut -d':' -f2 | xargs`
-YOUR_GCP_ACCOUNT_NAME=`gcloud auth list --filter=status:ACTIVE --format="value(account)"`
-YOUR_GCP_ORG_ID=`gcloud organizations list --format="value(name)"`
-GCP_REGION="us-central1"
+chmod +x configure-preferences.sh 
+./configure-preferences.sh
 ```
 
 2. Run the Terraform for provisioning the rest of the environment
 ```
 terraform init
 terraform apply \
-  -var="project_id=${PROJECT_ID}" \
-  -var="project_name=${PROJECT_NAME}" \
-  -var="project_number=${PROJECT_NBR}" \
-  -var="org_id=${ORG_ID}" \
-  -var="gcp_region=${GCP_REGION}" \
   -auto-approve >> dataproc-jupyter-plugin-core-tf.output
 ```
 
