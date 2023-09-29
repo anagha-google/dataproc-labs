@@ -23,19 +23,19 @@ project_id                  = "${var.project_id}"
 project_nbr                 = "${var.project_number}"
 admin_fqupn                 = "${var.gcp_account_name}"
 location                    = "${var.gcp_region}"
-umsa                        = "dpgce-lab-sa"
+umsa                        = "lab-lab-sa"
 umsa_fqn                    = "${local.umsa}@${local.project_id}.iam.gserviceaccount.com"
-vpc_nm                      = "dpgce-vpc-${local.project_nbr}"
+vpc_nm                      = "lab-vpc-${local.project_nbr}"
 spark_subnet_nm             = "spark-snet"
 spark_subnet_cidr           = "10.0.0.0/16"
-bq_datamart_ds              = "dataproc_labmart"
-metastore_db_nm             = "dpgce_metastore_db"
-metastore_nm                = "dpgce-metastore-${local.project_nbr}"
+bq_datamart_ds              = "lab_mart"
+metastore_db_nm             = "lab_metastore_db"
+metastore_nm                = "lab-metastore-${local.project_nbr}"
 subnet_resource_uri         = "projects/${local.project_id}/regions/${local.location}/subnetworks/${local.spark_subnet_nm}"
-dpgce_cluster_nm            = "dpgce-cluster-static-${local.project_nbr}"
-dataproc_spark_bucket          = "dpgce-spark-bucket-${local.project_nbr}"
-dataproc_spark_bucket_fqn      = "gs://dpgce-spark-${local.project_nbr}"
-dataproc_data_and_code_bucket  = "dataproc_data_and_code_bucket-${local.project_nbr}"
+dpgce_cluster_nm            = "lab-cluster-static-${local.project_nbr}"
+dataproc_spark_bucket          = "lab-spark-bucket-${local.project_nbr}"
+dataproc_spark_bucket_fqn      = "gs://lab-spark-${local.project_nbr}"
+dataproc_data_and_code_bucket  = "lab_data_and_code_bucket-${local.project_nbr}"
 }
 
 
@@ -298,8 +298,8 @@ variable "notebooks_to_upload" {
     "../notebooks/chicago-crimes-analysis/chicago-crimes-analytics.ipynb"                              = "notebooks/bigquery-tables/chicago-crimes-analytics.ipynb",
     "../notebooks/icecream-sales-forecasting/icecream-sales-forecasting.ipynb"                         = "notebooks/external-tables/icecream-sales-forecasting.ipynb",
     "../notebooks/retail-transactions-anomaly-detection/retail-transactions-anomaly-detection.ipynb"   = "notebooks/external-tables/retail-transactions-anomaly-detection.ipynb",
-    "../notebooks/climate-analysis/climate-analysis-sfo.ipynb"                                         = "notebooks/bigquery/climate-analysis-sfo.ipynb"
-    "../notebooks/misc/hive-metastore-explorer.ipynb"                                                  = "notebooks/hive-metastore/hive-metastore-explorer.ipynb"
+    "../notebooks/climate-analysis/climate-analysis-sfo.ipynb"                                         = "notebooks/bigquery-tables/climate-analysis-sfo.ipynb"
+    "../notebooks/misc/hive-metastore-explorer.ipynb"                                                  = "notebooks/hive-metastore-utils/hive-metastore-explorer.ipynb"
   }
 }
 
