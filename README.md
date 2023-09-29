@@ -27,7 +27,7 @@ This repo hosts minimum viable self-contained, end-to-end solutions that showcas
 | -- | :--- | :--- |
 | 1. | Anagha Khanolkar | Creator |
 | 2. | Rick (Rugui) Chen | Support for GKE aspects for the lab on Dataproc on GKE |
-| 3. | Dagang Wei | (Google Engineering) Support for Apache Hudi lab |
+| 3. | Dagang Wei | (Google Engineering) Support for Apache Hudi in Dataproc GCDE Optional Component - Hudi |
 
 
 
