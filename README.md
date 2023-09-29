@@ -9,8 +9,8 @@ This repo hosts minimum viable self-contained, end-to-end solutions that showcas
 | [03](3-dataproc-gke) |  Just enough Dataproc on GKE  | #Spark-On-Dataproc-GKE #Spark #GKE #Kubernetes #Spark-on-Kubernetes |
 | [04](4-dataproc-gce-with-gpu) |  Just enough Dataproc on GCE with GPU acceleration  | #Spark-On-Dataproc-GCE #Spark #GPU #spark-rapics #Nvidia |
 | [05](5-dataproc-serverless-with-gpu) |  Just enough Dataproc Serverless Spark with GPU acceleration  | #Spark-On-Dataproc-Serverless #Spark #Airflow #Composer |
-| [06](6-dataproc-jupyter-plugin) | BYO Jupyter for Dataproc GCE clusters and Dataproc Serverless with Dataproc Jupyter Plugin  | #Spark-On-Dataproc-Serverless #Spark-On-Dataproc-GCE #Spark #Airflow #Composer #Jupyter #BYO-Jupyter |
-| [07](7-dataproc-workspaces) | Just enough Dataproc Workspaces for Data Scientists and Data Engineers | #Spark-On-Dataproc-GCE # Workspaces | 
+| [06](6-dataproc-workspaces) | Just enough Dataproc Workspaces for Data Scientists and Data Engineers | #Spark-On-Dataproc-GCE # Workspaces | 
+| [06](7-dataproc-jupyter-plugin) | BYO Jupyter for Dataproc GCE clusters and Dataproc Serverless with Dataproc Jupyter Plugin  | #Spark-On-Dataproc-Serverless #Spark-On-Dataproc-GCE #Spark #Airflow #Composer #Jupyter #BYO-Jupyter |
 | [08](https://github.com/anagha-google/table-format-lab-delta) | Just enough Delta Lake on GCP | #Spark-On-Dataproc-Serverless #Spark #Airflow #Composer #DeltaLake #TableFormat #BigLake #BigLake-Manifest |
 | [09](https://github.com/anagha-google/apache-hudi-gcp-lab) | Just enough Apache Hudi on GCP | #Spark-On-Dataproc-GCE #Spark #Airflow #Composer #Hudi #TableFormat |
 | [10](https://github.com/anagha-google/s8s-spark-mlops-lab) | Scalable Machine Learning with Spark on GCP and Vertex AI | #Spark-On-Dataproc-Serverless #Spark #MLOps #Composer #VertexAI #Kubeflow |
