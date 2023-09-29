@@ -295,10 +295,11 @@ resource "google_storage_bucket_object" "dataset_upload_to_gcs" {
 variable "notebooks_to_upload" {
   type = map(string)
   default = {
-    "../notebooks/chicago-crimes-analysis/chicago-crimes-analytics.ipynb"                              = "notebooks/chicago-crimes-analysis/chicago-crimes-analytics.ipynb",
-    "../notebooks/icecream-sales-forecasting/icecream-sales-forecasting.ipynb"                         = "notebooks/icecream-sales-forecasting.ipynb",
-    "../notebooks/retail-transactions-anomaly-detection/retail-transactions-anomaly-detection.ipynb"   = "notebooks/retail-transactions-anomaly-detection/retail-transactions-anomaly-detection.ipynb",
-    "../notebooks/climate-analysis/climate-analysis-sfo.ipynb"                                         = "notebooks/climate-analysis/climate-analysis-sfo.ipynb"
+    "../notebooks/chicago-crimes-analysis/chicago-crimes-analytics.ipynb"                              = "notebooks/bigquery-tables/chicago-crimes-analytics.ipynb",
+    "../notebooks/icecream-sales-forecasting/icecream-sales-forecasting.ipynb"                         = "notebooks/external-tables/icecream-sales-forecasting.ipynb",
+    "../notebooks/retail-transactions-anomaly-detection/retail-transactions-anomaly-detection.ipynb"   = "notebooks/external-tables/retail-transactions-anomaly-detection.ipynb",
+    "../notebooks/climate-analysis/climate-analysis-sfo.ipynb"                                         = "notebooks/bigquery/climate-analysis-sfo.ipynb"
+    "../notebooks/misc/hive-metastore-explorer.ipynb"                                                  = "notebooks/hive-metastore/hive-metastore-explorer.ipynb"
   }
 }
 
