@@ -64,7 +64,7 @@ It takes ~1 hour to complete and is fully scrpited, including with Terraform for
 
 <hr>
 
-# B. THE LAB
+# B. PROVISIONING THE LAB ENVIRONMENT
 
 <hr>
 
@@ -184,8 +184,82 @@ The following are screenshots from the author's environment-
 
 <hr>
 
+## C. THE LAB
+
+## 1. About the lab
 
 
+## 2. Install the Dataproc Jupyter Plugin locally
+
+All of this is to be run locally on your machine, NOT on Cloud Shell.
+
+### 2.1. Dependencies
+
+1. Python 3.8
+
+On your local machine, run the below in the terminal to validate Python version:
+```
+
+$ python3 --version
+```
+Install or upgrade to 3.8 or higher
+
+2. gcloud CLI
+https://cloud.google.com/sdk/docs/install   
+
+### 2.2. Login and configure project
+
+1. Launch gcloud and authenticate
+
+```
+gcloud auth login
+```
+
+2. Configure project
+
+```
+gcloud config set project YOUR_PROJECT_NAME
+```
+
+
+### 2.3. Install JupyterLab or upgrade if you already have it
+
+1. Install JupyterLab
+
+```
+# Command to install JupyterLab in your local python environment. You could skip this step if you have already installed JupyterLab.
+pip3 install jupyterlab
+
+# Command to verify Jupyterlab version
+pip3 show jupyterlab
+
+# Command to upgrade Jupyterlab to the latest version
+pip3 install --upgrade jupyterlab
+
+```
+
+2. Verify the installation by launching Jupyter
+```
+jupyter lab
+```
+
+3. Update PATH varaiable as needed
+   
+If it does not launch, you need to add the installation path to your PATH variable.<br>
+The author got the following warning-
+```
+'/Users/akhanolkar/Library/Python/3.9/bin' which is not on PATH.
+```
+The author had to update their .bash_profile to include the following:
+```
+export PATH=$PATH:/Users/akhanolkar/Library/Python/3.9/bin
+```
+Remember to edit the above to reflect your installation path...
+
+4. Shut down JupyterLab
+
+
+### 2.4. Install the plugin on your local machine
 
 <br>
 
