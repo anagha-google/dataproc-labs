@@ -21,27 +21,21 @@ Local variables declaration
 locals {
 project_id                  = "${var.project_id}"
 project_nbr                 = "${var.project_number}"
-admin_upn_fqn               = "${var.gcp_account_name}"
+admin_fqupn                 = "${var.gcp_account_name}"
 location                    = "${var.gcp_region}"
 umsa                        = "dpgce-lab-sa"
 umsa_fqn                    = "${local.umsa}@${local.project_id}.iam.gserviceaccount.com"
-dpgce_spark_bucket          = "dpgce-spark-bucket-${local.project_nbr}"
-dpgce_spark_bucket_fqn      = "gs://dpgce-spark-${local.project_nbr}"
-dpgce_spark_sphs_nm         = "dpgce-sphs-${local.project_nbr}"
-dpgce_spark_sphs_bucket     = "dpgce-sphs-${local.project_nbr}"
-dpgce_spark_sphs_bucket_fqn = "gs://dpgce-sphs-${local.project_nbr}"
 vpc_nm                      = "dpgce-vpc-${local.project_nbr}"
 spark_subnet_nm             = "spark-snet"
 spark_subnet_cidr           = "10.0.0.0/16"
-dpgce_data_and_code_bucket  = "dpgce_data_and_code_bucket-${local.project_nbr}"
-bq_datamart_ds              = "cell_tower_reporting_mart"
-CC_GMSA_FQN                 = "service-${local.project_nbr}@cloudcomposer-accounts.iam.gserviceaccount.com"
-GCE_GMSA_FQN                = "${local.project_nbr}-compute@developer.gserviceaccount.com"
-CLOUD_COMPOSER2_IMG_VERSION = "${var.cloud_composer_image_version}"
+bq_datamart_ds              = "dataproc_labmart"
 metastore_db_nm             = "dpgce_metastore_db"
 metastore_nm                = "dpgce-metastore-${local.project_nbr}"
 subnet_resource_uri         = "projects/${local.project_id}/regions/${local.location}/subnetworks/${local.spark_subnet_nm}"
 dpgce_cluster_nm            = "dpgce-cluster-static-${local.project_nbr}"
+dataproc_spark_bucket          = "dpgce-spark-bucket-${local.project_nbr}"
+dataproc_spark_bucket_fqn      = "gs://dpgce-spark-${local.project_nbr}"
+dataproc_data_and_code_bucket  = "dataproc_data_and_code_bucket-${local.project_nbr}"
 }
 
 
@@ -92,45 +86,8 @@ module "umsa_role_grants" {
   ]
 }
 
-/******************************************
-2b. IAM role grants to Google Managed Service Account for Cloud Composer 2
- *****************************************/
-
-module "gmsa_role_grants_cc" {
-  source                  = "terraform-google-modules/iam/google//modules/member_iam"
-  service_account_address = "${local.CC_GMSA_FQN}"
-  prefix                  = "serviceAccount"
-  project_id              = local.project_id
-  project_roles = [
-    
-    "roles/composer.ServiceAgentV2Ext",
-  ]
-  depends_on = [
-    module.umsa_role_grants
-  ]
-}
-
-/******************************************
-2c. IAM role grants to Google Managed Service 
-Account for Compute Engine (for Cloud Composer 2 to download images)
- *****************************************/
-
-module "gmsa_role_grants_gce" {
-  source                  = "terraform-google-modules/iam/google//modules/member_iam"
-  service_account_address = "${local.GCE_GMSA_FQN}"
-  prefix                  = "serviceAccount"
-  project_id              = local.project_id
-  project_roles = [
-    
-    "roles/editor",
-  ]
-  depends_on = [
-    module.umsa_role_grants
-  ]
-}
-
 /******************************************************
-3. Service Account Impersonation Grants to Admin User
+2. Service Account Impersonation Grants to Admin User
  ******************************************************/
 
 module "umsa_impersonate_privs_to_admin" {
@@ -141,10 +98,10 @@ module "umsa_impersonate_privs_to_admin" {
   mode             = "additive"
   bindings = {
     "roles/iam.serviceAccountUser" = [
-      "user:${local.admin_upn_fqn}"
+      "user:${local.admin_fqupn}"
     ],
     "roles/iam.serviceAccountTokenCreator" = [
-      "user:${local.admin_upn_fqn}"
+      "user:${local.admin_fqupn}"
     ]
   }
   depends_on = [
@@ -153,7 +110,7 @@ module "umsa_impersonate_privs_to_admin" {
 }
 
 /******************************************************
-4. IAM role grants to Admin User
+3. IAM role grants to Admin User
  ******************************************************/
 
 module "administrator_role_grants" {
@@ -163,38 +120,38 @@ module "administrator_role_grants" {
 
   bindings = {
     "roles/storage.admin" = [
-      "user:${local.admin_upn_fqn}",
+      "user:${local.admin_fqupn}",
     ]
     "roles/metastore.admin" = [
 
-      "user:${local.admin_upn_fqn}",
+      "user:${local.admin_fqupn}",
     ]
     "roles/dataproc.admin" = [
-      "user:${local.admin_upn_fqn}",
+      "user:${local.admin_fqupn}",
     ]
     "roles/bigquery.admin" = [
-      "user:${local.admin_upn_fqn}",
+      "user:${local.admin_fqupn}",
     ]
     "roles/bigquery.user" = [
-      "user:${local.admin_upn_fqn}",
+      "user:${local.admin_fqupn}",
     ]
     "roles/bigquery.dataEditor" = [
-      "user:${local.admin_upn_fqn}",
+      "user:${local.admin_fqupn}",
     ]
     "roles/bigquery.jobUser" = [
-      "user:${local.admin_upn_fqn}",
+      "user:${local.admin_fqupn}",
     ]
     "roles/composer.environmentAndStorageObjectViewer" = [
-      "user:${local.admin_upn_fqn}",
+      "user:${local.admin_fqupn}",
     ]
     "roles/iam.serviceAccountUser" = [
-      "user:${local.admin_upn_fqn}",
+      "user:${local.admin_fqupn}",
     ]
     "roles/iam.serviceAccountTokenCreator" = [
-      "user:${local.admin_upn_fqn}",
+      "user:${local.admin_fqupn}",
     ]
     "roles/composer.admin" = [
-      "user:${local.admin_upn_fqn}",
+      "user:${local.admin_fqupn}",
     ]
   }
   depends_on = [
@@ -215,7 +172,6 @@ resource "time_sleep" "sleep_after_identities_permissions" {
     module.umsa_role_grants,
     module.umsa_impersonate_privs_to_admin,
     module.administrator_role_grants,
-    module.gmsa_role_grants_cc,
     module.gmsa_role_grants_gce
   ]
 }
@@ -280,8 +236,8 @@ resource "time_sleep" "sleep_after_network_and_firewall_creation" {
 7. Storage bucket creation
  *****************************************/
 
-resource "google_storage_bucket" "dpgce_spark_bucket_creation" {
-  name                              = local.dpgce_spark_bucket
+resource "google_storage_bucket" "dataproc_spark_bucket_creation" {
+  name                              = local.dataproc_spark_bucket
   location                          = local.location
   uniform_bucket_level_access       = true
   force_destroy                     = true
@@ -290,18 +246,8 @@ resource "google_storage_bucket" "dpgce_spark_bucket_creation" {
   ]
 }
 
-resource "google_storage_bucket" "dpgce_spark_sphs_bucket_creation" {
-  name                              = local.dpgce_spark_sphs_bucket
-  location                          = local.location
-  uniform_bucket_level_access       = true
-  force_destroy                     = true
-  depends_on = [
-      time_sleep.sleep_after_network_and_firewall_creation
-  ]
-}
-
-resource "google_storage_bucket" "dpgce_data_and_code_bucket_creation" {
-  name                              = local.dpgce_data_and_code_bucket
+resource "google_storage_bucket" "dataproc_data_and_code_bucket_creation" {
+  name                              = local.dataproc_data_and_code_bucket
   location                          = local.location
   uniform_bucket_level_access       = true
   force_destroy                     = true
@@ -318,50 +264,22 @@ dependencies having not completed
 resource "time_sleep" "sleep_after_bucket_creation" {
   create_duration = "60s"
   depends_on = [
-    google_storage_bucket.dpgce_data_and_code_bucket_creation,
-    google_storage_bucket.dpgce_spark_sphs_bucket_creation,
-    google_storage_bucket.dpgce_spark_bucket_creation
+    google_storage_bucket.dataproc_data_and_code_bucket_creation,
+    google_storage_bucket.dataproc_spark_bucket_creation
 
   ]
 }
 
-/******************************************
-8a. Copy of Pyspark scripts to dpgce_data_and_code_bucket
- *****************************************/
-
-resource "google_storage_bucket_object" "pyspark_scripts_upload_to_gcs" {
-  for_each = fileset("../scripts/pyspark/", "*")
-  source = "../scripts/pyspark/${each.value}"
-  name = "scripts/pyspark/${each.value}"
-  bucket = "${local.dpgce_data_and_code_bucket}"
-  depends_on = [
-    time_sleep.sleep_after_bucket_creation
-  ]
-}
 
 /******************************************
-8b. Copy of Airflow DAG script to dpgce_data_and_code_bucket
- *****************************************/
-
-resource "google_storage_bucket_object" "airflow_dag_upload_to_gcs" {
-  for_each = fileset("../scripts/composer-dag/", "*")
-  source = "../scripts/composer-dag/${each.value}"
-  name = "scripts/composer-dag/${each.value}"
-  bucket = "${local.dpgce_data_and_code_bucket}"
-  depends_on = [
-    time_sleep.sleep_after_bucket_creation
-  ]
-}
-
-/******************************************
-8c. Copy of data to dpgce_data_and_code_bucket
+8. Copy of data to dataproc_data_and_code_bucket
  *****************************************/
 
 resource "google_storage_bucket_object" "csv_files_upload_to_gcs" {
   for_each = fileset("../datasets/", "*")
   source = "../datasets/${each.value}"
   name = "datasets/${each.value}"
-  bucket = "${local.dpgce_data_and_code_bucket}"
+  bucket = "${local.dataproc_data_and_code_bucket}"
   depends_on = [
     time_sleep.sleep_after_bucket_creation
   ]
@@ -371,7 +289,7 @@ resource "google_storage_bucket_object" "other_files_upload_to_gcs" {
   for_each = fileset("../datasets/cust_raw_data/", "*")
   source = "../datasets/cust_raw_data/${each.value}"
   name = "datasets/cust_raw_data/${each.value}"
-  bucket = "${local.dpgce_data_and_code_bucket}"
+  bucket = "${local.dataproc_data_and_code_bucket}"
   depends_on = [
     time_sleep.sleep_after_bucket_creation
   ]
@@ -390,68 +308,10 @@ resource "time_sleep" "sleep_after_network_and_storage_steps" {
   ]
 }
 
-/******************************************
-9a. PHS creation
-******************************************/
 
-# Docs: https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dataproc_cluster
-
-resource "google_dataproc_cluster" "sphs_creation" {
-  provider = google-beta
-  name     = local.dpgce_spark_sphs_nm
-  region   = local.location
-
-  cluster_config {
-    
-    endpoint_config {
-        enable_http_port_access = true
-    }
-
-    staging_bucket = local.dpgce_spark_bucket
-    
-    # Override or set some custom properties
-    software_config {
-      image_version = "2.0"
-      override_properties = {
-        "dataproc:dataproc.allow.zero.workers"=true
-        "dataproc:job.history.to-gcs.enabled"=true
-        "spark:spark.history.fs.logDirectory"="${local.dpgce_spark_sphs_bucket_fqn}/*/spark-job-history"
-        "spark:spark.eventLog.dir"="${local.dpgce_spark_sphs_bucket_fqn}/events/spark-job-history"
-        "mapred:mapreduce.jobhistory.read-only.dir-pattern"="${local.dpgce_spark_sphs_bucket_fqn}/*/mapreduce-job-history/done"
-        "mapred:mapreduce.jobhistory.done-dir"="${local.dpgce_spark_sphs_bucket_fqn}/events/mapreduce-job-history/done"
-        "mapred:mapreduce.jobhistory.intermediate-done-dir"="${local.dpgce_spark_sphs_bucket_fqn}/events/mapreduce-job-history/intermediate-done"
-        "yarn:yarn.nodemanager.remote-app-log-dir"="${local.dpgce_spark_sphs_bucket_fqn}/yarn-logs"
-
-      }      
-    }
-    gce_cluster_config {
-      subnetwork =  local.subnet_resource_uri 
-      service_account = local.umsa_fqn
-      service_account_scopes = [
-        "cloud-platform"
-      ]
-    }
-  }
-  depends_on = [
-    module.administrator_role_grants,
-    module.vpc_creation,
-    time_sleep.sleep_after_network_and_storage_steps
-  ]  
-}
-
-/*******************************************
-Introducing sleep to minimize errors from
-dependencies having not completed
-********************************************/
-resource "time_sleep" "sleep_after_phs_creation" {
-  create_duration = "180s"
-  depends_on = [
-      google_dataproc_cluster.sphs_creation
-  ]
-}
 
 /******************************************
-9b. BigQuery dataset creation
+9. BigQuery dataset creation
 ******************************************/
 
 resource "google_bigquery_dataset" "bq_dataset_creation" {
@@ -459,122 +319,10 @@ resource "google_bigquery_dataset" "bq_dataset_creation" {
   location                    = "US"
 }
 
-/******************************************
-10. Cloud Composer 2 creation
-******************************************/
 
-resource "google_composer_environment" "cloud_composer_env_creation" {
-  name   = "${local.project_id}-cc2"
-  region = local.location
-  provider = google-beta
-  config {
-
-    software_config {
-      image_version = local.CLOUD_COMPOSER2_IMG_VERSION 
-      env_variables = {
-        
-        AIRFLOW_VAR_PROJECT_ID = "${local.project_id}"
-        AIRFLOW_VAR_PROJECT_NBR = "${local.project_nbr}"        
-        AIRFLOW_VAR_REGION = "${local.location}"
-        AIRFLOW_VAR_CODE_BUCKET = "${local.dpgce_data_and_code_bucket}"
-        AIRFLOW_VAR_BQ_DATASET = "${local.bq_datamart_ds}"
-        AIRFLOW_VAR_METASTORE_DB = "${local.bq_datamart_ds}"
-        AIRFLOW_VAR_SUBNET_URI = "${local.subnet_resource_uri}"
-        
-        AIRFLOW_VAR_UMSA = "${local.umsa}"
-       
-        AIRFLOW_VAR_PHS = "${local.dpgce_spark_sphs_nm}"
-      }
-    }
-
-    node_config {
-      network    = local.vpc_nm
-      subnetwork = local.spark_subnet_nm
-      service_account = local.umsa_fqn
-    }
-  }
-
-  depends_on = [
-    time_sleep.sleep_after_phs_creation
-  ] 
-
-  timeouts {
-    create = "75m"
-  } 
-}
-
-/*******************************************
-Introducing sleep to minimize errors from
-dependencies having not completed
-********************************************/
-resource "time_sleep" "sleep_after_composer_creation" {
-  create_duration = "300s"
-  depends_on = [
-      google_composer_environment.cloud_composer_env_creation
-  ]
-}
 
 /******************************************
-11. Cloud Composer 2 DAG bucket capture so we can upload DAG to it
-******************************************/
-
-output "CLOUD_COMPOSER_DAG_BUCKET" {
-  value = google_composer_environment.cloud_composer_env_creation.config.0.dag_gcs_prefix
-}
-
-/*******************************************
-12. Upload Airflow DAG to Composer DAG bucket
-******************************************/
-# Remove the gs:// prefix and /dags suffix
-
-resource "google_storage_bucket_object" "airflow_dag_upload_to_cc2_dag_bucket" {
-  for_each = fileset("../scripts/composer-dag/", "*")
-  source = "../scripts/composer-dag/${each.value}"
-  name = "dags/${each.value}"
-  bucket = substr(substr(google_composer_environment.cloud_composer_env_creation.config.0.dag_gcs_prefix, 5, length(google_composer_environment.cloud_composer_env_creation.config.0.dag_gcs_prefix)), 0, (length(google_composer_environment.cloud_composer_env_creation.config.0.dag_gcs_prefix)-10))
-  depends_on = [
-    time_sleep.sleep_after_composer_creation
-  ]
-}
-
-/******************************************
-13. Output important variables needed for the demo
-******************************************/
-
-output "PROJECT_ID" {
-  value = local.project_id
-}
-
-output "PROJECT_NBR" {
-  value = local.project_nbr
-}
-
-output "LOCATION" {
-  value = local.location
-}
-
-output "VPC_NM" {
-  value = local.vpc_nm
-}
-
-output "SPARK_SUBNET" {
-  value = local.spark_subnet_nm
-}
-
-output "PERSISTENT_HISTORY_SERVER_NM" {
-  value = local.dpgce_spark_sphs_nm
-}
-
-output "UMSA_FQN" {
-  value = local.umsa_fqn
-}
-
-output "CODE_AND_DATA_BUCKET" {
-  value = local.dpgce_data_and_code_bucket
-}
-
-/******************************************
-14. Create Dataproc Metastore with gRPC endpoint
+10. Create Dataproc Metastore with gRPC endpoint
 ******************************************/
 
 resource "google_dataproc_metastore_service" "datalake_metastore" {
@@ -612,7 +360,7 @@ resource "time_sleep" "sleep_after_metastore_creation" {
 }
 
 /******************************************
-15. Create Dataproc GCE
+11. Create Dataproc GCE
 ******************************************/
 
 resource "google_dataproc_cluster" "gce_cluster" {
@@ -629,7 +377,7 @@ resource "google_dataproc_cluster" "gce_cluster" {
       num_instances = 0
     }
 
-    staging_bucket = "${local.dpgce_spark_bucket}"
+    staging_bucket = "${local.dataproc_spark_bucket}"
 
     # Override or set some custom properties
     # 1. Version
@@ -637,15 +385,8 @@ resource "google_dataproc_cluster" "gce_cluster" {
     # 3. Optional componet of Jupyter
     software_config {
       image_version = "2.0"
-      optional_components = [ "JUPYTER" ]
       override_properties = {
         "dataproc:dataproc.allow.zero.workers" = "false"
-        "spark:spark.history.fs.logDirectory"="${local.dpgce_spark_sphs_bucket_fqn}/*/spark-job-history"
-        "spark:spark.eventLog.dir"="${local.dpgce_spark_sphs_bucket_fqn}/events/spark-job-history"
-        "mapred:mapreduce.jobhistory.read-only.dir-pattern"="${local.dpgce_spark_sphs_bucket_fqn}/*/mapreduce-job-history/done"
-        "mapred:mapreduce.jobhistory.done-dir"="${local.dpgce_spark_sphs_bucket_fqn}/events/mapreduce-job-history/done"
-        "mapred:mapreduce.jobhistory.intermediate-done-dir"="${local.dpgce_spark_sphs_bucket_fqn}/events/mapreduce-job-history/intermediate-done"
-        "yarn:yarn.nodemanager.remote-app-log-dir"="${local.dpgce_spark_sphs_bucket_fqn}/yarn-logs"
         "dataproc:dataproc.logging.stackdriver.enable"=true
         "dataproc:dataproc.monitoring.stackdriver.enable"=true
         "yarn:yarn.log-aggregation.enabled"=true
