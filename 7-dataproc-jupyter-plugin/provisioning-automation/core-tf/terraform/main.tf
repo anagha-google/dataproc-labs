@@ -171,8 +171,7 @@ resource "time_sleep" "sleep_after_identities_permissions" {
     module.umsa_creation,
     module.umsa_role_grants,
     module.umsa_impersonate_privs_to_admin,
-    module.administrator_role_grants,
-    module.gmsa_role_grants_gce
+    module.administrator_role_grants
   ]
 }
 
