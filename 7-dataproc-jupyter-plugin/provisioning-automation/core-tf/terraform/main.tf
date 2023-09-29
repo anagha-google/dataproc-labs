@@ -274,21 +274,39 @@ resource "time_sleep" "sleep_after_bucket_creation" {
 8. Copy of data to dataproc_data_and_code_bucket
  *****************************************/
 
-resource "google_storage_bucket_object" "data_upload_to_gcs" {
-  for_each = fileset("../datasets/", "*")
-  source = "../datasets/${each.value}"
-  name = "datasets/${each.value}"
-  bucket = "${local.dataproc_data_and_code_bucket}"
+variable "datasets_to_upload" {
+  type = map(string)
+  default = {
+    "../datasets/icecream-sales-forecasting/icecream_sales.csv"               = "datasets/icecream-sales-forecasting/icecream_sales.csv",
+    "../datasets/retail-transactions-anomaly-detection/anomaly_detection.csv" = "datasets/retail-transactions-anomaly-detection/anomaly_detection.csv",
+  }
+}
+
+resource "google_storage_bucket_object" "dataset_upload_to_gcs" {
+  for_each = var.datasets_to_upload
+  name     = each.value
+  source   = "${path.module}/${each.key}"
+  bucket   = "${local.dataproc_data_and_code_bucket}"
   depends_on = [
     time_sleep.sleep_after_bucket_creation
   ]
 }
 
+variable "notebooks_to_upload" {
+  type = map(string)
+  default = {
+    "../notebooks/chicago-crimes-analysis/chicago-crimes-analytics.ipynb"                              = "notebooks/chicago-crimes-analysis/chicago-crimes-analytics.ipynb",
+    "../notebooks/icecream-sales-forecasting/icecream-sales-forecasting.ipynb"                         = "notebooks/icecream-sales-forecasting.ipynb",
+    "../notebooks/retail-transactions-anomaly-detection/retail-transactions-anomaly-detection.ipynb"   = "notebooks/retail-transactions-anomaly-detection/retail-transactions-anomaly-detection.ipynb",
+    "../notebooks/climate-analysis/climate-analysis-sfo.ipynb"                                         = "notebooks/climate-analysis/climate-analysis-sfo.ipynb"
+  }
+}
+
 resource "google_storage_bucket_object" "notebook_upload_to_gcs" {
-  for_each = fileset("../notebooks/", "*")
-  source = "../datasets/${each.value}"
-  name = "datasets/${each.value}"
-  bucket = "${local.dataproc_data_and_code_bucket}"
+  for_each = var.notebooks_to_upload
+  name     = each.value
+  source   = "${path.module}/${each.key}"
+  bucket   = "${local.dataproc_data_and_code_bucket}"
   depends_on = [
     time_sleep.sleep_after_bucket_creation
   ]
@@ -306,8 +324,6 @@ resource "time_sleep" "sleep_after_network_and_storage_steps" {
       time_sleep.sleep_after_bucket_creation
   ]
 }
-
-
 
 /******************************************
 9. BigQuery dataset creation
