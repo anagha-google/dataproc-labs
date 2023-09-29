@@ -10,7 +10,7 @@ This lab demonstrates how to use the Dataproc Jupyter plugin for bring your own 
 <hr>
 
 ### A.2. Duration 
-It takes ~1.5 hours to complete and is fully scrpited, including with Terraform for provisioning.
+It takes ~1 hour to complete and is fully scrpited, including with Terraform for provisioning.
 
 
 <hr>
@@ -51,24 +51,15 @@ It takes ~1.5 hours to complete and is fully scrpited, including with Terraform 
 
 | Functionality | Feature | 
 | -- | :--- | 
-| Spark platform |  Spark on Dataproc on GCE |
-| Spark platform |  Spark on Dataproc Serverless |
-| BYO Jupyter infrastructure |  Jupyter plugin for Dataproc cluster/serverless |
-| Data Lake File System |  Google Cloud Storage |
-| Provisioning Automation | Terraform |
+| ...|  ... |
+
 
 <hr>
 
-### A.8. Lab Architecture
 
-![README](./images/lab-07-04.png)   
-<br><br>
+### A.8. Lab Flow
 
-<hr>
-
-### A.9. Lab Flow
-
-![README](images/lab-07-01.png)   
+![README](images/jupyter-01.png)   
 <br><br>
 
 <hr>
@@ -147,13 +138,18 @@ terraform apply \
 
 ### B.2. Explore the resources provisioned
 
-### B.2.1. Dataproc on GCE cluster (DPGCE)
+The following are screenshots from the author's environment-
 
-- Validate the creation of the Dataproc on GCE cluster from the Cloud Console, Dataproc UI -> Clusters
-- The DPGCE has a name prefix - "	dpgce-cluster-static-"
-- Click on all the tables of the cluster details and review the configuration
-- Under configuration, check for the metastore configuration
-- And check for the Spark History Server bucket configuration
+#### B2.1. Networking
+
+![README](images/jupyter-02a.png)   
+<br><br>
+
+![README](images/jupyter-02b.png)   
+<br><br>
+
+![README](images/jupyter-02c.png)   
+<br><br>
 
 
 <br>
