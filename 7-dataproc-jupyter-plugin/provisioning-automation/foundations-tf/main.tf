@@ -12,7 +12,8 @@
 *******************************************/
   
 resource "google_project_organization_policy" "orgPolicyUpdate_disableSerialPortLogging" {
-  project     = var.project_id
+  project       = var.project_id
+  count         = var.update_org_policies_bool ? 1 : 0
   constraint = "compute.disableSerialPortLogging"
   boolean_policy {
     enforced = false
@@ -20,7 +21,8 @@ resource "google_project_organization_policy" "orgPolicyUpdate_disableSerialPort
 }
 
 resource "google_project_organization_policy" "orgPolicyUpdate_requireOsLogin" {
-  project     = var.project_id
+  project       = var.project_id
+  count         = var.update_org_policies_bool ? 1 : 0
   constraint = "compute.requireOsLogin"
   boolean_policy {
     enforced = false
@@ -28,7 +30,8 @@ resource "google_project_organization_policy" "orgPolicyUpdate_requireOsLogin" {
 }
 
 resource "google_project_organization_policy" "orgPolicyUpdate_requireShieldedVm" {
-  project     = var.project_id
+  project       = var.project_id
+  count         = var.update_org_policies_bool ? 1 : 0
   constraint = "compute.requireShieldedVm"
   boolean_policy {
     enforced = false
@@ -36,7 +39,8 @@ resource "google_project_organization_policy" "orgPolicyUpdate_requireShieldedVm
 }
 
 resource "google_project_organization_policy" "orgPolicyUpdate_vmCanIpForward" {
-  project     = var.project_id
+  project       = var.project_id
+  count         = var.update_org_policies_bool ? 1 : 0
   constraint = "compute.vmCanIpForward"
   list_policy {
     allow {
@@ -46,7 +50,8 @@ resource "google_project_organization_policy" "orgPolicyUpdate_vmCanIpForward" {
 }
 
 resource "google_project_organization_policy" "orgPolicyUpdate_vmExternalIpAccess" {
-  project     = var.project_id
+  project       = var.project_id
+  count         = var.update_org_policies_bool ? 1 : 0
   constraint = "compute.vmExternalIpAccess"
   list_policy {
     allow {
@@ -56,7 +61,8 @@ resource "google_project_organization_policy" "orgPolicyUpdate_vmExternalIpAcces
 }
 
 resource "google_project_organization_policy" "orgPolicyUpdate_restrictVpcPeering" {
-  project     = var.project_id
+  project       = var.project_id
+  count         = var.update_org_policies_bool ? 1 : 0
   constraint = "compute.restrictVpcPeering"
   list_policy {
     allow {
