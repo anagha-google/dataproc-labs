@@ -182,6 +182,16 @@ The following are screenshots from the author's environment-
 ![README](images/jupyter-08.png)   
 <br><br>
 
+#### B2.5. IAM Permissions for the Compute Engine Default Service Account
+<br>
+Make sure the Compute Engine default service account (<project_id>-compute@developer.gserviceaccount.com) as shown below:<br>
+Note: your project_id will be different than the one shown below (883609552780)
+<br><br>
+
+![README](images/jupyter-11.png)   
+
+
+
 <hr>
 
 ## C. THE LAB
