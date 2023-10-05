@@ -25,6 +25,7 @@ admin_fqupn                 = "${var.gcp_account_name}"
 location                    = "${var.gcp_region}"
 umsa                        = "lab-lab-sa"
 umsa_fqn                    = "${local.umsa}@${local.project_id}.iam.gserviceaccount.com"
+gce_gmsa_fqn                = "${local.project_nbr}-compute@developer.gserviceaccount.com"
 vpc_nm                      = "lab-vpc-${local.project_nbr}"
 spark_subnet_nm             = "spark-snet"
 spark_subnet_cidr           = "10.0.0.0/16"
@@ -37,8 +38,6 @@ dataproc_spark_bucket          = "lab-spark-bucket-${local.project_nbr}"
 dataproc_spark_bucket_fqn      = "gs://lab-spark-${local.project_nbr}"
 dataproc_data_and_code_bucket  = "lab_data_and_code_bucket-${local.project_nbr}"
 }
-
-
 
 /******************************************
 1. User Managed Service Account Creation
@@ -85,6 +84,27 @@ module "umsa_role_grants" {
     module.umsa_creation
   ]
 }
+
+module "gmsa_role_grants_gce" {
+  source                  = "terraform-google-modules/iam/google//modules/member_iam"
+  #version                 = "7.4.1"
+  service_account_address = "${local.gce_gmsa_fqn}"
+  prefix                  = "serviceAccount"
+  project_id              = local.project_id
+  project_roles = [
+
+    "roles/dataproc.worker",
+  ]
+  depends_on = [
+    module.umsa_creation
+  ]
+}
+/******************************************
+2a. IAM role grants to GCE Default Account 
+(required for serverless spark connection)
+ *****************************************/
+
+
 
 /******************************************************
 2. Service Account Impersonation Grants to Admin User
