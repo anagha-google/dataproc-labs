@@ -378,6 +378,13 @@ resource "google_dataproc_metastore_service" "datalake_metastore" {
     endpoint_protocol = "GRPC"
     
   }
+
+  metadata_integration {
+        data_catalog_config {
+            enabled = true
+        }
+  }
+
   depends_on = [
     module.administrator_role_grants,
     time_sleep.sleep_after_network_and_storage_steps
