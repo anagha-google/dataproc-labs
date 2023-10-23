@@ -205,7 +205,7 @@ All of this is to be run locally on your machine, NOT on Cloud Shell.
 
 ### 2.1. Dependencies
 
-1. Python 3.8
+1. Python 3.8 or higher
 
 On your local machine, run the below in the terminal to validate Python version:
 ```
@@ -219,22 +219,32 @@ https://cloud.google.com/sdk/docs/install
 
 ### 2.2. Login and configure project
 
-1. Launch gcloud and authenticate
+3. Launch gcloud and authenticate
 
 ```
 gcloud auth login
 ```
 
-2. Configure project
+4. Configure project
 
 ```
 gcloud config set project YOUR_PROJECT_NAME
 ```
 
 
-### 2.3. Install JupyterLab or upgrade if you already have it
+### 2.3. Install JupyterLab on your LOCAL MACHINE or upgrade if you already have it
 
-1. Install JupyterLab
+
+5. Create a Python virtual environment
+
+```
+cd ~
+python -m venv dataproc_byo_jupyter_env    
+source dataproc_byo_jupyter_env/bin/activate
+```
+
+
+6. Install JupyterLab
 
 ```
 # Command to install JupyterLab in your local python environment. You could skip this step if you have already installed JupyterLab.
@@ -248,7 +258,7 @@ pip3 install --upgrade jupyterlab
 
 ```
 
-2. Verify the installation by launching Jupyter
+7. Verify the installation by launching Jupyter
 ```
 jupyter lab
 ```
@@ -257,25 +267,14 @@ jupyter lab
 <br><br>
 
 
-3. Update PATH varaiable as needed
-   
-If it does not launch, you need to add the installation path to your PATH variable.<br>
-The author got the following warning-
-```
-'/Users/akhanolkar/Library/Python/3.9/bin' which is not on PATH.
-```
-The author had to update their .bash_profile to include the following:
-```
-export PATH=$PATH:/Users/akhanolkar/Library/Python/3.9/bin
-```
-Remember to edit the above to reflect your installation path...
-
-4. Shut down JupyterLab
+8. Shut down JupyterLab
 
 
 ### 2.4. Install the plugin on your local machine & launch JupyterLab
 
-1. Install plugin and launch JupyterLab
+In the same virtual environment-
+
+9. Install plugin and launch JupyterLab
 ```
 # Install the plugin. 
 pip3 install dataproc-jupyter-plugin
@@ -288,11 +287,11 @@ jupyter lab
 ```
 
 
-2. What to expect
+10. What to expect
 
 In the Jupyter launcher, you should see a new section called Dataproc Jobs and Sessions. Additionally, you might see two more sections called Dataproc Serverless Notebooks and Dataproc Cluster Notebooks if you have access to Dataproc serverless notebooks and/or have Dataproc clusters with “Jupyter Notebook” optional component running in your project.
 
-3. Quick visuals from the author's environment
+11. Quick visuals from the author's environment
 
 ![README](images/jupyter-10.png)   
 <br><br>
