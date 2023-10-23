@@ -217,7 +217,7 @@ Install or upgrade to 3.8 or higher
 2. gcloud CLI
 https://cloud.google.com/sdk/docs/install   
 
-### 2.2. Login and configure project
+### 2.2. Login and configure project & region
 
 3. Launch gcloud and authenticate
 
@@ -225,11 +225,14 @@ https://cloud.google.com/sdk/docs/install
 gcloud auth login
 ```
 
-4. Configure project
+4. Configure project & region
 
 ```
-gcloud config set project YOUR_PROJECT_NAME
+gcloud init
 ```
+
+Run through the steps to configure identoty/user, project, regio.
+All three are important.
 
 
 ### 2.3. Install JupyterLab on your LOCAL MACHINE or upgrade if you already have it
@@ -239,15 +242,17 @@ gcloud config set project YOUR_PROJECT_NAME
 
 ```
 cd ~
-python -m venv dataproc_byo_jupyter_env    
-source dataproc_byo_jupyter_env/bin/activate
+python --version
+
+# Create environment for default version of Python
+conda create -n dl_venv  anaconda
+source activate dl_venv
 ```
 
 
 6. Install JupyterLab
 
 ```
-# Command to install JupyterLab in your local python environment. You could skip this step if you have already installed JupyterLab.
 pip3 install jupyterlab
 
 # Command to verify Jupyterlab version
