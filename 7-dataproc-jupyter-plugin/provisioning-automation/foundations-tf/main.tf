@@ -158,6 +158,13 @@ resource "google_project_service" "enable_monitoring_google_apis" {
 
 }
 
+resource "google_project_service" "enable_catalog_google_apis" {
+  project = var.project_id
+  service = "catalog.googleapis.com"
+  disable_dependent_services = true
+
+}
+
 /*******************************************
 Introducing sleep to minimize errors from
 dependencies having not completed
@@ -177,7 +184,8 @@ resource "time_sleep" "sleep_after_api_enabling" {
     google_project_service.enable_notebooks_google_apis,
     google_project_service.enable_aiplatform_google_apis,
     google_project_service.enable_logging_google_apis,
-    google_project_service.enable_monitoring_google_apis
+    google_project_service.enable_monitoring_google_apis,
+    google_project_service.enable_catalog_google_apis
   ]
 }
 
