@@ -6,6 +6,96 @@ The lab is an adaptation of the lab from Nvidia in the Google Cloud Platform Dat
 
 To leverage the RAPIDS accelerator for Apache Spark with Dataproc on GCE as well as Dataproc Serverless, GCP and NVIDIA maintain (init action) scripts and the lab, includes the same scripts directly (Dataproc GCE cluster creation) and implicitly (Dataproc Serverless abstracts out). 
 
+<hr>
+
+## 1. Clone this repo in Cloud Shell
+```
+git clone https://github.com/anagha-google/dataproc-labs.git
+```
+
+<hr>
+
+## 2. Foundational provisioning automation with Terraform
+The Terraform in this section updates organization policies and enables Google APIs.
+
+Paste this in Cloud Shell
+```
+PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
+
+cd ~/dataproc-labs/4-dataproc-with-gpu/provisioning-automation/foundations-tf
+```
+
+Run the Terraform for organization policy edits and enabling Google APIs
+```
+terraform init
+terraform apply \
+  -var="project_id=${PROJECT_ID}" \
+  -auto-approve >> 4-dataproc-with-gpu-tf-foundations.output
+```
+
+Wait till the provisioning completes - ~5 minutes. <br>
+
+In a separate cloud shell tab, you can tail the output file for execution state through completion-
+```
+tail -f  ~/dataproc-labs/4-dataproc-with-gpu/provisioning-automation/foundations-tf/4-dataproc-with-gpu-tf-foundations.output
+```
+
+<hr>
+
+## 3. Lab resources provisioning automation with Terraform
+
+### 3.1. Resources provisioned
+In this section, we will provision-
+
+1. Network, subnet, firewall rule
+2. Storage buckets for code, datasets, and for use with the services
+3. Persistent Spark History Server
+4. Cloud Composer 2
+5. User Managed Service Account
+6. Requisite IAM permissions
+7. Copy of code, notebooks, data, etc into buckets
+8. Import of Airflow DAG
+9. Configuration of Airflow variables
+
+### 3.2. Run the terraform scripts
+Paste this in Cloud Shell after editing the GCP region variable to match your nearest region-
+
+```
+cd ~/dataproc-labs/4-dataproc-with-gpu//provisioning-automation/core-tf/terraform
+
+PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
+PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
+PROJECT_NAME=`gcloud projects describe ${PROJECT_ID} | grep name | cut -d':' -f2 | xargs`
+GCP_ACCOUNT_NAME=`gcloud auth list --filter=status:ACTIVE --format="value(account)"`
+GCP_REGION="us-central1"
+DEPLOYER_ACCOUNT_NAME=$GCP_ACCOUNT_NAME
+ORG_ID=`gcloud organizations list --format="value(name)"`
+CC2_IMAGE_VERSION="composer-2.0.11-airflow-2.2.3"
+
+Run the Terraform for provisioning the rest of the environment
+terraform init
+terraform apply \
+  -var="project_id=${PROJECT_ID}" \
+  -var="project_name=${PROJECT_NAME}" \
+  -var="project_number=${PROJECT_NBR}" \
+  -var="gcp_account_name=${GCP_ACCOUNT_NAME}" \
+  -var="deployment_service_account_name=${DEPLOYER_ACCOUNT_NAME}" \
+  -var="org_id=${ORG_ID}" \
+  -var="cloud_composer_image_version=${CC2_IMAGE_VERSION}" \
+  -var="gcp_region=${GCP_REGION}" \
+  -auto-approve >> 4-dataproc-with-gpu-tf-core.output
+```
+  
+Takes ~50 minutes to complete.<br> 
+
+
+In a separate cloud shell tab, you can tail the output file for execution state through completion-
+
+```
+tail -f ~/dataproc-labs/1-dataproc-serverless-with-terraform/provisioning-automation/core-tf/terraform/s8s-lab-tf.output
+```
+
+<hr>
 
 ## 1. Declare variables
 
