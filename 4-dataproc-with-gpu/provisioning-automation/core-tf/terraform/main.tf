@@ -25,21 +25,18 @@ admin_upn_fqn               = "${var.gcp_account_name}"
 location                    = "${var.gcp_region}"
 umsa                        = "dpgce-lab-sa"
 umsa_fqn                    = "${local.umsa}@${local.project_id}.iam.gserviceaccount.com"
-dpgce_spark_bucket          = "dpgce-spark-bucket-${local.project_nbr}"
-dpgce_spark_bucket_fqn      = "gs://dpgce-spark-${local.project_nbr}"
-dpgce_spark_sphs_nm         = "dpgce-sphs-${local.project_nbr}"
-dpgce_spark_sphs_bucket     = "dpgce-sphs-${local.project_nbr}"
-dpgce_spark_sphs_bucket_fqn = "gs://dpgce-sphs-${local.project_nbr}"
-vpc_nm                      = "dpgce-vpc-${local.project_nbr}"
+spark_bucket                = "spark-bucket-${local.project_nbr}"
+spark_bucket_fqn            = "gs://${spark_bucket}"
+spark_sphs_bucket           = "sphs-${local.project_nbr}"
+spark_sphs_bucket_fqn       = "gs://${local.spark_sphs_bucket}"
+vpc_nm                      = "vpc-${local.project_nbr}"
 spark_subnet_nm             = "spark-snet"
 spark_subnet_cidr           = "10.0.0.0/16"
-dpgce_data_and_code_bucket  = "dpgce_data_and_code_bucket-${local.project_nbr}"
-bq_datamart_ds              = "cell_tower_reporting_mart"
+data_and_code_bucket        = "data_and_code_bucket-${local.project_nbr}"
+bq_datamart_ds              = "datamart_ds"
 CC_GMSA_FQN                 = "service-${local.project_nbr}@cloudcomposer-accounts.iam.gserviceaccount.com"
 GCE_GMSA_FQN                = "${local.project_nbr}-compute@developer.gserviceaccount.com"
 CLOUD_COMPOSER2_IMG_VERSION = "${var.cloud_composer_image_version}"
-metastore_db_nm             = "dpgce_metastore_db"
-metastore_nm                = "dpgce-metastore-${local.project_nbr}"
 subnet_resource_uri         = "projects/${local.project_id}/regions/${local.location}/subnetworks/${local.spark_subnet_nm}"
 dpgce_cluster_nm            = "dpgce-cluster-static-${local.project_nbr}"
 }
@@ -60,7 +57,7 @@ module "umsa_creation" {
 }
 
 /******************************************
-2a. IAM role grants to User Managed Service Account
+2. IAM role grants to User Managed Service Account
  *****************************************/
 
 module "umsa_role_grants" {
@@ -82,50 +79,11 @@ module "umsa_role_grants" {
     "roles/dataproc.worker",
     "roles/dataproc.editor",
     "roles/bigquery.dataEditor",
-    "roles/bigquery.admin",
-    "roles/composer.worker",
-    "roles/composer.admin"
+    "roles/bigquery.admin"
 
   ]
   depends_on = [
     module.umsa_creation
-  ]
-}
-
-/******************************************
-2b. IAM role grants to Google Managed Service Account for Cloud Composer 2
- *****************************************/
-
-module "gmsa_role_grants_cc" {
-  source                  = "terraform-google-modules/iam/google//modules/member_iam"
-  service_account_address = "${local.CC_GMSA_FQN}"
-  prefix                  = "serviceAccount"
-  project_id              = local.project_id
-  project_roles = [
-    
-    "roles/composer.ServiceAgentV2Ext",
-  ]
-  depends_on = [
-    module.umsa_role_grants
-  ]
-}
-
-/******************************************
-2c. IAM role grants to Google Managed Service 
-Account for Compute Engine (for Cloud Composer 2 to download images)
- *****************************************/
-
-module "gmsa_role_grants_gce" {
-  source                  = "terraform-google-modules/iam/google//modules/member_iam"
-  service_account_address = "${local.GCE_GMSA_FQN}"
-  prefix                  = "serviceAccount"
-  project_id              = local.project_id
-  project_roles = [
-    
-    "roles/editor",
-  ]
-  depends_on = [
-    module.umsa_role_grants
   ]
 }
 
@@ -184,16 +142,10 @@ module "administrator_role_grants" {
     "roles/bigquery.jobUser" = [
       "user:${local.admin_upn_fqn}",
     ]
-    "roles/composer.environmentAndStorageObjectViewer" = [
-      "user:${local.admin_upn_fqn}",
-    ]
     "roles/iam.serviceAccountUser" = [
       "user:${local.admin_upn_fqn}",
     ]
     "roles/iam.serviceAccountTokenCreator" = [
-      "user:${local.admin_upn_fqn}",
-    ]
-    "roles/composer.admin" = [
       "user:${local.admin_upn_fqn}",
     ]
   }
@@ -214,9 +166,7 @@ resource "time_sleep" "sleep_after_identities_permissions" {
     module.umsa_creation,
     module.umsa_role_grants,
     module.umsa_impersonate_privs_to_admin,
-    module.administrator_role_grants,
-    module.gmsa_role_grants_cc,
-    module.gmsa_role_grants_gce
+    module.administrator_role_grants
   ]
 }
 
@@ -280,8 +230,8 @@ resource "time_sleep" "sleep_after_network_and_firewall_creation" {
 7. Storage bucket creation
  *****************************************/
 
-resource "google_storage_bucket" "dpgce_spark_bucket_creation" {
-  name                              = local.dpgce_spark_bucket
+resource "google_storage_bucket" "spark_bucket_creation" {
+  name                              = local.spark_bucket
   location                          = local.location
   uniform_bucket_level_access       = true
   force_destroy                     = true
@@ -290,8 +240,8 @@ resource "google_storage_bucket" "dpgce_spark_bucket_creation" {
   ]
 }
 
-resource "google_storage_bucket" "dpgce_spark_sphs_bucket_creation" {
-  name                              = local.dpgce_spark_sphs_bucket
+resource "google_storage_bucket" "spark_sphs_bucket_creation" {
+  name                              = local.spark_sphs_bucket
   location                          = local.location
   uniform_bucket_level_access       = true
   force_destroy                     = true
@@ -300,7 +250,7 @@ resource "google_storage_bucket" "dpgce_spark_sphs_bucket_creation" {
   ]
 }
 
-resource "google_storage_bucket" "dpgce_data_and_code_bucket_creation" {
+resource "google_storage_bucket" "data_and_code_bucket_creation" {
   name                              = local.dpgce_data_and_code_bucket
   location                          = local.location
   uniform_bucket_level_access       = true
@@ -318,22 +268,22 @@ dependencies having not completed
 resource "time_sleep" "sleep_after_bucket_creation" {
   create_duration = "60s"
   depends_on = [
-    google_storage_bucket.dpgce_data_and_code_bucket_creation,
-    google_storage_bucket.dpgce_spark_sphs_bucket_creation,
-    google_storage_bucket.dpgce_spark_bucket_creation
+    google_storage_bucket.data_and_code_bucket_creation,
+    google_storage_bucket.spark_sphs_bucket_creation,
+    google_storage_bucket.spark_bucket_creation
 
   ]
 }
 
 /******************************************
-8a. Copy of Pyspark scripts to dpgce_data_and_code_bucket
+8a. Copy of Pyspark scripts to data_and_code_bucket
  *****************************************/
 
 resource "google_storage_bucket_object" "pyspark_scripts_upload_to_gcs" {
   for_each = fileset("../scripts/pyspark/", "*")
   source = "../scripts/pyspark/${each.value}"
   name = "scripts/pyspark/${each.value}"
-  bucket = "${local.dpgce_data_and_code_bucket}"
+  bucket = "${local.data_and_code_bucket}"
   depends_on = [
     time_sleep.sleep_after_bucket_creation
   ]
@@ -398,7 +348,7 @@ resource "time_sleep" "sleep_after_network_and_storage_steps" {
 
 resource "google_dataproc_cluster" "sphs_creation" {
   provider = google-beta
-  name     = local.dpgce_spark_sphs_nm
+  name     = local.spark_sphs
   region   = local.location
 
   cluster_config {
@@ -407,7 +357,7 @@ resource "google_dataproc_cluster" "sphs_creation" {
         enable_http_port_access = true
     }
 
-    staging_bucket = local.dpgce_spark_bucket
+    staging_bucket = local.spark_bucket
     
     # Override or set some custom properties
     software_config {
@@ -415,12 +365,12 @@ resource "google_dataproc_cluster" "sphs_creation" {
       override_properties = {
         "dataproc:dataproc.allow.zero.workers"=true
         "dataproc:job.history.to-gcs.enabled"=true
-        "spark:spark.history.fs.logDirectory"="${local.dpgce_spark_sphs_bucket_fqn}/*/spark-job-history"
-        "spark:spark.eventLog.dir"="${local.dpgce_spark_sphs_bucket_fqn}/events/spark-job-history"
-        "mapred:mapreduce.jobhistory.read-only.dir-pattern"="${local.dpgce_spark_sphs_bucket_fqn}/*/mapreduce-job-history/done"
-        "mapred:mapreduce.jobhistory.done-dir"="${local.dpgce_spark_sphs_bucket_fqn}/events/mapreduce-job-history/done"
-        "mapred:mapreduce.jobhistory.intermediate-done-dir"="${local.dpgce_spark_sphs_bucket_fqn}/events/mapreduce-job-history/intermediate-done"
-        "yarn:yarn.nodemanager.remote-app-log-dir"="${local.dpgce_spark_sphs_bucket_fqn}/yarn-logs"
+        "spark:spark.history.fs.logDirectory"="${local.spark_sphs_bucket_fqn}/*/spark-job-history"
+        "spark:spark.eventLog.dir"="${local.spark_sphs_bucket_fqn}/events/spark-job-history"
+        "mapred:mapreduce.jobhistory.read-only.dir-pattern"="${local.spark_sphs_bucket_fqn}/*/mapreduce-job-history/done"
+        "mapred:mapreduce.jobhistory.done-dir"="${local.spark_sphs_bucket_fqn}/events/mapreduce-job-history/done"
+        "mapred:mapreduce.jobhistory.intermediate-done-dir"="${local.spark_sphs_bucket_fqn}/events/mapreduce-job-history/intermediate-done"
+        "yarn:yarn.nodemanager.remote-app-log-dir"="${local.spark_sphs_bucket_fqn}/yarn-logs"
 
       }      
     }
@@ -483,7 +433,7 @@ resource "google_composer_environment" "cloud_composer_env_creation" {
         
         AIRFLOW_VAR_UMSA = "${local.umsa}"
        
-        AIRFLOW_VAR_PHS = "${local.dpgce_spark_sphs_nm}"
+        AIRFLOW_VAR_PHS = "${local.spark_sphs}"
       }
     }
 
@@ -562,7 +512,7 @@ output "SPARK_SUBNET" {
 }
 
 output "PERSISTENT_HISTORY_SERVER_NM" {
-  value = local.dpgce_spark_sphs_nm
+  value = local.spark_sphs
 }
 
 output "UMSA_FQN" {
@@ -629,7 +579,7 @@ resource "google_dataproc_cluster" "gce_cluster" {
       num_instances = 0
     }
 
-    staging_bucket = "${local.dpgce_spark_bucket}"
+    staging_bucket = "${local.spark_bucket}"
 
     # Override or set some custom properties
     # 1. Version
@@ -640,12 +590,12 @@ resource "google_dataproc_cluster" "gce_cluster" {
       optional_components = [ "JUPYTER" ]
       override_properties = {
         "dataproc:dataproc.allow.zero.workers" = "false"
-        "spark:spark.history.fs.logDirectory"="${local.dpgce_spark_sphs_bucket_fqn}/*/spark-job-history"
-        "spark:spark.eventLog.dir"="${local.dpgce_spark_sphs_bucket_fqn}/events/spark-job-history"
-        "mapred:mapreduce.jobhistory.read-only.dir-pattern"="${local.dpgce_spark_sphs_bucket_fqn}/*/mapreduce-job-history/done"
-        "mapred:mapreduce.jobhistory.done-dir"="${local.dpgce_spark_sphs_bucket_fqn}/events/mapreduce-job-history/done"
-        "mapred:mapreduce.jobhistory.intermediate-done-dir"="${local.dpgce_spark_sphs_bucket_fqn}/events/mapreduce-job-history/intermediate-done"
-        "yarn:yarn.nodemanager.remote-app-log-dir"="${local.dpgce_spark_sphs_bucket_fqn}/yarn-logs"
+        "spark:spark.history.fs.logDirectory"="${local.spark_sphs_bucket_fqn}/*/spark-job-history"
+        "spark:spark.eventLog.dir"="${local.spark_sphs_bucket_fqn}/events/spark-job-history"
+        "mapred:mapreduce.jobhistory.read-only.dir-pattern"="${local.spark_sphs_bucket_fqn}/*/mapreduce-job-history/done"
+        "mapred:mapreduce.jobhistory.done-dir"="${local.spark_sphs_bucket_fqn}/events/mapreduce-job-history/done"
+        "mapred:mapreduce.jobhistory.intermediate-done-dir"="${local.spark_sphs_bucket_fqn}/events/mapreduce-job-history/intermediate-done"
+        "yarn:yarn.nodemanager.remote-app-log-dir"="${local.spark_sphs_bucket_fqn}/yarn-logs"
         "dataproc:dataproc.logging.stackdriver.enable"=true
         "dataproc:dataproc.monitoring.stackdriver.enable"=true
         "yarn:yarn.log-aggregation.enabled"=true
