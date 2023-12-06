@@ -73,12 +73,10 @@ In this section, we will provision-
 1. Network, subnet, firewall rule
 2. Storage buckets for code, datasets, and for use with the services
 3. Persistent Spark History Server
-4. Cloud Composer 2
-5. User Managed Service Account
-6. Requisite IAM permissions
-7. Copy of code, notebooks, data, etc into buckets
-8. Import of Airflow DAG
-9. Configuration of Airflow variables
+4. User Managed Service Account
+5. Requisite IAM permissions
+6. Copy of code, data, etc into buckets
+
 
 ### 3.2. Run the terraform scripts
 Paste this in Cloud Shell after editing the GCP region variable to match your nearest region-
