@@ -7,7 +7,7 @@ This repo hosts minimum viable self-contained, end-to-end solutions that showcas
 | [01](1-dataproc-serverless-with-terraform) |  Orchestration of Spark jobs on Dataproc Serverless with Airflow on Cloud Composer 2 | #Spark-On-Dataproc-Serverless #Spark #Airflow #Composer |
 | [02](2-dataproc-gce-with-terraform) |  Orchestration of Spark jobs on Dataproc GCE cluster with Airflow on Cloud Composer 2 | #Spark-On-Dataproc-GCE #Spark #Airflow #Composer |
 | [03](3-dataproc-gke) |  Just enough Dataproc on GKE  | #Spark-On-Dataproc-GKE #Spark #GKE #Kubernetes #Spark-on-Kubernetes |
-| [04](4-dataproc-gce-with-gpu) |  Just enough Dataproc on GCE with GPU acceleration  | #Spark-On-Dataproc-GCE #Spark #GPU #spark-rapics #Nvidia |
+| [04](4-dataproc-with-gpu) |  Just enough Dataproc on GCE with GPU acceleration  | #Spark-On-Dataproc-GCE #Spark #GPU #spark-rapics #Nvidia |
 | [05](5-dataproc-serverless-with-gpu) |  Just enough Dataproc Serverless Spark with GPU acceleration  | #Spark-On-Dataproc-Serverless #Spark #Airflow #Composer |
 | [06](6-dataproc-workspaces) | Just enough Dataproc Workspaces for Data Scientists and Data Engineers | #Spark-On-Dataproc-GCE # Workspaces | 
 | [07](7-dataproc-jupyter-plugin) | BYO Jupyter for Dataproc GCE clusters and Dataproc Serverless with Dataproc Jupyter Plugin  | #Spark-On-Dataproc-Serverless #Spark-On-Dataproc-GCE #Spark #Airflow #Composer #Jupyter #BYO-Jupyter |
