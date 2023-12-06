@@ -1,6 +1,7 @@
 # Module-01: Infrastructure provisioning
 
-In this module we will create the foundational infrastructure for the lab with Terraform.
+In this module we will create the foundational infrastructure for the lab with Terraform. <br>
+We will simply run through some steps, manually as well.
 
 <hr>
 
@@ -62,9 +63,9 @@ tail -f  ~/dataproc-labs/4-dataproc-with-gpu/provisioning-automation/foundations
 
 <hr>
 
-## 3. Lab resources provisioning automation with Terraform
+## 3. Core resources provisioning automation with Terraform
 
-This section provisions all the requisite data services for the lab, and their dependecies.
+This section provisions all the requisite core data services for the lab, and their dependecies.
 
 ### 3.1. Resources provisioned
 In this section, we will provision-
@@ -83,7 +84,7 @@ In this section, we will provision-
 Paste this in Cloud Shell after editing the GCP region variable to match your nearest region-
 
 ```
-cd ~/dataproc-labs/4-dataproc-with-gpu//provisioning-automation/core-tf/terraform
+cd ~/dataproc-labs/4-dataproc-with-gpu/provisioning-automation/core-tf/terraform
 
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
@@ -114,7 +115,7 @@ Takes ~50 minutes to complete.<br>
 In a separate cloud shell tab, you can tail the output file for execution state through completion-
 
 ```
-tail -f ~/dataproc-labs/1-dataproc-serverless-with-terraform/provisioning-automation/core-tf/terraform/s8s-lab-tf.output
+tail -f ~/dataproc-labs/4-dataproc-with-gpu/provisioning-automation/core-tf/terraform/4-dataproc-with-gpu-tf-core.output
 ```
 
 <hr>
