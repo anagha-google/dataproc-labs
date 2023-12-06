@@ -8,6 +8,16 @@ To leverage the RAPIDS accelerator for Apache Spark with Dataproc on GCE as well
 
 <hr>
 
+## Lab
+
+We have broken the lab into three sections-<br>
+Section 1: Foundational provisioning that is common to both Dataproc on GCE and Dataproc Serverless form factors
+Section 2: Dataproc on GCE with GPU acceleration
+Section 3: Dataproc Serverless with GPU acceleration
+
+Please run the modules in the exact same sequence.
+
+
 ## 1. Clone this repo in Cloud Shell
 ```
 git clone https://github.com/anagha-google/dataproc-labs.git
