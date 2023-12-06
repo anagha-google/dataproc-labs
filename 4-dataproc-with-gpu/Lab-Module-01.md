@@ -1,7 +1,7 @@
 # Module-01: Infrastructure provisioning
 
-In this module we will create the foundational infrastructure for the lab with Terraform. <br>
-We will simply run through some steps, manually as well.
+In this module we will create the infrastructure for the lab with Terraform. <br>
+
 
 <hr>
 
