@@ -1,17 +1,41 @@
-# Module-01: Infrastructure proviasioning
+# Module-01: Infrastructure provisioning
 
 In this module we will create the foundational infrastructure for the lab with Terraform.
 
 <hr>
 
-## 1. Clone this repo in Cloud Shell
+## 1. About 
+
+### 1.1. Duration
+It takes ~1.5 hours to complete and is fully scrpited, including with Terraform for provisioning.
+
+### 1.2. Resources provisioned
+
+
+### 1.3. Prerequisites
+A pre-created project
+You need to have organization admin rights, and project owner privileges or work with privileged users to complete provisioning.
+
+### 1.4. Platform for provisioning
+
+Your machine, or preferably Cloud Shell.
+
+
+<hr>
+
+## 2. Foundational resources provisioning with Terraform
+
+In this section we will enable the requisite Google APIs and update organizational policies with Terraform.<br>
+Takes approximately 5 minutes to complete.
+
+### 2.1. Clone this repo in Cloud Shell
+
 ```
 git clone https://github.com/anagha-google/dataproc-labs.git
 ```
 
-<hr>
+### 2.2. Run Terraform
 
-## 2. Foundational provisioning automation with Terraform
 The Terraform in this section updates organization policies and enables Google APIs.
 
 Paste this in Cloud Shell
@@ -39,6 +63,8 @@ tail -f  ~/dataproc-labs/4-dataproc-with-gpu/provisioning-automation/foundations
 <hr>
 
 ## 3. Lab resources provisioning automation with Terraform
+
+This section provisions all the requisite data services for the lab, and their dependecies.
 
 ### 3.1. Resources provisioned
 In this section, we will provision-
