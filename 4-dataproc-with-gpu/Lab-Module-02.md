@@ -53,7 +53,8 @@ gcloud dataproc clusters create $DATAPROC_CLUSTER_NAME  \
     --metadata gpu-driver-provider="NVIDIA",rapids-runtime="SPARK" \
     --bucket $SPHS_LOG_BUCKET \
     --subnet=$SPARK_SUBNET \
-    --enable-component-gateway    
+    --enable-component-gateway  \
+    --service-account $UMSA_FQN   
 ```
 
 ### 2.3. Quick pictorial walk-through of the cluster
