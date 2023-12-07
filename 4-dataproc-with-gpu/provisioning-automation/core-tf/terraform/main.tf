@@ -307,7 +307,7 @@ resource "time_sleep" "sleep_after_bucket_creation" {
 resource "google_storage_bucket_object" "pyspark_scripts_l1_upload_to_gcs" {
   for_each = fileset("../scripts/pyspark/", "*")
   source = "../scripts/pyspark/${each.value}"
-  name = "scripts/pyspark/${each.value}"
+  name = "churn/${each.value}"
   bucket = "${local.code_bucket}"
   depends_on = [
     time_sleep.sleep_after_bucket_creation
@@ -317,7 +317,7 @@ resource "google_storage_bucket_object" "pyspark_scripts_l1_upload_to_gcs" {
 resource "google_storage_bucket_object" "pyspark_scripts_l2a_upload_to_gcs" {
   for_each = fileset("../scripts/pyspark/churn_utils", "*")
   source = "../scripts/pyspark/churn_utils/${each.value}"
-  name = "scripts/pyspark/${each.value}"
+  name = "churn/churn_utils/${each.value}"
   bucket = "${local.code_bucket}"
   depends_on = [
     time_sleep.sleep_after_bucket_creation
@@ -327,7 +327,7 @@ resource "google_storage_bucket_object" "pyspark_scripts_l2a_upload_to_gcs" {
 resource "google_storage_bucket_object" "pyspark_scripts_l2b_upload_to_gcs" {
   for_each = fileset("../scripts/pyspark/data-generator-util", "*")
   source = "../scripts/pyspark/data-generator-util/${each.value}"
-  name = "scripts/pyspark/${each.value}"
+  name = "churn/data-generator-util/${each.value}"
   bucket = "${local.code_bucket}"
   depends_on = [
     time_sleep.sleep_after_bucket_creation
