@@ -19,12 +19,11 @@ PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
 
 DATAPROC_CLUSTER_NAME=dpgce-cluster-static-gpu-${PROJECT_NBR}
-SPHS_LOG_BUCKET=sphs-bucket-${PROJECT_NBR}
+DPGCE_LOG_BUCKET=spark-bucket-dpgce-${PROJECT_NBR}
 DATA_BUCKET=data_bucket-${PROJECT_NBR}
 CODE_BUCKET=code_bucket-${PROJECT_NBR}
 VPC_NM=VPC=vpc-$PROJECT_NBR
 SPARK_SUBNET=spark-snet
-PERSISTENT_HISTORY_SERVER_NM=sphs-${PROJECT_NBR}
 UMSA_FQN=lab-sa@$PROJECT_ID.iam.gserviceaccount.com
 REGION=us-central1
 ZONE=us-central1-a
@@ -51,11 +50,12 @@ gcloud dataproc clusters create $DATAPROC_CLUSTER_NAME  \
     --initialization-actions=gs://goog-dataproc-initialization-actions-${REGION}/spark-rapids/spark-rapids.sh \
     --optional-components=JUPYTER,ZEPPELIN \
     --metadata gpu-driver-provider="NVIDIA",rapids-runtime="SPARK" \
-    --bucket $SPHS_LOG_BUCKET \
     --subnet=$SPARK_SUBNET \
     --enable-component-gateway  \
     --service-account $UMSA_FQN   
 ```
+
+Takes approximately <10 minutes to provision. Largely because of scripts that need to run to install drivers and such.
 
 ### 2.3. Quick pictorial walk-through of the cluster
 
@@ -69,7 +69,7 @@ The dataset is the famous Kaggle Telco Customer Churn dataset - small data. Revi
 
 Paste in Cloud Shell-
 ```
-head -10 ~/dataproc-labs/5-dataproc-gce-with-gpu/01-datasets/telco-customer-churn.csv
+head -10 ~/dataproc-labs/4-dataproc-with-gpu/01-datasets/telco-customer-churn.csv
 ```
 
 <hr>
