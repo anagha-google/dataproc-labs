@@ -67,7 +67,7 @@ terraform apply \
   -auto-approve >> 4-dataproc-with-gpu-tf-foundations.output
 ```
 
-Wait till the provisioning completes - ~10 minutes or less. <br>
+Wait till the provisioning completes. <br>
 
 In a separate cloud shell tab, you can tail the output file for execution state through completion-
 ```
@@ -93,7 +93,7 @@ In this section, we will provision or complete the following-
 
 
 ### 3.2. Run the terraform scripts
-Paste this in Cloud Shell after editing the GCP region variable to match your nearest region-
+Paste this in Cloud Shell after editing the GCP region variable to match your nearest region. Takes ~10 minutes or less to complete.
 
 ```
 cd ~/dataproc-labs/4-dataproc-with-gpu/provisioning-automation/core-tf/terraform
@@ -107,7 +107,7 @@ DEPLOYER_ACCOUNT_NAME=$GCP_ACCOUNT_NAME
 ORG_ID=`gcloud organizations list --format="value(name)"`
 CC2_IMAGE_VERSION="composer-2.0.11-airflow-2.2.3"
 
-#Run the Terraform for provisioning the rest of the environment
+
 terraform init
 terraform apply \
   -var="project_id=${PROJECT_ID}" \
