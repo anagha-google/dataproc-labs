@@ -1,7 +1,7 @@
 # About
 
 This lab showcases Spark application acceleration with Spark-RAPIDS on Dataproc on GCE - powered by Nvidia GPUs.<br> 
-GCP and NVIDIA maintain (init action) scripts and the lab, includes the same scripts in the cluster creation.
+GCP and NVIDIA maintain (init action) scripts and the lab, includes the same scripts in the cluster creation.<br> 
 This lab module demystifies GPU acceleration with Spark-rapids through a minimum viable Spark application on the Kaggle Telco Customer Churn dataset.
 
 
