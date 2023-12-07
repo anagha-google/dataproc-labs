@@ -1,26 +1,33 @@
 # Module-01: Infrastructure provisioning
 
-In this module we will create the infrastructure for the lab with Terraform. <br>
-
+In this module we will create the requisite infrastructure for the lab with Terraform. <br>
 
 <hr>
 
 ## 1. About 
 
 ### 1.1. Duration
-It takes ~1.5 hours to complete and is fully scrpited, including with Terraform for provisioning.
+It takes ~15 minutes to complete and is fully scrpited, including with Terraform for provisioning.
 
-### 1.2. Resources provisioned
+### 1.2. Platform for provisioning
 
+Your machine, or preferably Cloud Shell.
 
 ### 1.3. Prerequisites
 A pre-created project
 You need to have organization admin rights, and project owner privileges or work with privileged users to complete provisioning.
 
-### 1.4. Platform for provisioning
 
-Your machine, or preferably Cloud Shell.
 
+### 1.4. Lab flow
+
+![README](./images/m01-01.png)   
+<br><br>
+
+### 1.5. Resources provisioned
+
+![README](./images/m01-02.png)   
+<br><br>
 
 <hr>
 
@@ -54,7 +61,7 @@ terraform apply \
   -auto-approve >> 4-dataproc-with-gpu-tf-foundations.output
 ```
 
-Wait till the provisioning completes - ~5 minutes. <br>
+Wait till the provisioning completes - ~10 minutes or less. <br>
 
 In a separate cloud shell tab, you can tail the output file for execution state through completion-
 ```
@@ -68,7 +75,8 @@ tail -f  ~/dataproc-labs/4-dataproc-with-gpu/provisioning-automation/foundations
 This section provisions all the requisite core data services for the lab, and their dependecies.
 
 ### 3.1. Resources provisioned
-In this section, we will provision-
+
+In this section, we will provision or complete the following-
 
 1. Network, subnet, firewall rule
 2. Storage buckets for code, datasets, and for use with the services
