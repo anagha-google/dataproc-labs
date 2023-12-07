@@ -93,7 +93,7 @@ DEPLOYER_ACCOUNT_NAME=$GCP_ACCOUNT_NAME
 ORG_ID=`gcloud organizations list --format="value(name)"`
 CC2_IMAGE_VERSION="composer-2.0.11-airflow-2.2.3"
 
-Run the Terraform for provisioning the rest of the environment
+#Run the Terraform for provisioning the rest of the environment
 terraform init
 terraform apply \
   -var="project_id=${PROJECT_ID}" \
@@ -107,7 +107,7 @@ terraform apply \
   -auto-approve >> 4-dataproc-with-gpu-tf-core.output
 ```
   
-Takes ~50 minutes to complete.<br> 
+Takes ~10 minutes to complete.<br> 
 
 
 In a separate cloud shell tab, you can tail the output file for execution state through completion-
