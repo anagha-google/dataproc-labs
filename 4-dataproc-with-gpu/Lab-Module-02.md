@@ -116,7 +116,7 @@ NUM_GPUS=1
 NUM_WORKERS=4
 
 LOG_SECOND=`date +%s`
-LAB_LOG_ROOT_DIR="~/dataproc-labs/logs/lab-5/"
+LAB_LOG_ROOT_DIR="~/dataproc-labs/logs/lab-4/"
 mkdir -p $LAB_LOG_ROOT_DIR
 LOGFILE="$LAB_LOG_ROOT_DIR/$0.txt.$LOG_SECOND"
 
