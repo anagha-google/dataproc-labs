@@ -14,8 +14,8 @@ It takes ~15 minutes to complete and is fully scrpited, including with Terraform
 Your machine, or preferably Cloud Shell.
 
 ### 1.3. Prerequisites
-A pre-created project
-You need to have organization admin rights, and project owner privileges or work with privileged users to complete provisioning.
+- A pre-created project
+- You need to have organization admin rights, and project owner privileges or work with privileged users to complete provisioning.
 
 
 
