@@ -26,14 +26,14 @@ Your machine, or preferably Cloud Shell.
 ### 1.4. Lab flow
 
 ![README](./images/m01-01.png)   
-<br><br>
+
 
 <hr>
 
 ### 1.5. Resources provisioned
 
 ![README](./images/m01-02.png)   
-<br><br>
+
 
 <hr>
 
