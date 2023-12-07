@@ -73,12 +73,10 @@ In this section, we will provision-
 1. Network, subnet, firewall rule
 2. Storage buckets for code, datasets, and for use with the services
 3. Persistent Spark History Server
-4. Cloud Composer 2
-5. User Managed Service Account
-6. Requisite IAM permissions
-7. Copy of code, notebooks, data, etc into buckets
-8. Import of Airflow DAG
-9. Configuration of Airflow variables
+4. User Managed Service Account
+5. Requisite IAM permissions
+6. Copy of code, data, etc into buckets
+
 
 ### 3.2. Run the terraform scripts
 Paste this in Cloud Shell after editing the GCP region variable to match your nearest region-
@@ -95,7 +93,7 @@ DEPLOYER_ACCOUNT_NAME=$GCP_ACCOUNT_NAME
 ORG_ID=`gcloud organizations list --format="value(name)"`
 CC2_IMAGE_VERSION="composer-2.0.11-airflow-2.2.3"
 
-Run the Terraform for provisioning the rest of the environment
+#Run the Terraform for provisioning the rest of the environment
 terraform init
 terraform apply \
   -var="project_id=${PROJECT_ID}" \
@@ -109,7 +107,7 @@ terraform apply \
   -auto-approve >> 4-dataproc-with-gpu-tf-core.output
 ```
   
-Takes ~50 minutes to complete.<br> 
+Takes ~10 minutes to complete.<br> 
 
 
 In a separate cloud shell tab, you can tail the output file for execution state through completion-
@@ -120,79 +118,7 @@ tail -f ~/dataproc-labs/4-dataproc-with-gpu/provisioning-automation/core-tf/terr
 
 <hr>
 
-## 1. Declare variables
-
-Paste in Cloud Shell-
-```
-PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
-PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
-
-CLUSTER_NAME=dpgce-cluster-static-gpu-${PROJECT_NBR}
-DPGCE_LOG_BUCKET=dpgce-cluster-static-gpu-${PROJECT_NBR}-logs
-DATA_BUCKET=spark-rapids-lab-data-${PROJECT_NBR}
-CODE_BUCKET=spark-rapids-lab-code-${PROJECT_NBR}
-VPC_NM=VPC=dpgce-vpc-$PROJECT_NBR
-SPARK_SUBNET=spark-snet
-PERSISTENT_HISTORY_SERVER_NM=dpgce-sphs-${PROJECT_NBR}
-UMSA_FQN=dpgce-lab-sa@$PROJECT_ID.iam.gserviceaccount.com
-REGION=us-central1
-ZONE=us-central1-a
-NUM_GPUS=1
-NUM_WORKERS=4
-
-```
+This concludes the lab module. Proceed to the next module.
 
 <hr>
-
-## 2. Create Cloud Storage buckets & load upload dataset & scripts for the lab
-
-### 2.1. Create a bucket for Dataproc logs
-
-Paste in Cloud Shell-
-```
-gcloud storage buckets create gs://$DPGCE_LOG_BUCKET --project=$PROJECT_ID --location=$REGION
-```
-
-### 2.2. Create a bucket for the dataset & upload lab data to it
-
-Paste in Cloud Shell-
-```
-gcloud storage buckets create gs://$DATA_BUCKET --project=$PROJECT_ID --location=$REGION
-```
-
-You would have already cloned the repo. Lets navigate to the lab directory and upload the data.
-
-Paste in Cloud Shell-
-```
-cd ~/dataproc-labs/5-dataproc-gce-with-gpu/01-datasets/
-gsutil cp *.csv gs://$DATA_BUCKET/churn/input/
-```
-
-## 2.3. Create an archive with the requisite scripts
-
-Paste in Cloud Shell-
-```
-cd ~/dataproc-labs/5-dataproc-gce-with-gpu/00-scripts
-rm -rf aux_etl_code_archive.zip
-zip aux_etl_code_archive.zip -r churn_utils
-```
-
-### 2.4. Create a bucket for the scripts & upload lab scripts to it
-
-Paste in Cloud Shell-
-```
-gcloud storage buckets create gs://$CODE_BUCKET --project=$PROJECT_ID --location=$REGION
-```
-
-You would have already cloned the repo. Lets navigate to the lab directory and upload the data.
-
-Paste in Cloud Shell-
-```
-cd ~/dataproc-labs/5-dataproc-gce-with-gpu/00-scripts/
-gsutil cp -r * gs://$CODE_BUCKET/churn/
-```
-
-<hr>
-
-
 <hr>
