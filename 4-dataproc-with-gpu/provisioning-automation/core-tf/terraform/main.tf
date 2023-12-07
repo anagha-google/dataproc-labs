@@ -26,10 +26,11 @@ location                    = "${var.gcp_region}"
 umsa                        = "dpgce-lab-sa"
 umsa_fqn                    = "${local.umsa}@${local.project_id}.iam.gserviceaccount.com"
 spark_log_bucket_dpgce      = "spark-bucket-dpgce-${local.project_nbr}"
-spark_log_bucket_dpgce_fqn  = "gs://${spark_log_bucket_dpgce}"
+spark_log_bucket_dpgce_fqn  = "gs://${local.spark_log_bucket_dpgce}"
 spark_log_bucket_dps8s      = "spark-bucket-dps8s-${local.project_nbr}"
-spark_log_bucket_dps8s_fqn  = "gs://${spark_log_bucket_dps8s}"
-spark_sphs_bucket           = "sphs-${local.project_nbr}"
+spark_log_bucket_dps8s_fqn  = "gs://${local.spark_log_bucket_dps8s}"
+spark_sphs_nm               = "sphs-${local.project_nbr}"
+spark_sphs_bucket           = "${local.spark_sphs_nm}"
 spark_sphs_bucket_fqn       = "gs://${local.spark_sphs_bucket}"
 vpc_nm                      = "vpc-${local.project_nbr}"
 spark_subnet_nm             = "spark-snet"
@@ -306,7 +307,7 @@ resource "time_sleep" "sleep_after_bucket_creation" {
 resource "google_storage_bucket_object" "pyspark_scripts_l1_upload_to_gcs" {
   for_each = fileset("../scripts/pyspark/", "*")
   source = "../scripts/pyspark/${each.value}"
-  name = "scripts/pyspark/${each.value}"
+  name = "churn/${each.value}"
   bucket = "${local.code_bucket}"
   depends_on = [
     time_sleep.sleep_after_bucket_creation
@@ -316,7 +317,7 @@ resource "google_storage_bucket_object" "pyspark_scripts_l1_upload_to_gcs" {
 resource "google_storage_bucket_object" "pyspark_scripts_l2a_upload_to_gcs" {
   for_each = fileset("../scripts/pyspark/churn_utils", "*")
   source = "../scripts/pyspark/churn_utils/${each.value}"
-  name = "scripts/pyspark/${each.value}"
+  name = "churn/churn_utils/${each.value}"
   bucket = "${local.code_bucket}"
   depends_on = [
     time_sleep.sleep_after_bucket_creation
@@ -326,7 +327,7 @@ resource "google_storage_bucket_object" "pyspark_scripts_l2a_upload_to_gcs" {
 resource "google_storage_bucket_object" "pyspark_scripts_l2b_upload_to_gcs" {
   for_each = fileset("../scripts/pyspark/data-generator-util", "*")
   source = "../scripts/pyspark/data-generator-util/${each.value}"
-  name = "scripts/pyspark/${each.value}"
+  name = "churn/data-generator-util/${each.value}"
   bucket = "${local.code_bucket}"
   depends_on = [
     time_sleep.sleep_after_bucket_creation
