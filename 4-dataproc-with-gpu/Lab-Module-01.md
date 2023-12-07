@@ -9,20 +9,26 @@ In this module we will create the requisite infrastructure for the lab with Terr
 ### 1.1. Duration
 It takes ~15 minutes to complete and is fully scrpited, including with Terraform for provisioning.
 
+<hr>
+
 ### 1.2. Platform for provisioning
 
 Your machine, or preferably Cloud Shell.
+
+<hr>
 
 ### 1.3. Prerequisites
 - A pre-created project
 - You need to have organization admin rights, and project owner privileges or work with privileged users to complete provisioning.
 
-
+<hr>
 
 ### 1.4. Lab flow
 
 ![README](./images/m01-01.png)   
 <br><br>
+
+<hr>
 
 ### 1.5. Resources provisioned
 
