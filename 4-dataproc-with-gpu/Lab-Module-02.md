@@ -6,8 +6,8 @@ This lab showcases Spark application acceleration with Spark-RAPIDS on Dataproc 
 <hr>
 
 
-## 2. Provision Dataproc on GCE cluster
-<hr>
+## 2. Provision a Dataproc on GCE cluster
+
 
 ### 2.1. Declare variables
 
@@ -16,79 +16,28 @@ Paste in Cloud Shell-
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
 
-CLUSTER_NAME=dpgce-cluster-static-gpu-${PROJECT_NBR}
-DPGCE_LOG_BUCKET=dpgce-cluster-static-gpu-${PROJECT_NBR}-logs
-DATA_BUCKET=spark-rapids-lab-data-${PROJECT_NBR}
-CODE_BUCKET=spark-rapids-lab-code-${PROJECT_NBR}
-VPC_NM=VPC=dpgce-vpc-$PROJECT_NBR
+DATAPROC_CLUSTER_NAME=dpgce-cluster-static-gpu-${PROJECT_NBR}
+SPHS_LOG_BUCKET=sphs-bucket-${PROJECT_NBR}
+DATA_BUCKET=data_bucket-${PROJECT_NBR}
+CODE_BUCKET=code_bucket-${PROJECT_NBR}
+VPC_NM=VPC=vpc-$PROJECT_NBR
 SPARK_SUBNET=spark-snet
-PERSISTENT_HISTORY_SERVER_NM=dpgce-sphs-${PROJECT_NBR}
-UMSA_FQN=dpgce-lab-sa@$PROJECT_ID.iam.gserviceaccount.com
+PERSISTENT_HISTORY_SERVER_NM=sphs-${PROJECT_NBR}
+UMSA_FQN=lab-sa@$PROJECT_ID.iam.gserviceaccount.com
 REGION=us-central1
 ZONE=us-central1-a
 NUM_GPUS=1
 NUM_WORKERS=4
-
 ```
 
 <hr>
 
-## 2. Create Cloud Storage buckets & load upload dataset & scripts for the lab
-
-### 2.1. Create a bucket for Dataproc logs
-
-Paste in Cloud Shell-
-```
-gcloud storage buckets create gs://$DPGCE_LOG_BUCKET --project=$PROJECT_ID --location=$REGION
-```
-
-### 2.2. Create a bucket for the dataset & upload lab data to it
-
-Paste in Cloud Shell-
-```
-gcloud storage buckets create gs://$DATA_BUCKET --project=$PROJECT_ID --location=$REGION
-```
-
-You would have already cloned the repo. Lets navigate to the lab directory and upload the data.
-
-Paste in Cloud Shell-
-```
-cd ~/dataproc-labs/5-dataproc-gce-with-gpu/01-datasets/
-gsutil cp *.csv gs://$DATA_BUCKET/churn/input/
-```
-
-## 2.3. Create an archive with the requisite scripts
-
-Paste in Cloud Shell-
-```
-cd ~/dataproc-labs/5-dataproc-gce-with-gpu/00-scripts
-rm -rf aux_etl_code_archive.zip
-zip aux_etl_code_archive.zip -r churn_utils
-```
-
-### 2.4. Create a bucket for the scripts & upload lab scripts to it
-
-Paste in Cloud Shell-
-```
-gcloud storage buckets create gs://$CODE_BUCKET --project=$PROJECT_ID --location=$REGION
-```
-
-You would have already cloned the repo. Lets navigate to the lab directory and upload the data.
-
-Paste in Cloud Shell-
-```
-cd ~/dataproc-labs/5-dataproc-gce-with-gpu/00-scripts/
-gsutil cp -r * gs://$CODE_BUCKET/churn/
-```
-
-<hr>
-
-## 3. Create a DPGCE cluster with GPUs
+### 2.2. Create a DPGCE cluster with GPUs
 
 Paste in Cloud Shell-
 
 ```
-gcloud dataproc clusters create $CLUSTER_NAME  \
+gcloud dataproc clusters create $DATAPROC_CLUSTER_NAME  \
     --region $REGION \
     --zone $ZONE \
     --image-version=2.0-ubuntu18 \
@@ -100,14 +49,18 @@ gcloud dataproc clusters create $CLUSTER_NAME  \
     --initialization-actions=gs://goog-dataproc-initialization-actions-${REGION}/spark-rapids/spark-rapids.sh \
     --optional-components=JUPYTER,ZEPPELIN \
     --metadata gpu-driver-provider="NVIDIA",rapids-runtime="SPARK" \
-    --bucket $DPGCE_LOG_BUCKET \
+    --bucket $SPHS_LOG_BUCKET \
     --subnet=$SPARK_SUBNET \
     --enable-component-gateway    
 ```
 
+### 2.3. Quick pictorial walk-through of the cluster
+
+Scroll below to appendix.
+
 <hr>
 
-## 4. Review the lab dataset
+## 3. Review the lab dataset
 
 The dataset is the famous Kaggle Telco Customer Churn dataset - small data. Review the same.
 
@@ -118,46 +71,47 @@ head -10 ~/dataproc-labs/5-dataproc-gce-with-gpu/01-datasets/telco-customer-chur
 
 <hr>
 
-## 5. Generate a larger dataset off of the base lab dataset
+## 4. Generate a larger dataset off of the base lab dataset
 
-The script (generate_data.py) has been provided to us by Nvidia to create a larger dataset and is located as shown below. <br>
+The script (generate_data.py) provided to us by Nvidia creates a larger dataset. We will use the same to generate a large dataset. <br>
 
-Before we begin, lets check the size of the base dataset. Paste in Cloud Shell-
+### 4.1. Review the size of the base dataset
+
+Paste in Cloud Shell-
 ```
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
-DATA_BUCKET=spark-rapids-lab-data-${PROJECT_NBR}
+DATA_BUCKET=data_bucket-${PROJECT_NBR}
 
 gsutil du -s -h -a gs://$DATA_BUCKET/churn/input/telco-customer-churn.csv | cut -d' ' -f1,2
 ```
 Its 954 KiB.
 
-### 5.1. Review the script
+### 4.2. Review the script
 Paste in Cloud Shell-
 ```
 cd ~/dataproc-labs/5-dataproc-gce-with-gpu/00-scripts/data_generator_util
 cat generate_data.py
 ```
 
-### 5.2. Declare variables
+### 4.3. Declare variables
 Paste in Cloud Shell-
 ```
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
 
-CLUSTER_NAME=dpgce-cluster-static-gpu-${PROJECT_NBR}
-DPGCE_LOG_BUCKET=dpgce-cluster-static-gpu-${PROJECT_NBR}-logs
-DATA_BUCKET=spark-rapids-lab-data-${PROJECT_NBR}
-CODE_BUCKET=spark-rapids-lab-code-${PROJECT_NBR}
-VPC_NM=VPC=dpgce-vpc-$PROJECT_NBR
+DATAPROC_CLUSTER_NAME=dpgce-cluster-static-gpu-${PROJECT_NBR}
+SPHS_LOG_BUCKET=sphs-bucket-${PROJECT_NBR}
+DATA_BUCKET=data_bucket-${PROJECT_NBR}
+CODE_BUCKET=code_bucket-${PROJECT_NBR}
+VPC_NM=VPC=vpc-$PROJECT_NBR
 SPARK_SUBNET=spark-snet
-PERSISTENT_HISTORY_SERVER_NM=dpgce-sphs-${PROJECT_NBR}
-UMSA_FQN=dpgce-lab-sa@$PROJECT_ID.iam.gserviceaccount.com
+PERSISTENT_HISTORY_SERVER_NM=sphs-${PROJECT_NBR}
+UMSA_FQN=lab-sa@$PROJECT_ID.iam.gserviceaccount.com
 REGION=us-central1
 ZONE=us-central1-a
 NUM_GPUS=1
 NUM_WORKERS=4
-
 
 LOG_SECOND=`date +%s`
 LAB_LOG_ROOT_DIR="~/dataproc-labs/logs/lab-5/"
@@ -188,17 +142,17 @@ DRIVER_MEMORY=4    # unit: GB
 EXECUTOR_MEMORY=$(($((${TOTAL_MEMORY}-$((${DRIVER_MEMORY}*1000/1024))))/${NUM_EXECUTORS}))
 
 # Source base data file to be bulked up
-INPUT_FILE="gs://spark-rapids-lab-data-${PROJECT_NBR}/churn/input/telco-customer-churn.csv"
+INPUT_FILE="gs://data_bucket-${PROJECT_NBR}/churn/input/telco-customer-churn.csv"
 # *****************************************************************
 # Output prefix is where the data that is generated will be stored.
 # This path is important as it is used for the INPUT_PREFIX for
 # the cpu and gpu env files
 # *****************************************************************
 #
-OUTPUT_PREFIX="gs://spark-rapids-lab-data-${PROJECT_NBR}/churn/input/10scale/"
+OUTPUT_PREFIX="gs://data_bucket-${PROJECT_NBR}/churn/input/10scale/"
 ```
 
-### 5.3. Run the script
+### 4.4. Run the script
 
 Paste in Cloud Shell-
 ```
@@ -214,7 +168,7 @@ gs://$CODE_BUCKET/churn/data_generator_util/generate_data.py \
 -- --input-file=${INPUT_FILE} --output-prefix=${OUTPUT_PREFIX} --dup-times=${SCALE}  2>&1 >> $LOGFILE
 ```
 
-### 5.4 Review the 10 scale lab dataset generated
+### 4.5. Review the 10 scale lab dataset generated
 
 Paste in Cloud Shell-
 ```
