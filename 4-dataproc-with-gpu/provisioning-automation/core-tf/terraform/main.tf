@@ -336,13 +336,13 @@ resource "google_storage_bucket_object" "pyspark_scripts_l2b_upload_to_gcs" {
 
 
 /******************************************
-8c. Copy of data to data_bucket
+8b. Copy of data to data_bucket
  *****************************************/
 
 resource "google_storage_bucket_object" "data_files_upload_to_gcs" {
   for_each = fileset("../datasets/", "*")
   source = "../datasets/${each.value}"
-  name = "datasets/${each.value}"
+  name = "churn/input/${each.value}"
   bucket = "${local.data_bucket}"
   depends_on = [
     time_sleep.sleep_after_bucket_creation
