@@ -26,7 +26,7 @@ VPC_NM=VPC=vpc-$PROJECT_NBR
 SPARK_SUBNET=spark-snet
 UMSA_FQN=lab-sa@$PROJECT_ID.iam.gserviceaccount.com
 REGION=us-central1
-ZONE=us-central1-a
+ZONE=us-central1-b
 NUM_GPUS=1
 NUM_WORKERS=4
 ```
