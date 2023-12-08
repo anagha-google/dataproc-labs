@@ -23,15 +23,12 @@ project_id                  = "${var.project_id}"
 project_nbr                 = "${var.project_number}"
 admin_upn_fqn               = "${var.gcp_account_name}"
 location                    = "${var.gcp_region}"
-umsa                        = "dpgce-lab-sa"
+umsa                        = "lab-sa"
 umsa_fqn                    = "${local.umsa}@${local.project_id}.iam.gserviceaccount.com"
 spark_log_bucket_dpgce      = "spark-bucket-dpgce-${local.project_nbr}"
 spark_log_bucket_dpgce_fqn  = "gs://${local.spark_log_bucket_dpgce}"
 spark_log_bucket_dps8s      = "spark-bucket-dps8s-${local.project_nbr}"
 spark_log_bucket_dps8s_fqn  = "gs://${local.spark_log_bucket_dps8s}"
-spark_sphs_nm               = "sphs-bucket-${local.project_nbr}"
-spark_sphs_bucket           = "${local.spark_sphs_nm}"
-spark_sphs_bucket_fqn       = "gs://${local.spark_sphs_bucket}"
 vpc_nm                      = "vpc-${local.project_nbr}"
 spark_subnet_nm             = "spark-snet"
 spark_subnet_cidr           = "10.0.0.0/16"
@@ -367,74 +364,7 @@ resource "time_sleep" "sleep_after_network_and_storage_steps" {
   ]
 }
 
-/******************************************
-9a. PHS creation
-******************************************/
 
-# Docs: https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dataproc_cluster
-
-resource "google_dataproc_cluster" "sphs_creation" {
-  provider = google-beta
-  name     = local.spark_sphs
-  region   = local.location
-
-  cluster_config {
-    
-    endpoint_config {
-        enable_http_port_access = true
-    }
-
-    staging_bucket = local.spark_log_bucket_dpgce
-    
-    # Override or set some custom properties
-    software_config {
-      image_version = "2.0"
-      override_properties = {
-        "dataproc:dataproc.allow.zero.workers"=true
-        "dataproc:job.history.to-gcs.enabled"=true
-        "spark:spark.history.fs.logDirectory"="${local.spark_sphs_bucket_fqn}/*/spark-job-history"
-        "spark:spark.eventLog.dir"="${local.spark_sphs_bucket_fqn}/events/spark-job-history"
-        "mapred:mapreduce.jobhistory.read-only.dir-pattern"="${local.spark_sphs_bucket_fqn}/*/mapreduce-job-history/done"
-        "mapred:mapreduce.jobhistory.done-dir"="${local.spark_sphs_bucket_fqn}/events/mapreduce-job-history/done"
-        "mapred:mapreduce.jobhistory.intermediate-done-dir"="${local.spark_sphs_bucket_fqn}/events/mapreduce-job-history/intermediate-done"
-        "yarn:yarn.nodemanager.remote-app-log-dir"="${local.spark_sphs_bucket_fqn}/yarn-logs"
-
-      }      
-    }
-    gce_cluster_config {
-      subnetwork =  local.subnet_resource_uri 
-      service_account = local.umsa_fqn
-      service_account_scopes = [
-        "cloud-platform"
-      ]
-    }
-  }
-  depends_on = [
-    module.administrator_role_grants,
-    module.vpc_creation,
-    time_sleep.sleep_after_network_and_storage_steps
-  ]  
-}
-
-/*******************************************
-Introducing sleep to minimize errors from
-dependencies having not completed
-********************************************/
-resource "time_sleep" "sleep_after_phs_creation" {
-  create_duration = "180s"
-  depends_on = [
-      google_dataproc_cluster.sphs_creation
-  ]
-}
-
-/******************************************
-9b. BigQuery dataset creation
-******************************************/
-
-resource "google_bigquery_dataset" "bq_dataset_creation" {
-  dataset_id                  = local.bq_datamart_ds
-  location                    = "US"
-}
 
 /******************************************
 DONE
