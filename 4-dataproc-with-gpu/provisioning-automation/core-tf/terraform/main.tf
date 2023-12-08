@@ -25,23 +25,20 @@ admin_upn_fqn               = "${var.gcp_account_name}"
 location                    = "${var.gcp_region}"
 umsa                        = "lab-sa"
 umsa_fqn                    = "${local.umsa}@${local.project_id}.iam.gserviceaccount.com"
-spark_log_bucket_dpgce      = "spark-bucket-dpgce-${local.project_nbr}"
-spark_log_bucket_dpgce_fqn  = "gs://${local.spark_log_bucket_dpgce}"
-spark_log_bucket_dps8s      = "spark-bucket-dps8s-${local.project_nbr}"
-spark_log_bucket_dps8s_fqn  = "gs://${local.spark_log_bucket_dps8s}"
+spark_event_log_bucket      = "spark-event-log-bucket-${local.project_nbr}"
+spark_event_log_bucket_fqn  = "gs://${local.spark_event_log_bucket}"
+spark_cluster_bucket        = "spark-cluster-bucket-${local.project_nbr}"
+spark_cluster_bucket_fqn    = "gs://${local.spark_cluster_bucket}"
+spark_event_log_bucket_s8s  = "spark-event-log-bucket-s8s-${local.project_nbr}"
+spark_event_log_bucket_s8s_fqn = "gs://${local.spark_event_log_bucket_dps8s}"
 vpc_nm                      = "vpc-${local.project_nbr}"
 spark_subnet_nm             = "spark-snet"
 spark_subnet_cidr           = "10.0.0.0/16"
 data_bucket                 = "data_bucket-${local.project_nbr}"
 code_bucket                 = "code_bucket-${local.project_nbr}"
-bq_datamart_ds              = "datamart_ds"
-CC_GMSA_FQN                 = "service-${local.project_nbr}@cloudcomposer-accounts.iam.gserviceaccount.com"
-GCE_GMSA_FQN                = "${local.project_nbr}-compute@developer.gserviceaccount.com"
-CLOUD_COMPOSER2_IMG_VERSION = "${var.cloud_composer_image_version}"
+bq_datamart_ds              = "gpu_lab_ds"
 subnet_resource_uri         = "projects/${local.project_id}/regions/${local.location}/subnetworks/${local.spark_subnet_nm}"
-dpgce_cluster_nm            = "dpgce-cluster-static-${local.project_nbr}"
 }
-
 
 
 /******************************************
@@ -231,8 +228,8 @@ resource "time_sleep" "sleep_after_network_and_firewall_creation" {
 7. Storage bucket creation
  *****************************************/
 
-resource "google_storage_bucket" "spark_log_bucket_dpgce_creation" {
-  name                              = local.spark_log_bucket_dpgce
+resource "google_storage_bucket" "spark_event_log_bucket_creation" {
+  name                              = local.spark_event_log_bucket
   location                          = local.location
   uniform_bucket_level_access       = true
   force_destroy                     = true
@@ -242,8 +239,8 @@ resource "google_storage_bucket" "spark_log_bucket_dpgce_creation" {
 }
 
 
-resource "google_storage_bucket" "spark_log_bucket_dps8s_creation" {
-  name                              = local.spark_log_bucket_dps8s
+resource "google_storage_bucket" "spark_cluster_bucket_creation" {
+  name                              = local.spark_cluster_bucket
   location                          = local.location
   uniform_bucket_level_access       = true
   force_destroy                     = true
@@ -252,8 +249,8 @@ resource "google_storage_bucket" "spark_log_bucket_dps8s_creation" {
   ]
 }
 
-resource "google_storage_bucket" "spark_sphs_bucket_creation" {
-  name                              = local.spark_sphs_bucket
+resource "google_storage_bucket" "spark_event_log_bucket_s8s_creation" {
+  name                              = local.spark_event_log_bucket_s8s
   location                          = local.location
   uniform_bucket_level_access       = true
   force_destroy                     = true
@@ -291,9 +288,9 @@ resource "time_sleep" "sleep_after_bucket_creation" {
   depends_on = [
     google_storage_bucket.data_bucket_creation,
     google_storage_bucket.code_bucket_creation,
-    google_storage_bucket.spark_sphs_bucket_creation,
-    google_storage_bucket.spark_log_bucket_dpgce_creation,
-    google_storage_bucket.spark_log_bucket_dps8s_creation,
+    google_storage_bucket.spark_event_log_bucket_creation,
+    google_storage_bucket.spark_cluster_bucket_creation,
+    google_storage_bucket.spark_event_log_bucket_s8s_creation,
   ]
 }
 
@@ -363,7 +360,6 @@ resource "time_sleep" "sleep_after_network_and_storage_steps" {
       google_storage_bucket_object.data_files_upload_to_gcs
   ]
 }
-
 
 
 /******************************************

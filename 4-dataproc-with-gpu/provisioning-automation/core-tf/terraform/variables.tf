@@ -19,9 +19,6 @@ variable "deployment_service_account_name" {
 variable "org_id" {
  description = "Organization ID in which project created"
 }
-variable "cloud_composer_image_version" {
- description = "Version of Cloud Composer 2 image to use"
-}
 variable "gcp_region" {
  description = "The GCP region you want to use"
 }
