@@ -6,6 +6,7 @@ This lab module demystifies GPU acceleration with Spark-rapids through a minimum
 
 
 <hr>
+<hr>
 
 
 ## 2. Provision a Dataproc on GCE cluster
@@ -58,10 +59,13 @@ gcloud dataproc clusters create $DATAPROC_CLUSTER_NAME  \
 
 Takes approximately ~12 minutes or less to provision. Largely because of scripts that need to run to install drivers and such.
 
+<hr>
+
 ### 2.3. Quick pictorial walk-through of the cluster
 
 Scroll below to appendix.
 
+<hr>
 <hr>
 
 ## 3. Review the lab dataset
@@ -85,6 +89,7 @@ customerID,gender,SeniorCitizen,Partner,Dependents,tenure,PhoneService,MultipleL
 6713-OKOMC,Female,0,No,No,10,No,No phone service,DSL,Yes,No,No,No,No,No,Month-to-month,No,Mailed check,29.75,301.9,No<br>
 7892-POOKP,Female,0,Yes,No,28,Yes,Yes,Fiber optic,No,No,Yes,Yes,Yes,Yes,Month-to-month,Yes,Electronic check,104.8,3046.05,Yes<br>
 
+<hr>
 <hr>
 
 ## 4. Generate a larger dataset off of the base lab dataset
@@ -198,10 +203,11 @@ gsutil du -s -h -a ${OUTPUT_PREFIX} | cut -d' ' -f1,2
 The author's output is 45.24 MiB
 
 <hr>
+<hr>
 
-## 6. Run an ETL job on CPUs for a baseline performance capture
+## 5. Run an ETL job on CPUs for a baseline performance capture
 
-### 6.1. Declare variables
+### 5.1. Declare variables
 
 Paste in Cloud Shell-
 ```
@@ -252,7 +258,7 @@ INPUT_PREFIX="gs://spark-rapids-lab-data-$PROJECT_NBR/churn/input/10scale/"
 OUTPUT_PREFIX="gs://spark-rapids-lab-data-$PROJECT_NBR/churn/output/cpu-based-analytics"
 ```
 
-### 6.2. Run a Spark analytics application on CPUs for a baseline
+### 5.2. Run a Spark analytics application on CPUs for a baseline
 
 Paste in Cloud Shell-
 ```
@@ -269,13 +275,13 @@ gs://$CODE_BUCKET/churn/main_analytics_app.py \
 -- --coalesce-output=8 --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX}   2>&1 >> $LOGFILE
 ```
 
-### 6.3. Review the results
+### 5.3. Review the results
 Paste in Cloud Shell-
 ```
 gsutil ls -r $OUTPUT_PREFIX
 ```
 
-### 6.4. Note the execution time
+### 5.4. Note the execution time
 
 The author's application took ~ 32 minutes to complete across multiple runs.
 
