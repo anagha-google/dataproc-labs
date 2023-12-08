@@ -53,33 +53,27 @@ We will provision a Dataproc on GCE cluster with GPUs.
 ## 2. Provision a Dataproc on GCE cluster
 
 
-### 2.1. Declare variables
+### 2.1. Create a DPGCE cluster with GPUs
 
 Paste in Cloud Shell-
+
 ```
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
-
 DATAPROC_CLUSTER_NAME=dpgce-cluster-static-gpu-${PROJECT_NBR}
-DPGCE_LOG_BUCKET=spark-bucket-dpgce-${PROJECT_NBR}
+DPGCE_CLUSTER_BUCKET=spark-cluster-bucket-${PROJECT_NBR}
+DPGCE_EVENT_LOG_BUCKET=spark-event-log-bucket-${PROJECT_NBR}
 DATA_BUCKET=data_bucket-${PROJECT_NBR}
 CODE_BUCKET=code_bucket-${PROJECT_NBR}
 VPC_NM=VPC=vpc-$PROJECT_NBR
 SPARK_SUBNET=spark-snet
 UMSA_FQN=lab-sa@$PROJECT_ID.iam.gserviceaccount.com
 REGION=us-central1
-ZONE=us-central1-b
+ZONE=us-central1-a
 NUM_GPUS=1
 NUM_WORKERS=4
-```
 
-<hr>
 
-### 2.2. Create a DPGCE cluster with GPUs
-
-Paste in Cloud Shell-
-
-```
 gcloud dataproc clusters create $DATAPROC_CLUSTER_NAME  \
     --region $REGION \
     --zone $ZONE \
@@ -94,7 +88,8 @@ gcloud dataproc clusters create $DATAPROC_CLUSTER_NAME  \
     --metadata gpu-driver-provider="NVIDIA",rapids-runtime="SPARK" \
     --subnet=$SPARK_SUBNET \
     --enable-component-gateway  \
-    --bucket $DPGCE_LOG_BUCKET \
+    --bucket $DPGCE_CLUSTER_BUCKET \
+    --properties "spark:spark.history.fs.logDirectory=gs://${DPGCE_EVENT_LOG_BUCKET}/*/spark-job-history,spark:spark.eventLog.dir=gs://${DPGCE_EVENT_LOG_BUCKET}/events/spark-job-history" \
     --service-account $UMSA_FQN   
 ```
 
@@ -175,7 +170,7 @@ VPC_NM=VPC=vpc-$PROJECT_NBR
 SPARK_SUBNET=spark-snet
 UMSA_FQN=lab-sa@$PROJECT_ID.iam.gserviceaccount.com
 REGION=us-central1
-ZONE=us-central1-b
+ZONE=us-central1-a
 NUM_GPUS=1
 NUM_WORKERS=4
 
@@ -274,14 +269,14 @@ PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
 
 DATAPROC_CLUSTER_NAME=dpgce-cluster-static-gpu-${PROJECT_NBR}
-DPGCE_LOG_BUCKET=spark-bucket-dpgce-${PROJECT_NBR}
+DPGCE_LOG_BUCKET=spark-event-log-bucket-${PROJECT_NBR}
 DATA_BUCKET=data_bucket-${PROJECT_NBR}
 CODE_BUCKET=code_bucket-${PROJECT_NBR}
 VPC_NM=VPC=vpc-$PROJECT_NBR
 SPARK_SUBNET=spark-snet
 UMSA_FQN=lab-sa@$PROJECT_ID.iam.gserviceaccount.com
 REGION=us-central1
-ZONE=us-central1-b
+ZONE=us-central1-a
 NUM_GPUS=1
 NUM_WORKERS=4
 
@@ -346,8 +341,6 @@ Follow the execution in the Dataproc-Jobs UI. It takes ~30 minutes, you can step
 
 <hr>
 
-
-
 ### 5.3. Review the results
 Paste in Cloud Shell-
 
@@ -365,7 +358,7 @@ gsutil ls -r $OUTPUT_PREFIX
 
 ### 5.4. Note the execution time
 
-The author's application took ~ 36 minutes to complete across multiple runs.
+The author's application took ~ 30 minutes to complete across multiple runs.
 
 <hr>
 <hr>
@@ -387,7 +380,7 @@ PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
 VPC_NM=vpc-$PROJECT_NBR
 REGION=us-central1
-ZONE=$REGION-b
+ZONE=$REGION-a
 CLUSTER_NAME=dpgce-cluster-static-gpu-$PROJECT_NBR
 MY_FIREWALL_RULE="allow-me-to-ingress-into-vpc"
 
@@ -410,7 +403,6 @@ python -m venv .venv
 source .venv/bin/activate
 
 pip install spark-rapids-user-tools
-
 ```
 
 Check to see if you can run the Nvidia qualification tool, immediately after-
@@ -420,20 +412,38 @@ spark_rapids_dataproc qualification --help
 
 <hr>
 
-### 6.4 Run the --Nvidia Qualification Tool-- to find workloads that can benefit from GPU based acceleration
+### 6.4. Initialize environment variables
+
+1. Initiaalize gcloud in Cloud Shell-
+```
+gcloud init
+```
+
+**Note**: Then select project, **ensure you configure region and zone** to match that of your Dataproc cluster zone.
+
+2. Also configure dataproc region
+```
+gcloud config set dataproc/region us-central1
+```
+
+3. Then configure rapids tool required variables
+```
+export RAPIDS_USER_TOOLS_CACHE_FOLDER=/var/tmp/spark_rapids_user_tools_cache
+export RAPIDS_USER_TOOLS_OUTPUT_DIRECTORY=~/rapids_user_tools_output
+mkdir -p $RAPIDS_USER_TOOLS_OUTPUT_DIRECTORY 
+```
+
+
+### 6.5 Run the --Nvidia Qualification Tool-- to find workloads that can benefit from GPU based acceleration
 
 You can run this only after you run a few Spark applications. The tool will review the logs and provide recommendations based on YARN application IDs-
 ```
-# Variables
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
 REGION=us-central1
-ZONE=$REGION-b
 CLUSTER_NAME=dpgce-cluster-static-gpu-$PROJECT_NBR
 
-
-# Run the tool to check previous Spark applications for qualification-
-spark_rapids_dataproc qualification --cluster $CLUSTER_NAME --region $REGION
+spark_rapids_user_tools dataproc qualification --cluster $CLUSTER_NAME --region $REGION
 ```
 
 Here are the author's results, that correctly call out the two Spark applications run without GPU acceleration, while omiiting the ones that used GPUs and the speed up is accurate as well-
@@ -507,7 +517,7 @@ VPC_NM=VPC=vpc-$PROJECT_NBR
 SPARK_SUBNET=spark-snet
 UMSA_FQN=lab-sa@$PROJECT_ID.iam.gserviceaccount.com
 REGION=us-central1
-ZONE=us-central1-b
+ZONE=us-central1-a
 NUM_GPUS=1
 NUM_WORKERS=4
 
@@ -621,7 +631,7 @@ Run the below in Cloud Shell-
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
 REGION=us-central1
-ZONE=us-central1-b
+ZONE=us-central1-a
 CLUSTER_NAME=dpgce-cluster-static-gpu-$PROJECT_NBR
 DPGCE_LOG_BUCKET=gs://dataproc-temp-us-central1-599883900699-fbcrb2gv/56c3efab-2d16-4f02-aca8-7705543acb51/spark-job-history/application_1701994598998_0001
 #gs://spark-bucket-dpgce-${PROJECT_NBR}
