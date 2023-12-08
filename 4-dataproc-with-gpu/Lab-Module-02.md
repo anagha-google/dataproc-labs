@@ -52,6 +52,7 @@ gcloud dataproc clusters create $DATAPROC_CLUSTER_NAME  \
     --metadata gpu-driver-provider="NVIDIA",rapids-runtime="SPARK" \
     --subnet=$SPARK_SUBNET \
     --enable-component-gateway  \
+    --bucket $DPGCE_LOG_BUCKET \
     --service-account $UMSA_FQN   
 ```
 
