@@ -106,7 +106,7 @@ Takes approximately ~12 minutes or less to provision. Largely because of scripts
 
 ![README](./images/m2-03.png)   
 
-Scroll below to [appendix] for complete walkthrough of the cluster.
+Scroll below to [appendix](Lab-Module-02.md#walkthrough-of-the-dataproc-cluster) for complete walkthrough of the cluster.
 
 <hr>
 <hr>
