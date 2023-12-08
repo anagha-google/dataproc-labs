@@ -312,7 +312,7 @@ EXECUTOR_MEMORY=$(($((${TOTAL_MEMORY}-$((${DRIVER_MEMORY}*1000/1024))))/${NUM_EX
 INPUT_PREFIX="gs://data_bucket-$PROJECT_NBR/churn/input/10scale/"
 #
 # Output prefix is where results from the queries are stored
-OUTPUT_PREFIX="gs://data_bucket-$PROJECT_NBR/churn/output/cpu-based-analytics"
+OUTPUT_PREFIX="gs://data_bucket-$PROJECT_NBR/churn/output/cpu-based-analytics/"
 ```
 
 ### 5.2. Run a Spark analytics application on CPUs for a baseline
@@ -350,7 +350,12 @@ Follow the execution in the Dataproc-Jobs UI. It takes ~30 minutes, you can step
 
 ### 5.3. Review the results
 Paste in Cloud Shell-
+
 ```
+PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
+PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
+OUTPUT_PREFIX="gs://data_bucket-$PROJECT_NBR/churn/output/cpu-based-analytics"
+
 gsutil ls -r $OUTPUT_PREFIX
 ```
 
