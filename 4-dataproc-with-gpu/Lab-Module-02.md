@@ -365,7 +365,7 @@ gsutil ls -r $OUTPUT_PREFIX
 
 ### 5.4. Note the execution time
 
-The author's application took ~ 32 minutes to complete across multiple runs.
+The author's application took ~ 36 minutes to complete across multiple runs.
 
 <hr>
 <hr>
@@ -396,6 +396,12 @@ gcloud compute firewall-rules delete $MY_FIREWALL_RULE
 gcloud compute --project=$PROJECT_ID firewall-rules create $MY_FIREWALL_RULE --direction=INGRESS --priority=1000 --network=$VPC_NM --action=ALLOW --rules=all --source-ranges="$MY_IP_ADDRESS/32"
 ```
 
+Review the firewall rule from the Networking UI on Cloud Console-
+
+![README](./images/m2-16.png) 
+
+<hr>
+
 ### 6.3. Install --RAPIDS User Tools-- in Cloud Shell
 
 Paste in Cloud Shell-
@@ -411,6 +417,7 @@ Check to see if you can run the Nvidia qualification tool, immediately after-
 spark_rapids_dataproc qualification --help
 ```
 
+<hr>
 
 ### 6.4 Run the --Nvidia Qualification Tool-- to find workloads that can benefit from GPU based acceleration
 
@@ -479,6 +486,8 @@ To launch a GPU-accelerated cluster with RAPIDS Accelerator for Apache Spark, ad
 ```
 
 <hr>
+<hr>
+
 
 ## 7. Run the same ETL job on GPUs 
 
