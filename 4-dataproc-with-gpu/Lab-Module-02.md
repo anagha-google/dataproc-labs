@@ -56,7 +56,7 @@ gcloud dataproc clusters create $DATAPROC_CLUSTER_NAME  \
     --service-account $UMSA_FQN   
 ```
 
-Takes approximately <10 minutes to provision. Largely because of scripts that need to run to install drivers and such.
+Takes approximately ~12 minutes or less to provision. Largely because of scripts that need to run to install drivers and such.
 
 ### 2.3. Quick pictorial walk-through of the cluster
 
@@ -70,8 +70,20 @@ The dataset is the famous Kaggle Telco Customer Churn dataset - small data. Revi
 
 Paste in Cloud Shell-
 ```
-head -10 ~/dataproc-labs/4-dataproc-with-gpu/01-datasets/telco-customer-churn.csv
+head -10 ~/dataproc-labs/4-dataproc-with-gpu/provisioning-automation/core-tf/datasets/telco-customer-churn.csv
 ```
+
+Author's sample output-
+customerID,gender,SeniorCitizen,Partner,Dependents,tenure,PhoneService,MultipleLines,InternetService,OnlineSecurity,OnlineBackup,DeviceProtection,TechSupport,StreamingTV,StreamingMovies,Contract,PaperlessBilling,PaymentMethod,MonthlyCharges,TotalCharges,Churn<br>
+7590-VHVEG,Female,0,Yes,No,1,No,No phone service,DSL,No,Yes,No,No,No,No,Month-to-month,Yes,Electronic check,29.85,29.85,No<br>
+5575-GNVDE,Male,0,No,No,34,Yes,No,DSL,Yes,No,Yes,No,No,No,One year,No,Mailed check,56.95,1889.5,No<br>
+3668-QPYBK,Male,0,No,No,2,Yes,No,DSL,Yes,Yes,No,No,No,No,Month-to-month,Yes,Mailed check,53.85,108.15,Yes<br>
+7795-CFOCW,Male,0,No,No,45,No,No phone service,DSL,Yes,No,Yes,Yes,No,No,One year,No,Bank transfer (automatic),42.3,1840.75,No<br>
+9237-HQITU,Female,0,No,No,2,Yes,No,Fiber optic,No,No,No,No,No,No,Month-to-month,Yes,Electronic check,70.7,151.65,Yes<br>
+9305-CDSKC,Female,0,No,No,8,Yes,Yes,Fiber optic,No,No,Yes,No,Yes,Yes,Month-to-month,Yes,Electronic check,99.65,820.5,Yes<br>
+1452-KIOVK,Male,0,No,Yes,22,Yes,Yes,Fiber optic,No,Yes,No,No,Yes,No,Month-to-month,Yes,Credit card (automatic),89.1,1949.4,No<br>
+6713-OKOMC,Female,0,No,No,10,No,No phone service,DSL,Yes,No,No,No,No,No,Month-to-month,No,Mailed check,29.75,301.9,No<br>
+7892-POOKP,Female,0,Yes,No,28,Yes,Yes,Fiber optic,No,No,Yes,Yes,Yes,Yes,Month-to-month,Yes,Electronic check,104.8,3046.05,Yes<br>
 
 <hr>
 
@@ -92,9 +104,10 @@ gsutil du -s -h -a gs://$DATA_BUCKET/churn/input/telco-customer-churn.csv | cut 
 Its 954 KiB.
 
 ### 4.2. Review the script
+
 Paste in Cloud Shell-
 ```
-cd ~/dataproc-labs/5-dataproc-gce-with-gpu/00-scripts/data_generator_util
+cd ~/dataproc-labs/4-dataproc-with-gpu/provisioning-automation/core-tf/scripts/pyspark/data-generator-util
 cat generate_data.py
 ```
 
@@ -105,15 +118,14 @@ PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
 
 DATAPROC_CLUSTER_NAME=dpgce-cluster-static-gpu-${PROJECT_NBR}
-SPHS_LOG_BUCKET=sphs-bucket-${PROJECT_NBR}
+DPGCE_LOG_BUCKET=spark-bucket-dpgce-${PROJECT_NBR}
 DATA_BUCKET=data_bucket-${PROJECT_NBR}
 CODE_BUCKET=code_bucket-${PROJECT_NBR}
 VPC_NM=VPC=vpc-$PROJECT_NBR
 SPARK_SUBNET=spark-snet
-PERSISTENT_HISTORY_SERVER_NM=sphs-${PROJECT_NBR}
 UMSA_FQN=lab-sa@$PROJECT_ID.iam.gserviceaccount.com
 REGION=us-central1
-ZONE=us-central1-a
+ZONE=us-central1-b
 NUM_GPUS=1
 NUM_WORKERS=4
 
@@ -156,18 +168,18 @@ INPUT_FILE="gs://data_bucket-${PROJECT_NBR}/churn/input/telco-customer-churn.csv
 OUTPUT_PREFIX="gs://data_bucket-${PROJECT_NBR}/churn/input/10scale/"
 ```
 
-### 4.4. Run the script
+### 4.4. Run the data generator script from Nvidia
 
 Paste in Cloud Shell-
 ```
 gcloud dataproc jobs submit pyspark \
---cluster $CLUSTER_NAME \
+--cluster $DATAPROC_CLUSTER_NAME \
 --id data-generator-$RANDOM \
-gs://$CODE_BUCKET/churn/data_generator_util/generate_data.py \
+gs://$CODE_BUCKET/churn/data-generator-util/generate_data.py \
 --py-files=gs://$CODE_BUCKET/churn/aux_etl_code_archive.zip \
 --properties="spark.executor.cores=${NUM_EXECUTOR_CORES},spark.executor.memory=${EXECUTOR_MEMORY}G,spark.driver.memory=${DRIVER_MEMORY}G" \
 --configuration="spark.cores.max=$TOTAL_CORES,spark.task.cpus=1,spark.sql.files.maxPartitionBytes=2G" \
---region $LOCATION \
+--region $REGION \
 --project $PROJECT_ID \
 -- --input-file=${INPUT_FILE} --output-prefix=${OUTPUT_PREFIX} --dup-times=${SCALE}  2>&1 >> $LOGFILE
 ```
