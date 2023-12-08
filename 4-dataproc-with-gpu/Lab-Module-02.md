@@ -1,12 +1,41 @@
-# About
+# Module 02: GPU acceleration for Spark on Dataproc GCE clusters 
 
-This lab showcases Spark application acceleration with Spark-RAPIDS on Dataproc on GCE - powered by Nvidia GPUs.<br> 
-
-This lab module demystifies GPU acceleration with Spark-rapids through a minimum viable Spark application on the Kaggle Telco Customer Churn dataset.
-
+This lab module demystifies Spark application acceleration with Spark-RAPIDS on Dataproc on GCE - powered by Nvidia GPUs through a minimum viable Spark application on the Kaggle Telco Customer Churn dataset. It also introduces Nvidia tooling - for qualifying Spark applications that can benefit from GPU acceleration as well as Nvidia tuning tool to further enhance GPU powered Spark application performance.
 
 <hr>
 <hr>
+
+## 1. About the lab
+
+### 1.1. Prerequisites
+
+Successful completion of prior module
+
+### 1.2. What to expect
+
+In this lab, we will-
+1. Create a Dataproc cluster with GPUs
+2. Generate data
+3. Run an ETL job with just CPUs to establish a baseline performance
+4. Run the Nvidia qualification tool to identify opportunities for GPU acceleration for our ETL CPU baseline job
+5. Run the same ETL job with GPUs and establish a baseline performance
+6. Run the Nvidia tuning tool to understand tweaks that can further improve performance
+7. Rerun the same ETL job with GPUs with the Nvidia tuning recommendations
+8. Study the results
+9. Shut down resources
+
+### 1.3. Resoruces provisioned
+
+We will provision a Dataproc on GCE cluster with GPUs.
+
+
+### 1.4. Lab flow
+
+### 1.5. Duration
+
+
+
+
 
 
 ## 2. Provision a Dataproc on GCE cluster
@@ -252,10 +281,10 @@ DRIVER_MEMORY=4    # unit: GB
 EXECUTOR_MEMORY=$(($((${TOTAL_MEMORY}-$((${DRIVER_MEMORY}*1000/1024))))/${NUM_EXECUTORS}))
 
 # Input prefix designates where the data to be processed is located
-INPUT_PREFIX="gs://spark-rapids-lab-data-$PROJECT_NBR/churn/input/10scale/"
+INPUT_PREFIX="gs://data_bucket-$PROJECT_NBR/churn/input/10scale/"
 #
 # Output prefix is where results from the queries are stored
-OUTPUT_PREFIX="gs://spark-rapids-lab-data-$PROJECT_NBR/churn/output/cpu-based-analytics"
+OUTPUT_PREFIX="gs://data_bucket-$PROJECT_NBR/churn/output/cpu-based-analytics"
 ```
 
 ### 5.2. Run a Spark analytics application on CPUs for a baseline
