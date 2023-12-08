@@ -32,13 +32,13 @@ In this lab, we will-
 
 We will provision a Dataproc on GCE cluster with GPUs.
 
-![README](./images/m02-01.png)   
+![README](./images/m2-01.png)   
 
 <hr>
 
 ### 1.4. Lab flow
 
-![README](./images/m02-02.png)   
+![README](./images/m2-02.png)   
 
 <hr>
 
@@ -104,7 +104,7 @@ Takes approximately ~12 minutes or less to provision. Largely because of scripts
 
 ### 2.3. Quick pictorial walk-through of the cluster
 
-![README](./images/m02-03.png)   
+![README](./images/m2-03.png)   
 
 Scroll below to [appendix] for complete walkthrough of the cluster.
 
@@ -236,15 +236,15 @@ gs://$CODE_BUCKET/churn/data-generator-util/generate_data.py \
 
 Review the job execution in Dataproc -> Jobs UI
 
-![README](./images/m02-09.png)   
+![README](./images/m2-09.png)   
 
 <hr>
 
-![README](./images/m02-10.png)   
+![README](./images/m2-10.png)   
 
 <hr>
 
-![README](./images/m02-11.png)   
+![README](./images/m2-11.png)   
 
 <hr>
 
@@ -334,15 +334,15 @@ gs://$CODE_BUCKET/churn/main_analytics_app.py \
 
 Follow the execution in the Dataproc-Jobs UI. It takes ~30 minutes, you can step away and come back.
 
-![README](./images/m02-12.png)   
+![README](./images/m2-12.png)   
 
 <hr>
 
-![README](./images/m02-13.png)   
+![README](./images/m2-13.png)   
 
 <hr>
 
-![README](./images/m02-14.png)   
+![README](./images/m2-14.png)   
 
 <hr>
 
@@ -354,7 +354,7 @@ Paste in Cloud Shell-
 gsutil ls -r $OUTPUT_PREFIX
 ```
 
-![README](./images/m02-15.png)   
+![README](./images/m2-15.png)   
 
 <hr>
 
@@ -723,23 +723,23 @@ The author's results-
 
 ### Walkthrough of the Dataproc cluster 
 
-![README](./images/m02-04.png)   
+![README](./images/m2-04.png)   
 
 <hr>
 
-![README](./images/m02-05.png)   
+![README](./images/m2-05.png)   
 
 <hr>
 
-![README](./images/m02-06.png)   
+![README](./images/m2-06.png)   
 
 <hr>
 
-![README](./images/m02-07.png)   
+![README](./images/m2-07.png)   
 
 <hr>
 
-![README](./images/m02-08.png)   
+![README](./images/m2-08.png)   
 
 <hr>
 
