@@ -410,6 +410,7 @@ python -m venv .venv
 source .venv/bin/activate
 
 pip install spark-rapids-user-tools
+
 ```
 
 Check to see if you can run the Nvidia qualification tool, immediately after-
@@ -628,11 +629,7 @@ DPGCE_LOG_BUCKET=gs://dataproc-temp-us-central1-599883900699-fbcrb2gv/56c3efab-2
 gcloud config set compute/region $REGION
 gcloud config set compute/zone $ZONE
 
-source .venv/bin/activate
-
-spark_rapids_user_tools dataproc profiling \
-   --eventlogs $DPGCE_LOG_BUCKET \
-   --gpu_cluster $CLUSTER_NAME
+spark_rapids_dataproc profiling --cluster $CLUSTER_NAME --region $REGION
 
 
 ```
