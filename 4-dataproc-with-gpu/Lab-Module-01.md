@@ -105,7 +105,7 @@ GCP_ACCOUNT_NAME=`gcloud auth list --filter=status:ACTIVE --format="value(accoun
 GCP_REGION="us-central1"
 DEPLOYER_ACCOUNT_NAME=$GCP_ACCOUNT_NAME
 ORG_ID=`gcloud organizations list --format="value(name)"`
-CC2_IMAGE_VERSION="composer-2.0.11-airflow-2.2.3"
+
 
 
 terraform init
@@ -116,7 +116,6 @@ terraform apply \
   -var="gcp_account_name=${GCP_ACCOUNT_NAME}" \
   -var="deployment_service_account_name=${DEPLOYER_ACCOUNT_NAME}" \
   -var="org_id=${ORG_ID}" \
-  -var="cloud_composer_image_version=${CC2_IMAGE_VERSION}" \
   -var="gcp_region=${GCP_REGION}" \
   -auto-approve >> 4-dataproc-with-gpu-tf-core.output
 ```
