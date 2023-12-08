@@ -605,11 +605,14 @@ The author's application took ~8 minutes to complete across multiple tests.
 
 <hr>
 
-## 8. Tuning GPU based applications - profiling and recommednations from Nvidia
+## 8. Tuning GPU based applications - profiling and recommendations from Nvidia
 
-### 8.1. Run the Nvidia profiler on the Spark on GPU applications run already
-This unit uses Nvidia's tooling to tune GPU based Spark applications and needs to be run after your initial attempts of runnng GPU based Spark applications.
+### 8.1. Install the Nvidia profiler 
+We already installed the Nvidia tooling earlier. Will use the profiling function in section 8.2.
 
+### 8.2. Run the Nvidia profiler on the Spark on GPU applications run already
+This unit uses Nvidia's tooling to tune GPU based Spark applications and needs to be run after your initial attempts of runnng GPU based Spark applications.<br>
+Docs: https://github.com/NVIDIA/spark-rapids-tools/blob/main/user_tools/docs/index.md
 <br>
 Run the below in Cloud Shell-
 
@@ -618,8 +621,11 @@ PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
 REGION=us-central1
 CLUSTER_NAME=dpgce-cluster-static-gpu-$PROJECT_NBR
+DPGCE_LOG_BUCKET=spark-bucket-dpgce-${PROJECT_NBR}
 
-spark_rapids_dataproc profiling --cluster $CLUSTER_NAME --region $REGION
+spark_rapids_user_tools dataproc profiling \
+   --eventlogs $DPGCE_LOG_BUCKET \
+   --gpu_cluster $CLUSTER_NAME 
 ```
 
 Author's sample output (scroll to the right for full details)-
