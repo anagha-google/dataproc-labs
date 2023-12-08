@@ -200,7 +200,7 @@ Lets check the size-
 ```
 gsutil du -s -h -a ${OUTPUT_PREFIX} | cut -d' ' -f1,2
 ```
-The author's output is 45.24 MiB
+The author's output is 42.46 MiB
 
 <hr>
 <hr>
@@ -214,20 +214,18 @@ Paste in Cloud Shell-
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
 
-CLUSTER_NAME=dpgce-cluster-static-gpu-${PROJECT_NBR}
-DPGCE_LOG_BUCKET=dpgce-cluster-static-gpu-${PROJECT_NBR}-logs
-DATA_BUCKET=spark-rapids-lab-data-${PROJECT_NBR}
-CODE_BUCKET=spark-rapids-lab-code-${PROJECT_NBR}
-VPC_NM=VPC=dpgce-vpc-$PROJECT_NBR
+DATAPROC_CLUSTER_NAME=dpgce-cluster-static-gpu-${PROJECT_NBR}
+DPGCE_LOG_BUCKET=spark-bucket-dpgce-${PROJECT_NBR}
+DATA_BUCKET=data_bucket-${PROJECT_NBR}
+CODE_BUCKET=code_bucket-${PROJECT_NBR}
+VPC_NM=VPC=vpc-$PROJECT_NBR
 SPARK_SUBNET=spark-snet
-PERSISTENT_HISTORY_SERVER_NM=dpgce-sphs-${PROJECT_NBR}
-UMSA_FQN=dpgce-lab-sa@$PROJECT_ID.iam.gserviceaccount.com
+UMSA_FQN=lab-sa@$PROJECT_ID.iam.gserviceaccount.com
 REGION=us-central1
-ZONE=us-central1-a
+ZONE=us-central1-b
 NUM_GPUS=1
 NUM_WORKERS=4
 
-# Log for each execution
 LOG_SECOND=`date +%s`
 LAB_LOG_ROOT_DIR="~/dataproc-labs/logs/lab-4/"
 mkdir -p $LAB_LOG_ROOT_DIR
@@ -267,7 +265,7 @@ SPARK_PROPERTIES="spark.executor.cores=${NUM_EXECUTOR_CORES},spark.executor.memo
 gcloud dataproc jobs submit pyspark \
 gs://$CODE_BUCKET/churn/main_analytics_app.py \
 --py-files=gs://$CODE_BUCKET/churn/aux_etl_code_archive.zip \
---cluster $CLUSTER_NAME \
+--cluster $DATAPROC_CLUSTER_NAME \
 --region $REGION \
 --id cpu-etl-baseline-$RANDOM \
 --properties=${SPARK_PROPERTIES} \
@@ -287,16 +285,16 @@ The author's application took ~ 32 minutes to complete across multiple runs.
 
 <hr>
 
-## 7. Run the Nvidia Qualification Tool to see if the Spark application qualifies for GPUs
+## 6. Run the Nvidia Qualification Tool to see if the Spark application qualifies for GPUs
 
-### 7.1. Find the Public IP address of your Cloud Shell terminal
+### 6.1. Find the Public IP address of your Cloud Shell terminal
 
 ```
 MY_IP_ADDRESS=`curl -s checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'`
 echo $MY_IP_ADDRESS
 ```
 
-### 7.2. Add an ingress firewall rule to allow yourself SSH access to the cluster
+### 6.2. Add an ingress firewall rule to allow yourself SSH access to the cluster
 First and foremost, you need to allow yourself ingress to SSH into the cluster. If you use Cloud Shell, the IP address varies with each session. Use the commad below to allow ingress to your IP address.
 ```
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
@@ -312,7 +310,7 @@ gcloud compute firewall-rules delete $MY_FIREWALL_RULE
 gcloud compute --project=$PROJECT_ID firewall-rules create $MY_FIREWALL_RULE --direction=INGRESS --priority=1000 --network=$VPC_NM --action=ALLOW --rules=all --source-ranges="$MY_IP_ADDRESS/32"
 ```
 
-### 7.3. Install RAPIDS user tools in Cloud Shell
+### 6.3. Install RAPIDS user tools in Cloud Shell
 
 paste in Cloud Shell-
 ```
@@ -328,7 +326,7 @@ spark_rapids_dataproc qualification --help
 ```
 
 
-### 7.4 Run the Qualification tool to find workloads that can benefit from GPU based acceleration
+### 6.4 Run the Qualification tool to find workloads that can benefit from GPU based acceleration
 
 You can run this only after you run a few Spark applications. The tool will review the logs and provide recommendations based on YARN application IDs-
 ```
@@ -396,9 +394,9 @@ To launch a GPU-accelerated cluster with RAPIDS Accelerator for Apache Spark, ad
 
 <hr>
 
-## 8. Run the same ETL job on GPUs 
+## 7. Run the same ETL job on GPUs 
 
-### 8.1. Declare variables
+### 7.1. Declare variables
 
 Paste in Cloud Shell-
 ```
@@ -457,7 +455,7 @@ INPUT_PREFIX="gs://spark-rapids-lab-data-$PROJECT_NBR/churn/input/10scale/"
 OUTPUT_PREFIX="gs://spark-rapids-lab-data-$PROJECT_NBR/churn/output/gpu-based-analytics"
 ```
 
-### 8.2. Run the Spark ETL analytics application on GPUs
+### 7.2. Run the Spark ETL analytics application on GPUs
 
 Paste in Cloud Shell-
 ```
@@ -474,7 +472,7 @@ gs://$CODE_BUCKET/churn/main_analytics_app.py \
 -- --coalesce-output=8 --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX}   2>&1 >> $LOGFILE
 ```
 
-### 8.3. Review the results
+### 7.3. Review the results
 
 Paste in Cloud Shell-
 ```
@@ -482,15 +480,15 @@ gsutil ls -r $OUTPUT_PREFIX
 gsutil du -s -h -a $OUTPUT_PREFIX
 ```
 
-### 8.4. Note the execution time
+### 7.4. Note the execution time
 
 The author's application took ~8 minutes to complete across multiple tests.
 
 <hr>
 
-## 9. Tuning GPU based applications - profiling and recommednations from Nvidia
+## 8. Tuning GPU based applications - profiling and recommednations from Nvidia
 
-### 9.1. Run the Nvidia profiler on the Spark on GPU applications run already
+### 8.1. Run the Nvidia profiler on the Spark on GPU applications run already
 This unit uses Nvidia's tooling to tune GPU based Spark applications and needs to be run after your initial attempts of runnng GPU based Spark applications.
 
 <br>
@@ -537,7 +535,7 @@ Scroll to the right for explanation-
 +--------------------------------+-----------------+--------------------------------------------------------------------------
 ```
 
-### 9.2. Tune the Spark application with the recommedations from the profiler
+### 8.2. Tune the Spark application with the recommedations from the profiler
 
 Lets tune our Spark application parameters based on the recommendation above and run the same Spark application as follows-
 ```
@@ -609,11 +607,11 @@ gs://$CODE_BUCKET/churn/main_analytics_app.py \
 -- --coalesce-output=8 --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX}   2>&1 >> $LOGFILE
 ```
 
-### 9.3. Note the execution time
+### 8.3. Note the execution time
 
 The author's application took ~5 minutes to complete across multiple tests.
 
-## 10.0. Summary
+## 9.0. Summary
 
 We ran the same Spark ETL application from Nvidia on the same cluster and compared performance across CPUs and GPUs. The Spark applications are in no way perfectly tuned. 
 |About|Details|
