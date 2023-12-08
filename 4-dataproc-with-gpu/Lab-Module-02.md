@@ -437,25 +437,26 @@ spark_rapids_dataproc qualification --cluster $CLUSTER_NAME --region $REGION
 
 Here are the author's results, that correctly call out the two Spark applications run without GPU acceleration, while omiiting the ones that used GPUs and the speed up is accurate as well-
 ```
-2023-05-11 16:44:50,560 INFO qualification: The original CPU cluster is the same as the submission cluster on which the tool runs. To update the configuration of the CPU cluster, make sure to pass the properties file to the CLI arguments.
-2023-05-11 16:44:50,561 INFO qualification: Estimating the GPU cluster based on the submission cluster on which the RAPIDS tool is running [dpgce-cluster-static-gpu-420530778089]. To update the configuration of the GPU cluster, make sure to pass the properties file to the CLI arguments.
-2023-05-11 16:44:50,845 INFO qualification: Preparing remote work env
-2023-05-11 16:44:52,560 INFO qualification: Upload dependencies to remote cluster
-2023-05-11 16:44:54,527 INFO qualification: Executing the tool
-2023-05-11 16:44:54,528 INFO qualification: Running the tool as a spark job on dataproc
-2023-05-11 16:45:32,875 INFO qualification: Downloading the tool output
-2023-05-11 16:45:35,479 INFO qualification: Processing tool output
-2023-05-11 16:45:35,503 INFO qualification: Downloading the price catalog from URL https://cloudpricingcalculator.appspot.com/static/data/pricelist.json
-2023-05-11 16:45:35,561 INFO qualification: Building cost model based on:
+(.venv) admin_@cloudshell:~ (gpus-lab-407321)$ spark_rapids_dataproc qualification --cluster $CLUSTER_NAME --region $REGION
+2023-12-08 03:10:27,279 INFO qualification: The original CPU cluster is the same as the submission cluster on which the tool runs. To update the configuration of the CPU cluster, make sure to pass the properties file to the CLI arguments.
+2023-12-08 03:10:27,279 INFO qualification: Estimating the GPU cluster based on the submission cluster on which the RAPIDS tool is running [dpgce-cluster-static-gpu-599883900699]. To update the configuration of the GPU cluster, make sure to pass the properties file to the CLI arguments.
+2023-12-08 03:10:28,141 INFO qualification: Preparing remote work env
+2023-12-08 03:10:29,983 INFO qualification: Upload dependencies to remote cluster
+2023-12-08 03:10:32,172 INFO qualification: Executing the tool
+2023-12-08 03:10:32,172 INFO qualification: Running the tool as a spark job on dataproc
+2023-12-08 03:11:01,846 INFO qualification: Downloading the tool output
+2023-12-08 03:11:04,948 INFO qualification: Processing tool output
+2023-12-08 03:11:05,064 INFO qualification: Downloading the price catalog from URL https://cloudpricingcalculator.appspot.com/static/data/pricelist.json
+2023-12-08 03:11:05,122 INFO qualification: Building cost model based on:
 Worker Properties
 --------------------  -------------
 Workers               4
 Worker Machine Type   n1-standard-8
 Region                us-central1
-Zone                  us-central1-a
+Zone                  us-central1-b
 GPU device            T4
 GPU per worker nodes  2
-2023-05-11 16:45:35,570 INFO qualification: Generating GPU Estimated Speedup and Savings as ./wrapper-output/rapids_user_tools_qualification/qual-tool-output/rapids_4_dataproc_qualification_output.csv
+2023-12-08 03:11:05,217 INFO qualification: Generating GPU Estimated Speedup and Savings as ./wrapper-output/rapids_user_tools_qualification/qual-tool-output/rapids_4_dataproc_qualification_output.csv
 Qualification tool output is saved to local disk /home/admin_/wrapper-output/rapids_user_tools_qualification/qual-tool-output/rapids_4_spark_qualification_output
         rapids_4_spark_qualification_output/
                 ├── rapids_4_spark_qualification_output.csv
@@ -469,20 +470,19 @@ Full savings and speedups CSV report: /home/admin_/wrapper-output/rapids_user_to
 |    | App ID                         | App Name        | Recommendation       |   Estimated GPU |   Estimated GPU |           App |   Estimated GPU |
 |    |                                |                 |                      |         Speedup |     Duration(s) |   Duration(s) |      Savings(%) |
 |----+--------------------------------+-----------------+----------------------+-----------------+-----------------+---------------+-----------------|
-|  0 | application_1683730151313_0009 | churn_utils.etl | Strongly Recommended |            4.18 |          472.65 |       1977.57 |           40.59 |
-|  1 | application_1683730151313_0008 | churn_utils.etl | Strongly Recommended |            4.17 |          458.58 |       1914.39 |           40.45 |
+|  0 | application_1701994598998_0003 | churn_utils.etl | Strongly Recommended |            4.27 |          610.24 |       2606.66 |           41.80 |
+|  1 | application_1701994598998_0004 | churn_utils.etl | Strongly Recommended |            4.22 |          520.94 |       2202.14 |           41.19 |
 +----+--------------------------------+-----------------+----------------------+-----------------+-----------------+---------------+-----------------+
 Report Summary:
 ------------------------------  ------
-Total applications                   2
+Total applications                   3
 RAPIDS candidates                    2
-Overall estimated speedup         4.18
-Overall estimated cost savings  40.52%
+Overall estimated speedup         4.23
+Overall estimated cost savings  41.17%
 ------------------------------  ------
 To launch a GPU-accelerated cluster with RAPIDS Accelerator for Apache Spark, add the following to your cluster creation script:
         --initialization-actions=gs://goog-dataproc-initialization-actions-us-central1/spark-rapids/spark-rapids.sh \ 
         --worker-accelerator type=nvidia-tesla-t4,count=2
-
 ```
 
 <hr>
@@ -498,16 +498,15 @@ Paste in Cloud Shell-
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
 
-CLUSTER_NAME=dpgce-cluster-static-gpu-${PROJECT_NBR}
-DPGCE_LOG_BUCKET=dpgce-cluster-static-gpu-${PROJECT_NBR}-logs
-DATA_BUCKET=spark-rapids-lab-data-${PROJECT_NBR}
-CODE_BUCKET=spark-rapids-lab-code-${PROJECT_NBR}
-VPC_NM=VPC=dpgce-vpc-$PROJECT_NBR
+DATAPROC_CLUSTER_NAME=dpgce-cluster-static-gpu-${PROJECT_NBR}
+DPGCE_LOG_BUCKET=spark-bucket-dpgce-${PROJECT_NBR}
+DATA_BUCKET=data_bucket-${PROJECT_NBR}
+CODE_BUCKET=code_bucket-${PROJECT_NBR}
+VPC_NM=VPC=vpc-$PROJECT_NBR
 SPARK_SUBNET=spark-snet
-PERSISTENT_HISTORY_SERVER_NM=dpgce-sphs-${PROJECT_NBR}
-UMSA_FQN=dpgce-lab-sa@$PROJECT_ID.iam.gserviceaccount.com
+UMSA_FQN=lab-sa@$PROJECT_ID.iam.gserviceaccount.com
 REGION=us-central1
-ZONE=us-central1-a
+ZONE=us-central1-b
 NUM_GPUS=1
 NUM_WORKERS=4
 
@@ -518,54 +517,75 @@ mkdir -p $LAB_LOG_ROOT_DIR
 LOGFILE="$LAB_LOG_ROOT_DIR/$0.txt.$LOG_SECOND"
 
 # Set this value to the total number of cores that you have across all
-# your worker nodes. e.g. 8 servers with 40 cores = 320 cores
+# your worker nodes. e.g. 4 workers with 8 cores each = 32 cores
 TOTAL_CORES=32
 
-# Set this value to the number of GPUs that you have within your cluster. If
-# each server has 2 GPUs count that as 2
+# Set this value to the number of GPUs that you have within your cluster.
+# In our example, we have 4 workers, each with 1 GPU, therefore 4 executors
 NUM_EXECUTORS=4   # change to fit how many GPUs you have
-
-# This setting needs to be a decimal equivalent to the ratio of cores to
-# executors. In our example we have 40 cores and 8 executors. So, this
-# would be 1/5, hench the 0.1 value.
-
-RESOURCE_GPU_AMT="0.125"
 
 #
 NUM_EXECUTOR_CORES=$((${TOTAL_CORES}/${NUM_EXECUTORS}))
+
+# This setting needs to be a decimal equivalent to the 1 divided by number of cores in an executor
+# In our example we have 8 cores per executor. Therefore, the value is 1/8.
+RESOURCE_GPU_AMT="0.125"
+
 #
-# Set this to the total memory across all your worker nodes. e.g. RAM of each worker * number of worker nodes
+# Set this to the total memory across all your worker nodes (n1-standard-8 SKU). e.g. RAM of each worker (30 GB) * number of worker nodes (4)
 TOTAL_MEMORY=120   # unit: GB
 DRIVER_MEMORY=4    # unit: GB
 #
 # This takes the total memory and calculates the maximum amount of memory
-# per executor
-EXECUTOR_MEMORY=$(($((${TOTAL_MEMORY}-$((${DRIVER_MEMORY}*1000/1024))))/${NUM_EXECUTORS}))
+# per executor 
 
+SPARK_PER_EXECUTOR_MEMORY_OVERHEAD_GB=3
+RAPIDS_PER_EXECUTOR_MEMORY_PINNED_POOL_SIZE_GB=2
+EXECUTOR_MEMORY=$((TOTAL_MEMORY / NUM_EXECUTORS * 7 / 10))
+echo $EXECUTOR_MEMORY
 
 # Input prefix designates where the data to be processed is located
-INPUT_PREFIX="gs://spark-rapids-lab-data-$PROJECT_NBR/churn/input/10scale/"
+INPUT_PREFIX="gs://data_bucket-$PROJECT_NBR/churn/input/10scale/"
 
 # Output prefix is where results from the queries are stored
-OUTPUT_PREFIX="gs://spark-rapids-lab-data-$PROJECT_NBR/churn/output/gpu-based-analytics"
+OUTPUT_PREFIX="gs://data_bucket-$PROJECT_NBR/churn/output/gpu-based-analytics/"
 ```
+
+<hr>
 
 ### 7.2. Run the Spark ETL analytics application on GPUs
 
 Paste in Cloud Shell-
 ```
-SPARK_PROPERTIES="spark.executor.cores=${NUM_EXECUTOR_CORES},spark.executor.memory=${EXECUTOR_MEMORY}G,spark.driver.memory=${DRIVER_MEMORY}G,spark.cores.max=$TOTAL_CORES,spark.task.cpus=1,spark.sql.files.maxPartitionBytes=1G,spark.sql.adaptive.enabled=True,spark.sql.autoBroadcastJoinThreshold=-1,spark.rapids.sql.enabled=True,spark.rapids.sql.decimalType.enabled=True,spark.task.resource.gpu.amount=$RESOURCE_GPU_AMT,spark.plugins=com.nvidia.spark.SQLPlugin,spark.rapids.memory.pinnedPool.size=2G,spark.rapids.sql.concurrentGpuTasks=2,spark.executor.resource.gpu.amount=1,spark.rapids.sql.variableFloatAgg.enabled=True,spark.rapids.sql.explain=NOT_ON_GPU "
+SPARK_PROPERTIES="spark.executor.memoryOverhead=${SPARK_PER_EXECUTOR_MEMORY_OVERHEAD_GB}G,spark.executor.cores=${NUM_EXECUTOR_CORES},spark.executor.memory=${EXECUTOR_MEMORY}G,spark.driver.memory=${DRIVER_MEMORY}G,spark.cores.max=$TOTAL_CORES,spark.task.cpus=1,spark.sql.files.maxPartitionBytes=1G,spark.sql.adaptive.enabled=True,spark.sql.autoBroadcastJoinThreshold=-1,spark.rapids.sql.enabled=True,spark.rapids.sql.decimalType.enabled=True,spark.task.resource.gpu.amount=$RESOURCE_GPU_AMT,spark.plugins=com.nvidia.spark.SQLPlugin,spark.rapids.memory.pinnedPool.size=${RAPIDS_PER_EXECUTOR_MEMORY_PINNED_POOL_SIZE_GB}G,spark.rapids.sql.concurrentGpuTasks=2,spark.executor.resource.gpu.amount=1,spark.rapids.sql.variableFloatAgg.enabled=True,spark.rapids.sql.explain=NOT_ON_GPU "
 
 gcloud dataproc jobs submit pyspark \
 gs://$CODE_BUCKET/churn/main_analytics_app.py \
 --py-files=gs://$CODE_BUCKET/churn/aux_etl_code_archive.zip \
---cluster $CLUSTER_NAME \
+--cluster $DATAPROC_CLUSTER_NAME \
 --region $REGION \
 --id gpu-etl-baseline-$RANDOM \
 --properties=${SPARK_PROPERTIES} \
 --project $PROJECT_ID \
 -- --coalesce-output=8 --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX}   2>&1 >> $LOGFILE
 ```
+
+Follow the execution in the Dataproc-Jobs UI. It takes ~30 minutes, you can step away and come back.
+
+![README](./images/m2-17.png)   
+
+<hr>
+
+
+![README](./images/m2-18.png)   
+
+<hr>
+
+
+![README](./images/m2-19.png)   
+
+
+<hr>
 
 ### 7.3. Review the results
 
@@ -574,6 +594,10 @@ Paste in Cloud Shell-
 gsutil ls -r $OUTPUT_PREFIX
 gsutil du -s -h -a $OUTPUT_PREFIX
 ```
+
+![README](./images/m2-20.png)   
+
+<hr>
 
 ### 7.4. Note the execution time
 
