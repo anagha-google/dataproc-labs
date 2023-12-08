@@ -11,6 +11,8 @@ This lab module demystifies Spark application acceleration with Spark-RAPIDS on 
 
 Successful completion of prior module
 
+<hr>
+
 ### 1.2. What to expect
 
 In this lab, we will-
@@ -24,18 +26,24 @@ In this lab, we will-
 8. Study the results
 9. Shut down resources
 
+<hr>
+
 ### 1.3. Resoruces provisioned
 
 We will provision a Dataproc on GCE cluster with GPUs.
 
+<hr>
 
 ### 1.4. Lab flow
 
+<hr>
+
 ### 1.5. Duration
 
+~ 2 hours but does not require focus time.
 
-
-
+<hr>
+<hr>
 
 
 ## 2. Provision a Dataproc on GCE cluster
@@ -139,7 +147,7 @@ gsutil du -s -h -a gs://$DATA_BUCKET/churn/input/telco-customer-churn.csv | cut 
 ```
 Its 954 KiB.
 
-### 4.2. Review the script
+### 4.2. Review the PySpark data generator script
 
 Paste in Cloud Shell-
 ```
