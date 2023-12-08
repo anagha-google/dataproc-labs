@@ -620,12 +620,21 @@ Run the below in Cloud Shell-
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
 REGION=us-central1
+ZONE=us-central1-b
 CLUSTER_NAME=dpgce-cluster-static-gpu-$PROJECT_NBR
-DPGCE_LOG_BUCKET=spark-bucket-dpgce-${PROJECT_NBR}
+DPGCE_LOG_BUCKET=gs://dataproc-temp-us-central1-599883900699-fbcrb2gv/56c3efab-2d16-4f02-aca8-7705543acb51/spark-job-history/application_1701994598998_0001
+#gs://spark-bucket-dpgce-${PROJECT_NBR}
+
+gcloud config set compute/region $REGION
+gcloud config set compute/zone $ZONE
+
+source .venv/bin/activate
 
 spark_rapids_user_tools dataproc profiling \
    --eventlogs $DPGCE_LOG_BUCKET \
-   --gpu_cluster $CLUSTER_NAME 
+   --gpu_cluster $CLUSTER_NAME
+
+
 ```
 
 Author's sample output (scroll to the right for full details)-
