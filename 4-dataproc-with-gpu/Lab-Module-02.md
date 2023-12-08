@@ -28,13 +28,17 @@ In this lab, we will-
 
 <hr>
 
-### 1.3. Resoruces provisioned
+### 1.3. Resources provisioned
 
 We will provision a Dataproc on GCE cluster with GPUs.
+
+![README](./images/m02-01.png)   
 
 <hr>
 
 ### 1.4. Lab flow
+
+![README](./images/m02-02.png)   
 
 <hr>
 
@@ -100,7 +104,9 @@ Takes approximately ~12 minutes or less to provision. Largely because of scripts
 
 ### 2.3. Quick pictorial walk-through of the cluster
 
-Scroll below to appendix.
+![README](./images/m02-03.png)   
+
+Scroll below to [appendix] for complete walkthrough of the cluster.
 
 <hr>
 <hr>
@@ -228,6 +234,20 @@ gs://$CODE_BUCKET/churn/data-generator-util/generate_data.py \
 -- --input-file=${INPUT_FILE} --output-prefix=${OUTPUT_PREFIX} --dup-times=${SCALE}  2>&1 >> $LOGFILE
 ```
 
+Review the job execution in Dataproc -> Jobs UI
+
+![README](./images/m02-09.png)   
+
+<hr>
+
+![README](./images/m02-10.png)   
+
+<hr>
+
+![README](./images/m02-11.png)   
+
+<hr>
+
 ### 4.5. Review the 10 scale lab dataset generated
 
 Paste in Cloud Shell-
@@ -312,16 +332,37 @@ gs://$CODE_BUCKET/churn/main_analytics_app.py \
 -- --coalesce-output=8 --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX}   2>&1 >> $LOGFILE
 ```
 
+Follow the execution in the Dataproc-Jobs UI. It takes ~30 minutes, you can step away and come back.
+
+![README](./images/m02-12.png)   
+
+<hr>
+
+![README](./images/m02-13.png)   
+
+<hr>
+
+![README](./images/m02-14.png)   
+
+<hr>
+
+
+
 ### 5.3. Review the results
 Paste in Cloud Shell-
 ```
 gsutil ls -r $OUTPUT_PREFIX
 ```
 
+![README](./images/m02-15.png)   
+
+<hr>
+
 ### 5.4. Note the execution time
 
 The author's application took ~ 32 minutes to complete across multiple runs.
 
+<hr>
 <hr>
 
 ## 6. Run the Nvidia Qualification Tool to see if the Spark application qualifies for GPUs
@@ -334,13 +375,14 @@ echo $MY_IP_ADDRESS
 ```
 
 ### 6.2. Add an ingress firewall rule to allow yourself SSH access to the cluster
-First and foremost, you need to allow yourself ingress to SSH into the cluster. If you use Cloud Shell, the IP address varies with each session. Use the commad below to allow ingress to your IP address.
+
+First and foremost, you need to allow yourself ingress to SSH into the cluster. If you use Cloud Shell, the IP address varies with each session. Use the command below to allow ingress to your IP address.
 ```
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
-VPC_NM=dpgce-vpc-$PROJECT_NBR
+VPC_NM=vpc-$PROJECT_NBR
 REGION=us-central1
-ZONE=$REGION-a
+ZONE=$REGION-b
 CLUSTER_NAME=dpgce-cluster-static-gpu-$PROJECT_NBR
 MY_FIREWALL_RULE="allow-me-to-ingress-into-vpc"
 
@@ -349,9 +391,9 @@ gcloud compute firewall-rules delete $MY_FIREWALL_RULE
 gcloud compute --project=$PROJECT_ID firewall-rules create $MY_FIREWALL_RULE --direction=INGRESS --priority=1000 --network=$VPC_NM --action=ALLOW --rules=all --source-ranges="$MY_IP_ADDRESS/32"
 ```
 
-### 6.3. Install RAPIDS user tools in Cloud Shell
+### 6.3. Install --RAPIDS User Tools-- in Cloud Shell
 
-paste in Cloud Shell-
+Paste in Cloud Shell-
 ```
 python -m venv .venv
 source .venv/bin/activate
@@ -365,7 +407,7 @@ spark_rapids_dataproc qualification --help
 ```
 
 
-### 6.4 Run the Qualification tool to find workloads that can benefit from GPU based acceleration
+### 6.4 Run the --Nvidia Qualification Tool-- to find workloads that can benefit from GPU based acceleration
 
 You can run this only after you run a few Spark applications. The tool will review the logs and provide recommendations based on YARN application IDs-
 ```
@@ -373,7 +415,7 @@ You can run this only after you run a few Spark applications. The tool will revi
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
 REGION=us-central1
-ZONE=$REGION-a
+ZONE=$REGION-b
 CLUSTER_NAME=dpgce-cluster-static-gpu-$PROJECT_NBR
 
 
@@ -652,7 +694,8 @@ The author's application took ~5 minutes to complete across multiple tests.
 
 ## 9.0. Summary
 
-We ran the same Spark ETL application from Nvidia on the same cluster and compared performance across CPUs and GPUs. The Spark applications are in no way perfectly tuned. 
+We ran the same Spark ETL application from Nvidia on a cluster and compared performance across CPUs and GPUs. The Spark applications are in no way perfectly tuned, but the performance is significantly improved and can be tweaked further for performance critical applications. 
+
 |About|Details|
 | :-- | :-- |
 | Dataproc | Image version 2.0.63-ubuntu18 | 
@@ -675,5 +718,29 @@ The author's results-
 | CPU-based | Baseline performance | 32 minutes |
 | GPU-based | Baseline performance| 8 minutes |
 | GPU-based | Tuned with Nvidia profiler recommendations | ~5 minutes |
+
+## 10.0. Appendix
+
+### Walkthrough of the Dataproc cluster 
+
+![README](./images/m02-04.png)   
+
+<hr>
+
+![README](./images/m02-05.png)   
+
+<hr>
+
+![README](./images/m02-06.png)   
+
+<hr>
+
+![README](./images/m02-07.png)   
+
+<hr>
+
+![README](./images/m02-08.png)   
+
+<hr>
 
 <hr>
