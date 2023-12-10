@@ -16,47 +16,34 @@ Successful completion of prior module
 ### 1.2. What to expect
 
 In this lab, we will-
-1. Create a Dataproc cluster with GPUs
-2. Generate data
-3. Run an ETL job with just CPUs to establish a baseline performance
-4. Run the Nvidia qualification tool to identify opportunities for GPU acceleration for our ETL CPU baseline job
-5. Run the same ETL job with GPUs and establish a baseline performance
-6. Run the Nvidia tuning tool to understand tweaks that can further improve performance
-7. Rerun the same ETL job with GPUs with the Nvidia tuning recommendations
-8. Study the results
-9. Shut down resources
+
+1. Run an ETL job with just CPUs to establish a baseline performance
+2. Run the Nvidia qualification tool to identify opportunities for GPU acceleration for our ETL CPU baseline job
+3. Run the same ETL job with GPUs and establish a baseline performance
+4. Run the Nvidia tuning tool to understand tweaks that can further improve performance
+5. Rerun the same ETL job with GPUs with the Nvidia tuning recommendations
+6. Study the results
+7. Shut down resources
 
 <hr>
 
-### 1.3. Resources provisioned
-
-We will provision a Dataproc on GCE cluster with GPUs.
-
-![README](./images/m2-01.png)   
-
-<hr>
-
-### 1.4. Lab flow
+### 1.3. Lab flow
 
 ![README](./images/m2-02.png)   
 
 <hr>
 
-### 1.5. Duration
+### 1.4. Duration
 
-~ 2 hours but does not require focus time.
+~ 1 hour or less but does not require focus time.
 
 <hr>
 <hr>
 
 
+## 2. Run an ETL job on CPUs for a baseline performance capture
 
-
-
-
-## 5. Run an ETL job on CPUs for a baseline performance capture
-
-### 5.1. Declare variables
+### 2.1. Declare variables
 
 Paste in Cloud Shell-
 ```
