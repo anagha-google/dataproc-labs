@@ -103,7 +103,7 @@ OUTPUT_PREFIX="gs://data_bucket-$PROJECT_NBR/churn/output/cpu-based-analytics/"
 
 <hr>
 
-### 5.2. Run a Spark analytics application on CPUs for a baseline
+### 2.2. Run a Spark analytics application on CPUs for a baseline
 
 Paste in Cloud Shell-
 ```
@@ -134,7 +134,7 @@ Follow the execution in the Dataproc-Jobs UI. It takes ~30 minutes, you can step
 
 <hr>
 
-### 5.3. Review the results
+### 2.3. Review the results
 Paste in Cloud Shell-
 
 ```
@@ -149,11 +149,13 @@ gsutil ls -r $OUTPUT_PREFIX
 
 <hr>
 
-### 5.4. Note the execution time
+### 2.4. Note the execution time
 
 The author's application took ~ 30 minutes to complete across multiple runs.
 
-### 5.5. Review the execution plan in the Spark History Server
+### 2.5. Review the execution plan in the Spark History Server
+
+In the Dataproc UI, click on clusters->on the cluster->web interfaces tab->Spark history server->on the job that completed
 
 ![README](./images/m2-00.png)   
 
@@ -161,39 +163,11 @@ The author's application took ~ 30 minutes to complete across multiple runs.
 <hr>
 <hr>
 
-## 6. Install the Nvidia Qualification Tool 
+## 3. Install the Nvidia Qualification Tool 
 
-### 6.1. Find the Public IP address of your Cloud Shell terminal
 
-```
-MY_IP_ADDRESS=`curl -s checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'`
-echo $MY_IP_ADDRESS
-```
 
-### 6.2. Add an ingress firewall rule to allow yourself SSH access to the cluster
-
-First and foremost, you need to allow yourself ingress to SSH into the cluster. If you use Cloud Shell, the IP address varies with each session. Use the command below to allow ingress to your IP address.
-```
-PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
-PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
-VPC_NM=vpc-$PROJECT_NBR
-REGION=us-central1
-ZONE=$REGION-a
-CLUSTER_NAME=dpgce-cluster-static-gpu-$PROJECT_NBR
-MY_FIREWALL_RULE="allow-me-to-ingress-into-vpc"
-
-gcloud compute firewall-rules delete $MY_FIREWALL_RULE
-
-gcloud compute --project=$PROJECT_ID firewall-rules create $MY_FIREWALL_RULE --direction=INGRESS --priority=1000 --network=$VPC_NM --action=ALLOW --rules=all --source-ranges="$MY_IP_ADDRESS/32"
-```
-
-Review the firewall rule from the Networking UI on Cloud Console-
-
-![README](./images/m2-16.png) 
-
-<hr>
-
-### 6.3. Install --RAPIDS User Tools-- in Cloud Shell
+### 3.1. Install --RAPIDS User Tools-- in Cloud Shell
 
 Paste in Cloud Shell-
 ```
@@ -208,7 +182,7 @@ Check to see if you can run the Nvidia qualification tool, immediately after-
 spark_rapids_user_tools dataproc -- --help
 ```
 
-### 6.4. Initialize environment variables
+### 3.2. Initialize environment variables
 
 1. Initialize gcloud in Cloud Shell-
 ```
@@ -244,7 +218,7 @@ mkdir -p $RAPIDS_USER_TOOLS_OUTPUT_DIRECTORY
 <hr>
 <hr>
 
-## 7. Run the Nvidia Qualification Tool to see if the Spark application qualifies for GPUs
+## 4. Run the Nvidia Qualification Tool to see if the Spark application qualifies for GPUs
 
 
 You can run this only after you run a few Spark applications. The tool will review the logs and provide recommendations based on YARN application IDs-
@@ -447,9 +421,9 @@ spark_rapids_user_tools dataproc bootstrap \
 <hr>
 
 
-## 7. Run the same ETL job on GPUs 
+## 5. Run the same ETL job on GPUs 
 
-### 7.1. Declare variables
+### 5.1. Declare variables
 
 Paste in Cloud Shell-
 ```
@@ -512,7 +486,7 @@ OUTPUT_PREFIX="gs://data_bucket-$PROJECT_NBR/churn/output/gpu-based-analytics/"
 
 <hr>
 
-### 7.2. Run the Spark ETL analytics application on GPUs
+### 5.2. Run the Spark ETL analytics application on GPUs
 
 Paste in Cloud Shell-
 ```
@@ -529,7 +503,7 @@ gs://$CODE_BUCKET/churn/main_analytics_app.py \
 -- --coalesce-output=8 --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX}   2>&1 >> $LOGFILE
 ```
 
-Follow the execution in the Dataproc-Jobs UI. It takes ~8 minutes, you can step away and come back.
+Follow the execution in the Dataproc-Jobs UI. It takes ~5 minutes, you can step away and come back.
 
 ![README](./images/m2-17.png)   
 
@@ -548,7 +522,10 @@ Follow the execution in the Dataproc-Jobs UI. It takes ~8 minutes, you can step 
 
 <hr>
 
-### 7.3. YARN Resoruce Manager view
+### 5.3. YARN Resource Manager view
+
+In the Dataproc UI, click on clusters->on the cluster->web interfaces tab->YARN Resoruce Manager->on the job executing
+
 
 ![README](./images/m2-21.png)  
 <br><br>
@@ -556,7 +533,9 @@ Follow the execution in the Dataproc-Jobs UI. It takes ~8 minutes, you can step 
 <br><br>
 <hr>
 
-### 7.4. Spark execution plan in Spark History Server view
+### 5.4. Spark execution plan in Spark History Server view
+
+In the Dataproc UI, click on clusters->on the cluster->web interfaces tab->Spark History Server->on the job that completed
 
 ![README](./images/m2-23.png)  
 <br><br>
@@ -569,7 +548,7 @@ Follow the execution in the Dataproc-Jobs UI. It takes ~8 minutes, you can step 
 
 <hr>
 
-### 7.5. Review the results
+### 5.5. Review the results
 
 Paste in Cloud Shell-
 ```
@@ -581,18 +560,19 @@ gsutil du -s -h -a $OUTPUT_PREFIX
 
 <hr>
 
-### 7.6. Note the execution time
+### 5.6. Note the execution time
 
-The author's application took ~8 minutes to complete across multiple tests.
+The author's application took ~5 minutes to complete across multiple tests.
 
 <hr>
 
-## 8. Tuning GPU based applications - profiling and recommendations from Nvidia
+## 6. Tuning GPU based applications - profiling and recommendations from Nvidia
 
-### 8.1. Install the Nvidia profiler 
-We already installed the Nvidia tooling earlier. Will use the profiling function in section 8.2.
+### 6.1. Install the Nvidia profiler 
+We already installed the Nvidia tooling earlier. 
 
-### 8.2. Run the Nvidia profiler on the Spark on GPU applications run already
+### 6.2. Run the Nvidia profiler on the Spark on GPU applications run already
+
 This unit uses Nvidia's tooling to tune GPU based Spark applications and needs to be run after your initial attempts of runnng GPU based Spark applications.<br>
 Docs: https://github.com/NVIDIA/spark-rapids-tools/blob/main/user_tools/docs/index.md
 <br>
@@ -616,55 +596,39 @@ spark_rapids_user_tools dataproc profiling \
 
 Author's sample output (scroll to the right for full details)-
 ```
-2023-05-11 16:44:54,528 INFO qualification: Running the tool as a spark job on dataproc
-2023-05-11 16:45:32,875 INFO qualification: Downloading the tool output
-2023-05-11 16:45:35,479 INFO qualification: Processing tool output
-2023-05-11 16:45:35,503 INFO qualification: Downloading the price catalog from URL https://cloudpricingcalculator.appspot.com/static/data/pricelist.json
-2023-05-11 16:45:35,561 INFO qualification: Building cost model based on:
-Worker Properties
---------------------  -------------
-Region                us-central1
-Zone                  us-central1-a
-GPU device            T4
-GPU per worker nodes  2
-```
-
-```
-Scroll to the right for explanation-
 +--------------------------------+-----------------+------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+
-| application_1683730151313_0007 | churn_utils.etl | --conf spark.executor.cores=8                                                      | - 'spark.executor.memoryOverhead' must be set if using 'spark.rapids.memory.pinnedPool.size                                      |
-|                                |                 | --conf spark.executor.instances=4                                                  | - 'spark.executor.memoryOverhead' was not set.                                                                                   |
-|                                |                 | --conf spark.executor.memory=16384m                                                | - 'spark.rapids.shuffle.multiThreaded.reader.threads' was not set.                                                               |
+| application_1702060521274_0006 | churn_utils.etl | --conf spark.executor.memory=16384m                                                | - 'spark.rapids.shuffle.multiThreaded.reader.threads' was not set.                                                               |
 |                                |                 | --conf spark.executor.memoryOverhead=5734m                                         | - 'spark.rapids.shuffle.multiThreaded.writer.threads' was not set.                                                               |
 |                                |                 | --conf spark.rapids.memory.pinnedPool.size=4096m                                   | - 'spark.shuffle.manager' was not set.                                                                                           |
 |                                |                 | --conf spark.rapids.shuffle.multiThreaded.reader.threads=8                         | - 'spark.sql.shuffle.partitions' was not set.                                                                                    |
 |                                |                 | --conf spark.rapids.shuffle.multiThreaded.writer.threads=8                         | - The RAPIDS Shuffle Manager requires the spark.driver.extraClassPath and                                                        |
-|                                |                 | --conf spark.shuffle.manager=com.nvidia.spark.rapids.spark313.RapidsShuffleManager | spark.executor.extraClassPath settings to include the path to the Spark RAPIDS                                                   |
-|                                |                 | --conf spark.sql.files.maxPartitionBytes=4096m                                     | plugin jar.  If the Spark RAPIDS jar is being bundled with your Spark distribution,                                              |
+|                                |                 | --conf spark.shuffle.manager=com.nvidia.spark.rapids.spark313.RapidsShuffleManager | plugin jar.  If the Spark RAPIDS jar is being bundled with your Spark distribution,                                              |
+|                                |                 | --conf spark.sql.files.maxPartitionBytes=4096m                                     | spark.executor.extraClassPath settings to include the path to the Spark RAPIDS                                                   |
 |                                |                 | --conf spark.sql.shuffle.partitions=200                                            | this step is not needed.                                                                                                         |
-|                                |                 | --conf spark.task.resource.gpu.amount=0.125                                        |                                                                                                                                  |
-+--------------------------------+-----------------+--------------------------------------------------------------------------
++--------------------------------+-----------------+------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+
+
 ```
 
-### 8.2. Tune the Spark application with the recommedations from the profiler
+### 6.3. Tune the Spark application with the recommedations from the profiler
 
 Lets tune our Spark application parameters based on the recommendation above and run the same Spark application as follows-
 ```
 PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
 PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
 
-CLUSTER_NAME=dpgce-cluster-static-gpu-${PROJECT_NBR}
-DPGCE_LOG_BUCKET=dpgce-cluster-static-gpu-${PROJECT_NBR}-logs
-DATA_BUCKET=spark-rapids-lab-data-${PROJECT_NBR}
-CODE_BUCKET=spark-rapids-lab-code-${PROJECT_NBR}
-VPC_NM=VPC=dpgce-vpc-$PROJECT_NBR
+DATAPROC_CLUSTER_NAME=dpgce-cluster-static-gpu-${PROJECT_NBR}
+DPGCE_LOG_BUCKET=spark-bucket-dpgce-${PROJECT_NBR}
+DATA_BUCKET=data_bucket-${PROJECT_NBR}
+CODE_BUCKET=code_bucket-${PROJECT_NBR}
+VPC_NM=VPC=vpc-$PROJECT_NBR
 SPARK_SUBNET=spark-snet
-PERSISTENT_HISTORY_SERVER_NM=dpgce-sphs-${PROJECT_NBR}
-UMSA_FQN=dpgce-lab-sa@$PROJECT_ID.iam.gserviceaccount.com
+UMSA_FQN=lab-sa@$PROJECT_ID.iam.gserviceaccount.com
 REGION=us-central1
 ZONE=us-central1-a
-NUM_GPUS=1
+NUM_CORES_PER_WORKER=8
+NUM_GPUS_PER_WORKER=1
 NUM_WORKERS=4
+NUM_GPUS_TOTAL=NUM_WORKERS*NUM_GPUS_PER_WORKER
 
 # Log for each execution
 LOG_SECOND=`date +%s`
@@ -673,39 +637,41 @@ mkdir -p $LAB_LOG_ROOT_DIR
 LOGFILE="$LAB_LOG_ROOT_DIR/$0.txt.$LOG_SECOND"
 
 # Set this value to the total number of cores that you have across all
-# your worker nodes. e.g. 8 servers with 40 cores = 320 cores
+# your worker nodes. e.g. 4 workers with 8 cores each = 32 cores
 TOTAL_CORES=32
 
-# Set this value to the number of GPUs that you have within your cluster. If
-# each server has 2 GPUs count that as 2
+# Set this value to the number of GPUs that you have within your cluster.
+# In our example, we have 4 workers, each with 1 GPU, therefore 4 executors
 NUM_EXECUTORS=4   # change to fit how many GPUs you have
 
-# This setting needs to be a decimal equivalent to the ratio of cores to
-# executors. In our example we have 40 cores and 8 executors. So, this
-# would be 1/5, hench the 0.1 value.
+# 32/4 =8
+NUM_EXECUTOR_CORES=8
 
-RESOURCE_GPU_AMT="0.125"
+# This setting needs to be a decimal equivalent to the 1 divided by number of cores in an executor
+# In our example we have 8 cores per executor. Therefore, the value is 1/8.
+RESOURCE_GPU_AMT=0.125
 
 #
-NUM_EXECUTOR_CORES=$((${TOTAL_CORES}/${NUM_EXECUTORS}))
-echo "NUM_EXECUTOR_CORES=$NUM_EXECUTOR_CORES"
-#
-# Set this to the total memory across all your worker nodes. e.g. RAM of each worker * number of worker nodes
-TOTAL_MEMORY=120   # unit: GB
+# Set this to the total memory across all your worker nodes (n1-standard-8 SKU). e.g. RAM of each worker (25 GB) * number of worker nodes (4)
+TOTAL_MEMORY=100   # unit: GB
 DRIVER_MEMORY=4    # unit: GB
 #
 # This takes the total memory and calculates the maximum amount of memory
-# per executor
-EXECUTOR_MEMORY=$(($((${TOTAL_MEMORY}-$((${DRIVER_MEMORY}*1000/1024))))/${NUM_EXECUTORS}))
-echo "EXECUTOR_MEMORY=$EXECUTOR_MEMORY"
+# per executor 
+
+SPARK_PER_EXECUTOR_MEMORY_OVERHEAD_MB=5734
+RAPIDS_PER_EXECUTOR_MEMORY_PINNED_POOL_SIZE_MB=4096
+EXECUTOR_MEMORY_MB=16384
+SPARK_SQL_FILES_MAX_PARTITION_BYTES_MB=4096
+
 
 # Input prefix designates where the data to be processed is located
-INPUT_PREFIX="gs://spark-rapids-lab-data-$PROJECT_NBR/churn/input/10scale/"
+INPUT_PREFIX="gs://data_bucket-$PROJECT_NBR/churn/input/10scale/"
 
 # Output prefix is where results from the queries are stored
-OUTPUT_PREFIX="gs://spark-rapids-lab-data-$PROJECT_NBR/churn/output/gpu-based-analytics"
+OUTPUT_PREFIX="gs://data_bucket-$PROJECT_NBR/churn/output/gpu-based-analytics/"
 
-SPARK_PROPERTIES="spark.executor.cores=${NUM_EXECUTOR_CORES},spark.driver.memory=${DRIVER_MEMORY}G,spark.cores.max=$TOTAL_CORES,spark.task.cpus=1,spark.sql.files.maxPartitionBytes=1G,spark.sql.adaptive.enabled=True,spark.sql.autoBroadcastJoinThreshold=-1,spark.rapids.sql.enabled=True,spark.rapids.sql.decimalType.enabled=True,spark.task.resource.gpu.amount=$RESOURCE_GPU_AMT,spark.plugins=com.nvidia.spark.SQLPlugin,spark.rapids.sql.concurrentGpuTasks=2,spark.executor.resource.gpu.amount=1,spark.rapids.sql.variableFloatAgg.enabled=True,spark.rapids.sql.explain=NOT_ON_GPU,spark.executor.instances=4,spark.executor.memory=16384m,spark.rapids.memory.pinnedPool.size=4096m,spark.executor.memoryOverhead=5734m,spark.rapids.shuffle.multiThreaded.reader.threads=8,spark.rapids.shuffle.multiThreaded.writer.threads=8,spark.shuffle.manager=com.nvidia.spark.rapids.spark313.RapidsShuffleManager,spark.sql.files.maxPartitionBytes=4096m,spark.sql.shuffle.partitions=200"
+SPARK_PROPERTIES="spark.executor.cores=${NUM_EXECUTOR_CORES},spark.driver.memory=${SPARK_PER_EXECUTOR_MEMORY_OVERHEAD_MB}m,spark.cores.max=$TOTAL_CORES,spark.task.cpus=1,spark.sql.files.maxPartitionBytes=1G,spark.sql.adaptive.enabled=True,spark.sql.autoBroadcastJoinThreshold=-1,spark.rapids.sql.enabled=True,spark.rapids.sql.decimalType.enabled=True,spark.task.resource.gpu.amount=$RESOURCE_GPU_AMT,spark.plugins=com.nvidia.spark.SQLPlugin,spark.rapids.sql.concurrentGpuTasks=2,spark.executor.resource.gpu.amount=1,spark.rapids.sql.variableFloatAgg.enabled=True,spark.rapids.sql.explain=NOT_ON_GPU,spark.executor.instances=4,spark.executor.memory=${EXECUTOR_MEMORY_MB}m,spark.rapids.memory.pinnedPool.size=${RAPIDS_PER_EXECUTOR_MEMORY_PINNED_POOL_SIZE_MB}m,spark.executor.memoryOverhead=${SPARK_PER_EXECUTOR_MEMORY_OVERHEAD_MB}m,spark.rapids.shuffle.multiThreaded.reader.threads=8,spark.rapids.shuffle.multiThreaded.writer.threads=8,spark.shuffle.manager=com.nvidia.spark.rapids.spark313.RapidsShuffleManager,spark.sql.files.maxPartitionBytes=${SPARK_SQL_FILES_MAX_PARTITION_BYTES_MB}m,spark.sql.shuffle.partitions=200"
 
 gcloud dataproc jobs submit pyspark \
 gs://$CODE_BUCKET/churn/main_analytics_app.py \
@@ -718,11 +684,15 @@ gs://$CODE_BUCKET/churn/main_analytics_app.py \
 -- --coalesce-output=8 --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX}   2>&1 >> $LOGFILE
 ```
 
-### 8.3. Note the execution time
+### 6.4. Note the execution time
 
 The author's application took ~5 minutes to complete across multiple tests.
 
-## 9.0. Summary
+<hr>
+<hr>
+
+
+## 7.0. Summary
 
 We ran the same Spark ETL application from Nvidia on a cluster and compared performance across CPUs and GPUs. The Spark applications are in no way perfectly tuned, but the performance is significantly improved and can be tweaked further for performance critical applications. 
 
@@ -739,16 +709,15 @@ We ran the same Spark ETL application from Nvidia on a cluster and compared perf
 | :-- | :-- |
 | Master Node SKU | n1-standard-4  (4 vCPUs, 15 GB RAM)| 
 | Worker Node SKU | n1-standard-8 (8 vCPUs, 30 GB RAM) | 
-| Worker Node Accelerator | nvidia-tesla-t4 with 1 gpu |
+| Worker Node Accelerator | 1 nvidia-tesla-t4 gpu |
 | Worker Node Count | 4 |
 
 The author's results-
 |Infrastructure base| Specifics| Average execution time|
 | :-- | :-- | :-- |
-| CPU-based | Baseline performance | 32 minutes |
-| GPU-based | Baseline performance| 8 minutes |
+| CPU-based | Baseline performance | 36 minutes |
+| GPU-based | Baseline performance| 5 minutes |
 | GPU-based | Tuned with Nvidia profiler recommendations | ~5 minutes |
-
 
 
 <hr>
