@@ -31,9 +31,11 @@ In this lab, we will-
 
 ### 1.4. Lab infrastructure
 
-| # | Node role | Specification  | Number of instances |
+| # | Entity | Specification  | Number of instances |
 | -- | :--- | :--- | :--- |
-| 1. | Worker  | n1-standard-8<br>8 vCPUs<br>1 nvidia-tesla-t4 GPU<br>30 GB RAM<br>1 SSD  | 4 |
+| 1. | Dataproc Cluster | Cluster image 2.0.85-ubuntu18 |1 Master, 4 Workers |
+| 2. | Master  | n1-standard-4<br>4 vCPUs<br>15 GB RAM  | 1 |
+| 3. | Worker  | n1-standard-8<br>8 vCPUs<br>1 nvidia-tesla-t4 GPU<br>30 GB RAM<br>1 SSD  | 4 |
 
 <hr>
 
