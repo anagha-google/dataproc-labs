@@ -33,7 +33,13 @@ In this lab, we will-
 
 <hr>
 
-### 1.4. Duration
+### 1.4. Lab infrastructure
+
+| # | Node role | Specification  | Number of instances |
+| -- | :--- | :--- | :--- |
+| 1. | Worker  | n1-standard-8<br>8 vCPUs<br>1 nvidia-tesla-t4 GPU<br>30 GB RAM<br>1 SSD  | 4 |
+
+### 1.5. Duration
 
 ~ 1 hour or less but does not require focus time.
 
