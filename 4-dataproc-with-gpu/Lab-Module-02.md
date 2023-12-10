@@ -147,6 +147,7 @@ gsutil ls -r $OUTPUT_PREFIX
 ### 2.4. Note the execution time
 
 The author's application took ~ 30 minutes to complete across multiple runs.
+<hr>
 
 ### 2.5. Review the execution plan in the Spark History Server
 
@@ -176,6 +177,8 @@ Check to see if you can run the Nvidia qualification tool, immediately after-
 ```
 spark_rapids_user_tools dataproc -- --help
 ```
+
+<hr>
 
 ### 3.2. Initialize environment variables
 
@@ -560,11 +563,14 @@ gsutil du -s -h -a $OUTPUT_PREFIX
 The author's application took ~5 minutes to complete across multiple tests.
 
 <hr>
+<hr>
 
 ## 6. Tuning GPU based applications - profiling and recommendations from Nvidia
 
 ### 6.1. Install the Nvidia profiler 
 We already installed the Nvidia tooling earlier. 
+
+<hr>
 
 ### 6.2. Run the Nvidia profiler on the Spark on GPU applications run already
 
@@ -603,6 +609,8 @@ Author's sample output (scroll to the right for full details)-
 +--------------------------------+-----------------+------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+
 
 ```
+
+<hr>
 
 ### 6.3. Tune the Spark application with the recommedations from the profiler
 
@@ -678,6 +686,8 @@ gs://$CODE_BUCKET/churn/main_analytics_app.py \
 --project $PROJECT_ID \
 -- --coalesce-output=8 --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX}   2>&1 >> $LOGFILE
 ```
+
+<hr>
 
 ### 6.4. Note the execution time
 
