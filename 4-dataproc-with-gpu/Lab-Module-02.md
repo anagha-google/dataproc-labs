@@ -698,7 +698,7 @@ We ran the same Spark ETL application from Nvidia on a cluster and compared perf
 
 |About|Details|
 | :-- | :-- |
-| Dataproc | Image version 2.0.63-ubuntu18 | 
+| Dataproc | Image version 2.0.85-ubuntu18 | 
 | Apache Spark | 3.1.3 | 
 | Workload | ETL with PySpark on Dataproc on GCE with Spark 3.1.3 | 
 | Data size | 45 MB | 
@@ -718,6 +718,5 @@ The author's results-
 | CPU-based | Baseline performance | 36 minutes |
 | GPU-based | Baseline performance| 5 minutes |
 | GPU-based | Tuned with Nvidia profiler recommendations | ~5 minutes |
-
 
 <hr>
