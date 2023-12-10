@@ -50,61 +50,7 @@ We will provision a Dataproc on GCE cluster with GPUs.
 <hr>
 
 
-## 2. Provision a Dataproc on GCE cluster
 
-
-### 2.1. Create a DPGCE cluster with GPUs
-
-Paste in Cloud Shell-
-
-```
-PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
-PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
-DATAPROC_CLUSTER_NAME=dpgce-cluster-static-gpu-${PROJECT_NBR}
-DPGCE_CLUSTER_BUCKET=spark-cluster-bucket-${PROJECT_NBR}
-DPGCE_EVENT_LOG_BUCKET=spark-event-log-bucket-${PROJECT_NBR}
-DATA_BUCKET=data_bucket-${PROJECT_NBR}
-CODE_BUCKET=code_bucket-${PROJECT_NBR}
-VPC_NM=VPC=vpc-$PROJECT_NBR
-SPARK_SUBNET=spark-snet
-UMSA_FQN=lab-sa@$PROJECT_ID.iam.gserviceaccount.com
-REGION=us-central1
-ZONE=us-central1-a
-NUM_GPUS=1
-NUM_WORKERS=4
-
-
-gcloud dataproc clusters create $DATAPROC_CLUSTER_NAME  \
-    --region $REGION \
-    --zone $ZONE \
-    --image-version=2.0-ubuntu18 \
-    --master-machine-type=n1-standard-4 \
-    --num-workers=$NUM_WORKERS \
-    --worker-accelerator=type=nvidia-tesla-t4,count=$NUM_GPUS \
-    --worker-machine-type=n1-standard-8 \
-    --num-worker-local-ssds=1 \
-    --initialization-actions=gs://goog-dataproc-initialization-actions-${REGION}/spark-rapids/spark-rapids.sh \
-    --optional-components=JUPYTER,ZEPPELIN \
-    --metadata gpu-driver-provider="NVIDIA",rapids-runtime="SPARK" \
-    --subnet=$SPARK_SUBNET \
-    --enable-component-gateway  \
-    --bucket $DPGCE_CLUSTER_BUCKET \
-    --properties "spark:spark.history.fs.logDirectory=gs://${DPGCE_EVENT_LOG_BUCKET}/*/spark-job-history,spark:spark.eventLog.dir=gs://${DPGCE_EVENT_LOG_BUCKET}/events/spark-job-history" \
-    --service-account $UMSA_FQN   
-```
-
-Takes approximately ~12 minutes or less to provision. Largely because of scripts that need to run to install drivers and such.
-
-<hr>
-
-### 2.3. Quick pictorial walk-through of the cluster
-
-![README](./images/m2-03.png)   
-
-Scroll below to [appendix](Lab-Module-02.md#walkthrough-of-the-dataproc-cluster) for complete walkthrough of the cluster.
-
-<hr>
-<hr>
 
 ## 3. Review the lab dataset
 
@@ -1039,28 +985,6 @@ The author's results-
 | GPU-based | Baseline performance| 8 minutes |
 | GPU-based | Tuned with Nvidia profiler recommendations | ~5 minutes |
 
-## 10.0. Appendix
 
-### Walkthrough of the Dataproc cluster 
-
-![README](./images/m2-04.png)   
-
-<hr>
-
-![README](./images/m2-05.png)   
-
-<hr>
-
-![README](./images/m2-06.png)   
-
-<hr>
-
-![README](./images/m2-07.png)   
-
-<hr>
-
-![README](./images/m2-08.png)   
-
-<hr>
 
 <hr>
