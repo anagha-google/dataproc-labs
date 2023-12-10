@@ -17,14 +17,9 @@ Successful completion of prior module
 
 In this lab, we will-
 
-1. Run an ETL job with just CPUs to establish a baseline performance
-2. Install the nvidia rapids user tool
-3. Run the Nvidia qualification tool to identify opportunities for GPU acceleration for our ETL CPU baseline job
-4. Run the same ETL job with GPUs and establish a baseline performance
-5. Run the Nvidia tuning tool to understand tweaks that can further improve performance
-6. Rerun the same ETL job with GPUs with the Nvidia tuning recommendations
-7. Study the results
-8. Shut down resources
+1. Learn how to submit Spark jobs on Dataproc with GPUs
+2. Use Nvidia qualification tool to identify if your Spark job on CPUs can benefit from GPU acceleration
+3. Use Nvidia profiler tool to identify if your Spark job on GPUs can benefit from tuning Spark resources
 
 <hr>
 
@@ -715,8 +710,10 @@ We ran the same Spark ETL application from Nvidia on a cluster and compared perf
 The author's results-
 |Infrastructure base| Specifics| Average execution time|
 | :-- | :-- | :-- |
-| CPU-based | Baseline performance | 36 minutes |
-| GPU-based | Baseline performance| 5 minutes |
-| GPU-based | Tuned with Nvidia profiler recommendations | ~5 minutes |
+| CPU-based | Baseline performance | 30 minutes |
+| GPU-based | Tuned with Nvidia profiler recommendations | 5 minutes |
+
+![README](./images/m2-27.png)   
+
 
 <hr>
