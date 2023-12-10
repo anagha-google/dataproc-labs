@@ -367,7 +367,7 @@ The author's output is 42.46 MiB
 <hr>
 <hr>
 
-This concludes the lab module. Proceed to the [next module](Lab-Module-01.md).
+This concludes the lab module. Proceed to the [next module](Lab-Module-02.md).
 
 <hr>
 <hr>
