@@ -153,6 +153,11 @@ gsutil ls -r $OUTPUT_PREFIX
 
 The author's application took ~ 30 minutes to complete across multiple runs.
 
+### 5.5. Review the execution plan in the Spark History Server
+
+![README](./images/m2-00.png)   
+
+
 <hr>
 <hr>
 
@@ -539,9 +544,32 @@ Follow the execution in the Dataproc-Jobs UI. It takes ~8 minutes, you can step 
 ![README](./images/m2-19.png)   
 
 
+
+
 <hr>
 
-### 7.3. Review the results
+### 7.3. YARN Resoruce Manager view
+
+![README](./images/m2-21.png)  
+<br><br>
+![README](./images/m2-22.png)  
+<br><br>
+<hr>
+
+### 7.4. Spark execution plan in Spark History Server view
+
+![README](./images/m2-23.png)  
+<br><br>
+![README](./images/m2-24.png)  
+<br><br>
+![README](./images/m2-25.png)  
+<br><br>
+![README](./images/m2-26.png)  
+<br><br>
+
+<hr>
+
+### 7.5. Review the results
 
 Paste in Cloud Shell-
 ```
@@ -553,7 +581,7 @@ gsutil du -s -h -a $OUTPUT_PREFIX
 
 <hr>
 
-### 7.4. Note the execution time
+### 7.6. Note the execution time
 
 The author's application took ~8 minutes to complete across multiple tests.
 
