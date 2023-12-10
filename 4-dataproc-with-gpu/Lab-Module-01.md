@@ -1,6 +1,8 @@
 # Module-01: Infrastructure Provisioning and Data Generation
 
-In this module we will create the requisite infrastructure for the lab with Terraform. And then create a Dataproc cluster manually. We will finally generate data for the lab.<br>
+1. In this module we will create the requisite infrastructure for the lab with Terraform.
+2. Next we will create a Dataproc cluster manually.
+3. Finally we will generate data for the lab.<br>
 
 <hr>
 
