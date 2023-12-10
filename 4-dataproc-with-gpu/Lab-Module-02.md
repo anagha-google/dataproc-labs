@@ -697,7 +697,7 @@ The author's application took ~5 minutes to complete across multiple tests.
 <hr>
 
 
-## 7.0. Summary
+## 7.0. Performance Optimization Summary
 
 We ran the same Spark ETL application from Nvidia on a cluster and compared performance across CPUs and GPUs. The Spark applications are in no way perfectly tuned, but the performance is significantly improved and can be tweaked further for performance critical applications. 
 
@@ -727,3 +727,23 @@ The author's results-
 
 
 <hr>
+<hr>
+
+## 8.0. Airflow orchestration
+
+The lab at https://github.com/anagha-google/dataproc-labs/tree/main/2-dataproc-gce-with-terraform covers Airflow orchestration with static as well as ephemeral clusters. <br>
+
+WRT to specifics for creating a GPU accelerated cluster with Terrarm, details are at -
+https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dataproc_cluster#example-usage---using-a-gpu-accelerator
+
+
+![README](./images/m2-28.png)   
+
+<hr>
+<hr>
+
+This concludes the lab module. Delete the Dataproc cluster and proceed to the [next module](Lab-Module-03.md).
+
+<hr>
+<hr>
+
