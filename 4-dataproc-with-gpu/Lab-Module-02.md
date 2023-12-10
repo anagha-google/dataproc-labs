@@ -18,12 +18,13 @@ Successful completion of prior module
 In this lab, we will-
 
 1. Run an ETL job with just CPUs to establish a baseline performance
-2. Run the Nvidia qualification tool to identify opportunities for GPU acceleration for our ETL CPU baseline job
-3. Run the same ETL job with GPUs and establish a baseline performance
-4. Run the Nvidia tuning tool to understand tweaks that can further improve performance
-5. Rerun the same ETL job with GPUs with the Nvidia tuning recommendations
-6. Study the results
-7. Shut down resources
+2. Install the nvidia rapids user tool
+3. Run the Nvidia qualification tool to identify opportunities for GPU acceleration for our ETL CPU baseline job
+4. Run the same ETL job with GPUs and establish a baseline performance
+5. Run the Nvidia tuning tool to understand tweaks that can further improve performance
+6. Rerun the same ETL job with GPUs with the Nvidia tuning recommendations
+7. Study the results
+8. Shut down resources
 
 <hr>
 
@@ -100,6 +101,8 @@ INPUT_PREFIX="gs://data_bucket-$PROJECT_NBR/churn/input/10scale/"
 OUTPUT_PREFIX="gs://data_bucket-$PROJECT_NBR/churn/output/cpu-based-analytics/"
 ```
 
+<hr>
+
 ### 5.2. Run a Spark analytics application on CPUs for a baseline
 
 Paste in Cloud Shell-
@@ -153,7 +156,7 @@ The author's application took ~ 30 minutes to complete across multiple runs.
 <hr>
 <hr>
 
-## 6. Run the Nvidia Qualification Tool to see if the Spark application qualifies for GPUs
+## 6. Install the Nvidia Qualification Tool 
 
 ### 6.1. Find the Public IP address of your Cloud Shell terminal
 
@@ -200,8 +203,6 @@ Check to see if you can run the Nvidia qualification tool, immediately after-
 spark_rapids_user_tools dataproc -- --help
 ```
 
-<hr>
-
 ### 6.4. Initialize environment variables
 
 1. Initialize gcloud in Cloud Shell-
@@ -214,22 +215,32 @@ gcloud init
 2. Also configure dataproc region
 ```
 gcloud config set dataproc/region us-central1
-
-
-Hao Zhu US, 6 min
-gcloud auth application-default login
-
 ```
 
-3. Then configure rapids tool required variables
+3. Run the command below - it generates a key needed by the tool
+
+```
+gcloud auth application-default login
+```
+
+This command persists a credentials JSON on your machine. Find the file and move that file to the location "/home/admin_/.config/gcloud/"<br>
+The author's example-
+```
+mv /tmp/tmp.ZrZBbfPHru/application_default_credentials.json /home/admin_/.config/gcloud/application_default_credentials.json
+```
+
+4. Then configure rapids tool required variables
 ```
 export RAPIDS_USER_TOOLS_CACHE_FOLDER=/var/tmp/spark_rapids_user_tools_cache
 export RAPIDS_USER_TOOLS_OUTPUT_DIRECTORY=~/rapids_user_tools_output
 mkdir -p $RAPIDS_USER_TOOLS_OUTPUT_DIRECTORY 
 ```
 
+<hr>
+<hr>
 
-### 6.5 Run the --Nvidia Qualification Tool-- to find workloads that can benefit from GPU based acceleration
+## 7. Run the Nvidia Qualification Tool to see if the Spark application qualifies for GPUs
+
 
 You can run this only after you run a few Spark applications. The tool will review the logs and provide recommendations based on YARN application IDs-
 ```
@@ -239,11 +250,6 @@ REGION=us-central1
 CLUSTER_NAME=dpgce-cluster-static-gpu-$PROJECT_NBR
 SPARK_EVENT_LOG_DIR=gs://spark-event-log-bucket-$PROJECT_NBR/events/spark-job-history/
 
-
-# Run the command below and move the token to mv /tmp/tmp.QeMtVSJ3xl/application_default_credentials.json /home/admin_/.config/gcloud/application_default_credentials.json
-# gcloud auth application-default login
-
-
 spark_rapids_user_tools dataproc qualification \
    --eventlogs $SPARK_EVENT_LOG_DIR \
    --cpu_cluster $CLUSTER_NAME 
@@ -251,80 +257,90 @@ spark_rapids_user_tools dataproc qualification \
 
 Here are the author's results, that correctly call out the two Spark applications run without GPU acceleration, while omiiting the ones that used GPUs and the speed up is accurate as well-
 ```
-spark_rapids_user_tools dataproc qualification \
-   --eventlogs $SPARK_EVENT_LOG_DIR \
-   --cpu_cluster $CLUSTER_NAME 
-2023-12-08 23:01:42,629 INFO rapids.tools.qualification: ******* [Initialization]: Starting *******
-2023-12-08 23:01:42,651 INFO rapids.tools.qualification.ctxt: Start connecting to the platform
-2023-12-08 23:01:45,354 INFO rapids.tools.qualification: ======= [Initialization]: Finished =======
-2023-12-08 23:01:45,355 INFO rapids.tools.qualification: ******* [Connecting to Execution Cluster]: Starting *******
-2023-12-08 23:01:45,355 INFO rapids.tools.qualification: Qualification requires no execution cluster. Skipping phase
-2023-12-08 23:01:45,355 INFO rapids.tools.qualification: ======= [Connecting to Execution Cluster]: Finished =======
-2023-12-08 23:01:45,355 INFO rapids.tools.qualification: ******* [Process-Arguments]: Starting *******
-2023-12-08 23:01:45,355 INFO rapids.tools.qualification.ctxt: Local workdir root folder is set as /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e
-2023-12-08 23:01:45,355 INFO rapids.tools.qualification.ctxt: Dependencies are generated locally in local disk as: /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/work_dir
-2023-12-08 23:01:45,355 INFO rapids.tools.qualification.ctxt: Local output folder is set as: /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e
-2023-12-08 23:01:45,356 INFO rapids.tools.qualification: Qualification tool processing the arguments
-2023-12-08 23:01:45,631 INFO rapids.tools.qualification: RAPIDS accelerator jar is downloaded to work_dir /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/work_dir/rapids-4-spark-tools_2.12-23.04.0.jar
-2023-12-08 23:01:45,632 INFO rapids.tools.qualification: Checking dependency Apache Spark
-2023-12-08 23:01:45,634 INFO rapids.tools.qualification: Checking dependency GCS Connector Hadoop3
-2023-12-08 23:01:45,669 INFO rapids.tools.qualification: Completed downloading of dependency [GCS Connector Hadoop3] => 0.035 seconds
-2023-12-08 23:01:51,045 INFO rapids.tools.qualification: Completed downloading of dependency [Apache Spark] => 5.413 seconds
-2023-12-08 23:01:51,046 INFO rapids.tools.qualification: Dependencies are processed as: /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/work_dir/spark-3.3.1-bin-hadoop3/jars/*; /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/work_dir/gcs-connector-hadoop3-2.2.11-shaded.jar
-2023-12-08 23:01:51,047 INFO rapids.tools.qualification: Total Execution Time: Downloading dependencies for local Mode => 5.415 seconds
-2023-12-08 23:01:51,047 INFO rapids.tools.qualification: Loading CPU cluster properties by name dpgce-cluster-static-gpu-664100187562. Note that this will fail if the cluster was permanently deleted.
-2023-12-08 23:02:04,553 INFO rapids.tools.qualification: Creating GPU cluster by converting the CPU cluster instances to GPU supported types
-2023-12-08 23:02:04,553 INFO rapids.tools.cluster: Node with n1-standard-8 supports GPU devices.
-2023-12-08 23:02:04,554 INFO rapids.tools.cluster: Node with n1-standard-8 supports GPU devices.
-2023-12-08 23:02:04,554 INFO rapids.tools.cluster: Node with n1-standard-8 supports GPU devices.
-2023-12-08 23:02:04,554 INFO rapids.tools.cluster: Node with n1-standard-8 supports GPU devices.
-2023-12-08 23:02:04,554 INFO rapids.tools.qualification: No remote output folder specified.
-2023-12-08 23:02:04,554 INFO rapids.tools.qualification: ======= [Process-Arguments]: Finished =======
-2023-12-08 23:02:04,554 INFO rapids.tools.qualification: ******* [Execution]: Starting *******
-2023-12-08 23:02:04,554 INFO rapids.tools.qualification: Skipping preparing remote dependency folder
-2023-12-08 23:02:04,555 INFO rapids.tools.submit.dataprocLocal: Prepare job submission command
-2023-12-08 23:02:04,555 INFO rapids.tools.submit.dataprocLocal: Running the Rapids Job...
-2023-12-08 23:02:15,074 INFO rapids.tools.submit.dataprocLocal: dataproc job output:
+2023-12-10 04:27:59,382 INFO rapids.tools.qualification: ******* [Initialization]: Starting *******
+2023-12-10 04:27:59,411 INFO rapids.tools.qualification.ctxt: Start connecting to the platform
+2023-12-10 04:28:01,917 INFO rapids.tools.qualification: ======= [Initialization]: Finished =======
+2023-12-10 04:28:01,918 INFO rapids.tools.qualification: ******* [Connecting to Execution Cluster]: Starting *******
+2023-12-10 04:28:01,918 INFO rapids.tools.qualification: Qualification requires no execution cluster. Skipping phase
+2023-12-10 04:28:01,918 INFO rapids.tools.qualification: ======= [Connecting to Execution Cluster]: Finished =======
+2023-12-10 04:28:01,918 INFO rapids.tools.qualification: ******* [Process-Arguments]: Starting *******
+2023-12-10 04:28:01,918 INFO rapids.tools.qualification.ctxt: Local workdir root folder is set as /home/admin_/rapids_user_tools_output/qual_20231210042801_e1AEd71B
+2023-12-10 04:28:01,993 INFO rapids.tools.qualification.ctxt: Dependencies are generated locally in local disk as: /home/admin_/rapids_user_tools_output/qual_20231210042801_e1AEd71B/work_dir
+2023-12-10 04:28:01,993 INFO rapids.tools.qualification.ctxt: Local output folder is set as: /home/admin_/rapids_user_tools_output/qual_20231210042801_e1AEd71B
+2023-12-10 04:28:01,993 INFO rapids.tools.qualification: Qualification tool processing the arguments
+2023-12-10 04:28:02,340 INFO rapids.tools.qualification: RAPIDS accelerator jar is downloaded to work_dir /home/admin_/rapids_user_tools_output/qual_20231210042801_e1AEd71B/work_dir/rapids-4-spark-tools_2.12-23.04.0.jar
+2023-12-10 04:28:02,341 INFO rapids.tools.qualification: Checking dependency Apache Spark
+2023-12-10 04:28:02,342 INFO rapids.tools.qualification: Checking dependency GCS Connector Hadoop3
+2023-12-10 04:28:02,601 INFO rapids.tools.qualification: The dependency https://repo1.maven.org/maven2/com/google/cloud/bigdataoss/gcs-connector/hadoop3-2.2.11/gcs-connector-hadoop3-2.2.11-shaded.jar has been downloaded into /var/tmp/spark_rapids_user_tools_cache/gcs-connector-hadoop3-2.2.11-shaded.jar
+2023-12-10 04:28:02,634 INFO rapids.tools.qualification: Completed downloading of dependency [GCS Connector Hadoop3] => 0.292 seconds
+2023-12-10 04:28:20,817 INFO rapids.tools.qualification: The dependency https://archive.apache.org/dist/spark/spark-3.3.1/spark-3.3.1-bin-hadoop3.tgz has been downloaded into /var/tmp/spark_rapids_user_tools_cache/spark-3.3.1-bin-hadoop3.tgz
+2023-12-10 04:28:26,309 INFO rapids.tools.qualification: Completed downloading of dependency [Apache Spark] => 23.967 seconds
+2023-12-10 04:28:26,310 INFO rapids.tools.qualification: Dependencies are processed as: /home/admin_/rapids_user_tools_output/qual_20231210042801_e1AEd71B/work_dir/spark-3.3.1-bin-hadoop3/jars/*; /home/admin_/rapids_user_tools_output/qual_20231210042801_e1AEd71B/work_dir/gcs-connector-hadoop3-2.2.11-shaded.jar
+2023-12-10 04:28:26,311 INFO rapids.tools.qualification: Total Execution Time: Downloading dependencies for local Mode => 23.971 seconds
+2023-12-10 04:28:26,312 INFO rapids.tools.qualification: Loading CPU cluster properties by name dpgce-cluster-static-gpu-664100187562. Note that this will fail if the cluster was permanently deleted.
+2023-12-10 04:28:39,118 INFO rapids.tools.qualification: Creating GPU cluster by converting the CPU cluster instances to GPU supported types
+2023-12-10 04:28:39,119 INFO rapids.tools.cluster: Node with n1-standard-8 supports GPU devices.
+2023-12-10 04:28:39,119 INFO rapids.tools.cluster: Node with n1-standard-8 supports GPU devices.
+2023-12-10 04:28:39,119 INFO rapids.tools.cluster: Node with n1-standard-8 supports GPU devices.
+2023-12-10 04:28:39,119 INFO rapids.tools.cluster: Node with n1-standard-8 supports GPU devices.
+2023-12-10 04:28:39,119 INFO rapids.tools.qualification: No remote output folder specified.
+2023-12-10 04:28:39,119 INFO rapids.tools.qualification: ======= [Process-Arguments]: Finished =======
+2023-12-10 04:28:39,119 INFO rapids.tools.qualification: ******* [Execution]: Starting *******
+2023-12-10 04:28:39,119 INFO rapids.tools.qualification: Skipping preparing remote dependency folder
+2023-12-10 04:28:39,120 INFO rapids.tools.submit.dataprocLocal: Prepare job submission command
+2023-12-10 04:28:39,120 INFO rapids.tools.submit.dataprocLocal: Running the Rapids Job...
+2023-12-10 04:28:50,065 INFO rapids.tools.submit.dataprocLocal: dataproc job output:
         <STDOUT>
-        | 23/12/08 23:02:06 INFO PluginTypeChecker: Reading operators scores with platform: dataproc
-        | 23/12/08 23:02:06 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
-        | 23/12/08 23:02:08 INFO Qualification: Threadpool size is 1
-        | 23/12/08 23:02:08 INFO QualificationAppInfo: Parsing Event Log: gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0001
-        | 23/12/08 23:02:09 WARN QualificationAppInfo: Eventlog is from GPU run. Skipping ...
-        | 23/12/08 23:02:09 WARN Qualification: No Application found that contain SQL for gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0001!
-        | 23/12/08 23:02:09 INFO QualificationAppInfo: Parsing Event Log: gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0002
-        | Qual Tool Progress 50% [=============================>                            ] (0 succeeded + 0 failed + 1 N/A) / 2
-        | 23/12/08 23:02:13 INFO QualificationAppInfo: Total number of events parsed: 3599 for gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0002
-        | 23/12/08 23:02:13 INFO QualificationAppInfo: gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0002 has App: application_1702060521274_0002
-        | 23/12/08 23:02:13 INFO Qualification: Took 4042ms to process gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0002
-        | Qual Tool Progress 100% [=========================================================] (1 succeeded + 0 failed + 1 N/A) / 2
+        | 23/12/10 04:28:41 INFO PluginTypeChecker: Reading operators scores with platform: dataproc
+        | 23/12/10 04:28:41 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+        | 23/12/10 04:28:43 INFO Qualification: Threadpool size is 1
+        | 23/12/10 04:28:43 INFO QualificationAppInfo: Parsing Event Log: gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0001
+        | 23/12/10 04:28:44 WARN QualificationAppInfo: Eventlog is from GPU run. Skipping ...
+        | 23/12/10 04:28:44 WARN Qualification: No Application found that contain SQL for gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0001!
+        | 23/12/10 04:28:44 INFO QualificationAppInfo: Parsing Event Log: gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0005
+        | Qual Tool Progress 20% [===========>                                              ] (0 succeeded + 0 failed + 1 N/A) / 5
+        | 23/12/10 04:28:44 WARN QualificationAppInfo: Eventlog is from GPU run. Skipping ...
+        | 23/12/10 04:28:44 WARN Qualification: No Application found that contain SQL for gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0005!
+        | 23/12/10 04:28:44 INFO QualificationAppInfo: Parsing Event Log: gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0004
+        | 23/12/10 04:28:44 WARN QualificationAppInfo: Eventlog is from GPU run. Skipping ...
+        | 23/12/10 04:28:44 WARN Qualification: No Application found that contain SQL for gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0004!
+        | 23/12/10 04:28:44 INFO QualificationAppInfo: Parsing Event Log: gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0002
+        | Qual Tool Progress 60% [==================================>                       ] (0 succeeded + 0 failed + 3 N/A) / 5
+        | 23/12/10 04:28:48 INFO QualificationAppInfo: Total number of events parsed: 3599 for gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0002
+        | 23/12/10 04:28:48 INFO QualificationAppInfo: gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0002 has App: application_1702060521274_0002
+        | 23/12/10 04:28:48 INFO Qualification: Took 3577ms to process gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0002
+        | 23/12/10 04:28:48 INFO QualificationAppInfo: Parsing Event Log: gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0003
+        | Qual Tool Progress 80% [==============================================>           ] (1 succeeded + 0 failed + 3 N/A) / 5
+        | 23/12/10 04:28:48 WARN QualificationAppInfo: Eventlog is from GPU run. Skipping ...
+        | 23/12/10 04:28:48 WARN Qualification: No Application found that contain SQL for gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0003!
+        | Qual Tool Progress 100% [=========================================================] (1 succeeded + 0 failed + 4 N/A) / 5
         | 
-        | Qual Tool execution time: 4918ms
+        | Qual Tool execution time: 5168ms
         |       process.success.count = 1
         |       process.failure.count = 0
-        |       process.NA.count = 1
-        |       execution.total.count = 2
+        |       process.NA.count = 4
+        |       execution.total.count = 5
         | APPLICATION SUMMARY:
         | ============================================================================================================================================================================================================================================================================
         | |       App Name|                        App ID|App Duration|SQL DF Duration|GPU Opportunity|Estimated GPU Duration|Estimated GPU Speedup|Estimated GPU Time Saved|      Recommendation|        Unsupported Execs|Unsupported Expressions|Estimated Job Frequency (monthly)|
         | ============================================================================================================================================================================================================================================================================
         | |churn_utils.etl|application_1702060521274_0002|     2206942|        2157190|        2157050|             528172.88|                 4.17|              1678769.11|Strongly Recommended|AdaptiveSparkPlan;Expa...|ArrayBuffer;AtLeastN...|                               30|
         | ============================================================================================================================================================================================================================================================================
-        | 23/12/08 23:02:13 INFO ToolTextFileWriter: Summary Report output location: /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/rapids_4_spark_qualification_output/rapids_4_spark_qualification_output.log
-        | 23/12/08 23:02:13 INFO ToolTextFileWriter: CSV output location: /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/rapids_4_spark_qualification_output/rapids_4_spark_qualification_output.csv
-        | 23/12/08 23:02:13 INFO ToolTextFileWriter: Plan Exec Info output location: /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/rapids_4_spark_qualification_output/rapids_4_spark_qualification_output_execs.csv
-        | 23/12/08 23:02:13 INFO ToolTextFileWriter: Stage Exec Info output location: /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/rapids_4_spark_qualification_output/rapids_4_spark_qualification_output_stages.csv
-        | 23/12/08 23:02:14 INFO QualificationReportGenerator: Generating UI data in /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/rapids_4_spark_qualification_output/ui/html/index.html
-        | 23/12/08 23:02:15 INFO QualificationReportGenerator: Took 1087ms to process
-2023-12-08 23:02:15,076 INFO rapids.tools.qualification: Total Execution Time: Building Job Arguments and Executing Job CMD => 10.522 seconds
-2023-12-08 23:02:15,076 INFO rapids.tools.qualification: ======= [Execution]: Finished =======
-2023-12-08 23:02:15,076 INFO rapids.tools.qualification: ******* [Collecting-Results]: Starting *******
-2023-12-08 23:02:15,595 INFO rapids.tools.price.Dataproc: The catalog file /var/tmp/spark_rapids_user_tools_cache/gcloud-catalog.json is updated
-2023-12-08 23:02:15,615 INFO rapids.tools.qualification: Generating GPU Estimated Speedup and Savings as /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/qualification_summary.csv
-2023-12-08 23:02:15,904 INFO rapids.tools.qualification: ======= [Collecting-Results]: Finished =======
-2023-12-08 23:02:15,904 INFO rapids.tools.qualification: ******* [Archiving Tool Output]: Starting *******
-2023-12-08 23:02:15,904 INFO rapids.tools.qualification: ======= [Archiving Tool Output]: Finished =======
-2023-12-08 23:02:15,904 INFO rapids.tools.qualification: ******* [Generating Report Summary]: Starting *******
+        | 23/12/10 04:28:48 INFO ToolTextFileWriter: Summary Report output location: /home/admin_/rapids_user_tools_output/qual_20231210042801_e1AEd71B/rapids_4_spark_qualification_output/rapids_4_spark_qualification_output.log
+        | 23/12/10 04:28:48 INFO ToolTextFileWriter: CSV output location: /home/admin_/rapids_user_tools_output/qual_20231210042801_e1AEd71B/rapids_4_spark_qualification_output/rapids_4_spark_qualification_output.csv
+        | 23/12/10 04:28:48 INFO ToolTextFileWriter: Plan Exec Info output location: /home/admin_/rapids_user_tools_output/qual_20231210042801_e1AEd71B/rapids_4_spark_qualification_output/rapids_4_spark_qualification_output_execs.csv
+        | 23/12/10 04:28:49 INFO ToolTextFileWriter: Stage Exec Info output location: /home/admin_/rapids_user_tools_output/qual_20231210042801_e1AEd71B/rapids_4_spark_qualification_output/rapids_4_spark_qualification_output_stages.csv
+        | 23/12/10 04:28:49 INFO QualificationReportGenerator: Generating UI data in /home/admin_/rapids_user_tools_output/qual_20231210042801_e1AEd71B/rapids_4_spark_qualification_output/ui/html/index.html
+        | 23/12/10 04:28:50 INFO QualificationReportGenerator: Took 977ms to process
+2023-12-10 04:28:50,066 INFO rapids.tools.qualification: Total Execution Time: Building Job Arguments and Executing Job CMD => 10.946 seconds
+2023-12-10 04:28:50,066 INFO rapids.tools.qualification: ======= [Execution]: Finished =======
+2023-12-10 04:28:50,066 INFO rapids.tools.qualification: ******* [Collecting-Results]: Starting *******
+2023-12-10 04:28:50,420 INFO rapids.tools.price.Dataproc: The catalog file /var/tmp/spark_rapids_user_tools_cache/gcloud-catalog.json is updated
+2023-12-10 04:28:50,439 INFO rapids.tools.qualification: Generating GPU Estimated Speedup and Savings as /home/admin_/rapids_user_tools_output/qual_20231210042801_e1AEd71B/qualification_summary.csv
+2023-12-10 04:28:50,584 INFO rapids.tools.qualification: ======= [Collecting-Results]: Finished =======
+2023-12-10 04:28:50,584 INFO rapids.tools.qualification: ******* [Archiving Tool Output]: Starting *******
+2023-12-10 04:28:50,585 INFO rapids.tools.qualification: ======= [Archiving Tool Output]: Finished =======
+2023-12-10 04:28:50,585 INFO rapids.tools.qualification: ******* [Generating Report Summary]: Starting *******
 
 ____________________________________________________________________________________________________
                                         QUALIFICATION Report                                        
@@ -332,8 +348,8 @@ ________________________________________________________________________________
 
 Output:
 --------------------
-Qualification tool output: /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/rapids_4_spark_qualification_output
-    qual_20231208230145_D88ad71e
+Qualification tool output: /home/admin_/rapids_user_tools_output/qual_20231210042801_e1AEd71B/rapids_4_spark_qualification_output
+    qual_20231210042801_e1AEd71B
     ├── rapids_4_spark_qualification_output
     │   ├── rapids_4_spark_qualification_output.csv
     │   ├── rapids_4_spark_qualification_output_execs.csv
@@ -348,7 +364,7 @@ Qualification tool output: /home/admin_/rapids_user_tools_output/qual_2023120823
     └── qualification_summary.csv
     3 directories, 9 files
     - To learn more about the output details, visit https://nvidia.github.io/spark-rapids/docs/spark-qualification-tool.html#understanding-the-qualification-tool-output
-    - Full savings and speedups CSV report: /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/qualification_summary.csv
+    - Full savings and speedups CSV report: /home/admin_/rapids_user_tools_output/qual_20231210042801_e1AEd71B/qualification_summary.csv
 +----+--------------------------------+-----------------+----------------------+----------------------+---------------+-----------------+-----------------+-----------------+
 |    | App ID                         | App Name        | Speedup Based        | Savings Based        |           App |   Estimated GPU |   Estimated GPU |   Estimated GPU |
 |    |                                |                 | Recommendation       | Recommendation       |   Duration(s) |     Duration(s) |         Speedup |      Savings(%) |
@@ -421,130 +437,6 @@ spark_rapids_user_tools dataproc bootstrap \
 
 ```
 
-
-```
-spark_rapids_user_tools dataproc qualification \
-   --eventlogs $SPARK_EVENT_LOG_DIR \
-   --cpu_cluster $CLUSTER_NAME 
-2023-12-08 23:01:42,629 INFO rapids.tools.qualification: ******* [Initialization]: Starting *******
-2023-12-08 23:01:42,651 INFO rapids.tools.qualification.ctxt: Start connecting to the platform
-2023-12-08 23:01:45,354 INFO rapids.tools.qualification: ======= [Initialization]: Finished =======
-2023-12-08 23:01:45,355 INFO rapids.tools.qualification: ******* [Connecting to Execution Cluster]: Starting *******
-2023-12-08 23:01:45,355 INFO rapids.tools.qualification: Qualification requires no execution cluster. Skipping phase
-2023-12-08 23:01:45,355 INFO rapids.tools.qualification: ======= [Connecting to Execution Cluster]: Finished =======
-2023-12-08 23:01:45,355 INFO rapids.tools.qualification: ******* [Process-Arguments]: Starting *******
-2023-12-08 23:01:45,355 INFO rapids.tools.qualification.ctxt: Local workdir root folder is set as /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e
-2023-12-08 23:01:45,355 INFO rapids.tools.qualification.ctxt: Dependencies are generated locally in local disk as: /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/work_dir
-2023-12-08 23:01:45,355 INFO rapids.tools.qualification.ctxt: Local output folder is set as: /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e
-2023-12-08 23:01:45,356 INFO rapids.tools.qualification: Qualification tool processing the arguments
-2023-12-08 23:01:45,631 INFO rapids.tools.qualification: RAPIDS accelerator jar is downloaded to work_dir /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/work_dir/rapids-4-spark-tools_2.12-23.04.0.jar
-2023-12-08 23:01:45,632 INFO rapids.tools.qualification: Checking dependency Apache Spark
-2023-12-08 23:01:45,634 INFO rapids.tools.qualification: Checking dependency GCS Connector Hadoop3
-2023-12-08 23:01:45,669 INFO rapids.tools.qualification: Completed downloading of dependency [GCS Connector Hadoop3] => 0.035 seconds
-2023-12-08 23:01:51,045 INFO rapids.tools.qualification: Completed downloading of dependency [Apache Spark] => 5.413 seconds
-2023-12-08 23:01:51,046 INFO rapids.tools.qualification: Dependencies are processed as: /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/work_dir/spark-3.3.1-bin-hadoop3/jars/*; /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/work_dir/gcs-connector-hadoop3-2.2.11-shaded.jar
-2023-12-08 23:01:51,047 INFO rapids.tools.qualification: Total Execution Time: Downloading dependencies for local Mode => 5.415 seconds
-2023-12-08 23:01:51,047 INFO rapids.tools.qualification: Loading CPU cluster properties by name dpgce-cluster-static-gpu-664100187562. Note that this will fail if the cluster was permanently deleted.
-2023-12-08 23:02:04,553 INFO rapids.tools.qualification: Creating GPU cluster by converting the CPU cluster instances to GPU supported types
-2023-12-08 23:02:04,553 INFO rapids.tools.cluster: Node with n1-standard-8 supports GPU devices.
-2023-12-08 23:02:04,554 INFO rapids.tools.cluster: Node with n1-standard-8 supports GPU devices.
-2023-12-08 23:02:04,554 INFO rapids.tools.cluster: Node with n1-standard-8 supports GPU devices.
-2023-12-08 23:02:04,554 INFO rapids.tools.cluster: Node with n1-standard-8 supports GPU devices.
-2023-12-08 23:02:04,554 INFO rapids.tools.qualification: No remote output folder specified.
-2023-12-08 23:02:04,554 INFO rapids.tools.qualification: ======= [Process-Arguments]: Finished =======
-2023-12-08 23:02:04,554 INFO rapids.tools.qualification: ******* [Execution]: Starting *******
-2023-12-08 23:02:04,554 INFO rapids.tools.qualification: Skipping preparing remote dependency folder
-2023-12-08 23:02:04,555 INFO rapids.tools.submit.dataprocLocal: Prepare job submission command
-2023-12-08 23:02:04,555 INFO rapids.tools.submit.dataprocLocal: Running the Rapids Job...
-2023-12-08 23:02:15,074 INFO rapids.tools.submit.dataprocLocal: dataproc job output:
-        <STDOUT>
-        | 23/12/08 23:02:06 INFO PluginTypeChecker: Reading operators scores with platform: dataproc
-        | 23/12/08 23:02:06 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
-        | 23/12/08 23:02:08 INFO Qualification: Threadpool size is 1
-        | 23/12/08 23:02:08 INFO QualificationAppInfo: Parsing Event Log: gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0001
-        | 23/12/08 23:02:09 WARN QualificationAppInfo: Eventlog is from GPU run. Skipping ...
-        | 23/12/08 23:02:09 WARN Qualification: No Application found that contain SQL for gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0001!
-        | 23/12/08 23:02:09 INFO QualificationAppInfo: Parsing Event Log: gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0002
-        | Qual Tool Progress 50% [=============================>                            ] (0 succeeded + 0 failed + 1 N/A) / 2
-        | 23/12/08 23:02:13 INFO QualificationAppInfo: Total number of events parsed: 3599 for gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0002
-        | 23/12/08 23:02:13 INFO QualificationAppInfo: gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0002 has App: application_1702060521274_0002
-        | 23/12/08 23:02:13 INFO Qualification: Took 4042ms to process gs://spark-event-log-bucket-664100187562/events/spark-job-history/application_1702060521274_0002
-        | Qual Tool Progress 100% [=========================================================] (1 succeeded + 0 failed + 1 N/A) / 2
-        | 
-        | Qual Tool execution time: 4918ms
-        |       process.success.count = 1
-        |       process.failure.count = 0
-        |       process.NA.count = 1
-        |       execution.total.count = 2
-        | APPLICATION SUMMARY:
-        | ============================================================================================================================================================================================================================================================================
-        | |       App Name|                        App ID|App Duration|SQL DF Duration|GPU Opportunity|Estimated GPU Duration|Estimated GPU Speedup|Estimated GPU Time Saved|      Recommendation|        Unsupported Execs|Unsupported Expressions|Estimated Job Frequency (monthly)|
-        | ============================================================================================================================================================================================================================================================================
-        | |churn_utils.etl|application_1702060521274_0002|     2206942|        2157190|        2157050|             528172.88|                 4.17|              1678769.11|Strongly Recommended|AdaptiveSparkPlan;Expa...|ArrayBuffer;AtLeastN...|                               30|
-        | ============================================================================================================================================================================================================================================================================
-        | 23/12/08 23:02:13 INFO ToolTextFileWriter: Summary Report output location: /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/rapids_4_spark_qualification_output/rapids_4_spark_qualification_output.log
-        | 23/12/08 23:02:13 INFO ToolTextFileWriter: CSV output location: /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/rapids_4_spark_qualification_output/rapids_4_spark_qualification_output.csv
-        | 23/12/08 23:02:13 INFO ToolTextFileWriter: Plan Exec Info output location: /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/rapids_4_spark_qualification_output/rapids_4_spark_qualification_output_execs.csv
-        | 23/12/08 23:02:13 INFO ToolTextFileWriter: Stage Exec Info output location: /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/rapids_4_spark_qualification_output/rapids_4_spark_qualification_output_stages.csv
-        | 23/12/08 23:02:14 INFO QualificationReportGenerator: Generating UI data in /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/rapids_4_spark_qualification_output/ui/html/index.html
-        | 23/12/08 23:02:15 INFO QualificationReportGenerator: Took 1087ms to process
-2023-12-08 23:02:15,076 INFO rapids.tools.qualification: Total Execution Time: Building Job Arguments and Executing Job CMD => 10.522 seconds
-2023-12-08 23:02:15,076 INFO rapids.tools.qualification: ======= [Execution]: Finished =======
-2023-12-08 23:02:15,076 INFO rapids.tools.qualification: ******* [Collecting-Results]: Starting *******
-2023-12-08 23:02:15,595 INFO rapids.tools.price.Dataproc: The catalog file /var/tmp/spark_rapids_user_tools_cache/gcloud-catalog.json is updated
-2023-12-08 23:02:15,615 INFO rapids.tools.qualification: Generating GPU Estimated Speedup and Savings as /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/qualification_summary.csv
-2023-12-08 23:02:15,904 INFO rapids.tools.qualification: ======= [Collecting-Results]: Finished =======
-2023-12-08 23:02:15,904 INFO rapids.tools.qualification: ******* [Archiving Tool Output]: Starting *******
-2023-12-08 23:02:15,904 INFO rapids.tools.qualification: ======= [Archiving Tool Output]: Finished =======
-2023-12-08 23:02:15,904 INFO rapids.tools.qualification: ******* [Generating Report Summary]: Starting *******
-
-____________________________________________________________________________________________________
-                                        QUALIFICATION Report                                        
-____________________________________________________________________________________________________
-
-Output:
---------------------
-Qualification tool output: /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/rapids_4_spark_qualification_output
-    qual_20231208230145_D88ad71e
-    ├── rapids_4_spark_qualification_output
-    │   ├── rapids_4_spark_qualification_output.csv
-    │   ├── rapids_4_spark_qualification_output_execs.csv
-    │   ├── rapids_4_spark_qualification_output.log
-    │   ├── ui
-    │   │   └── html
-    │   │       ├── index.html
-    │   │       ├── sql-recommendation.html
-    │   │       ├── raw.html
-    │   │       └── application.html
-    │   └── rapids_4_spark_qualification_output_stages.csv
-    └── qualification_summary.csv
-    3 directories, 9 files
-    - To learn more about the output details, visit https://nvidia.github.io/spark-rapids/docs/spark-qualification-tool.html#understanding-the-qualification-tool-output
-    - Full savings and speedups CSV report: /home/admin_/rapids_user_tools_output/qual_20231208230145_D88ad71e/qualification_summary.csv
-+----+--------------------------------+-----------------+----------------------+----------------------+---------------+-----------------+-----------------+-----------------+
-|    | App ID                         | App Name        | Speedup Based        | Savings Based        |           App |   Estimated GPU |   Estimated GPU |   Estimated GPU |
-|    |                                |                 | Recommendation       | Recommendation       |   Duration(s) |     Duration(s) |         Speedup |      Savings(%) |
-|----+--------------------------------+-----------------+----------------------+----------------------+---------------+-----------------+-----------------+-----------------|
-|  0 | application_1702060521274_0002 | churn_utils.etl | Strongly Recommended | Strongly Recommended |       2206.94 |          528.17 |            4.18 |           76.07 |
-+----+--------------------------------+-----------------+----------------------+----------------------+---------------+-----------------+-----------------+-----------------+
-
-Report Summary:
-------------------------------  ------
-Total applications                   1
-RAPIDS candidates                    1
-Overall estimated speedup         4.18
-Overall estimated cost savings  76.07%
-------------------------------  ------
-
-
-Initialization Scripts:
------------------------
-To launch a GPU-accelerated cluster with RAPIDS Accelerator for Apache Spark, add the
-  following to your cluster creation script:
-    --initialization-actions=gs://goog-dataproc-initialization-actions-us-central1/spark-rapids/spark-rapids.sh \
-    --worker-accelerator type=nvidia-tesla-t4,count=1
-
-```
 
 <hr>
 <hr>
