@@ -1,5 +1,6 @@
 # Module-03: GPU acceleration for Spark on Dataproc Serverless
 
+In Module 2 you learned how to run Spark jobs with GPU acceleration on Dataproc/GCE clusters. In this module, using the exact same Spark application, we will learn how to run Dataproc Serverless Spark jobs with GPU acceleration and associated architectural considerations.
 
 <hr>
 
