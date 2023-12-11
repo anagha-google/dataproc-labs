@@ -247,16 +247,17 @@ spark.executor.instances=4,\
 spark.executor.cores=8,\
 spark.dataproc.executor.disk.tier=premium,\
 spark.dataproc.executor.resource.accelerator.type=l4,\
-spark.shuffle.manager=com.nvidia.spark.rapids.spark332.RapidsShuffleManager \
+spark.shuffle.manager=com.nvidia.spark.rapids.spark332.RapidsShuffleManager,\
+spark.dataproc.executor.disk.size=1024g,\
+spark.sql.codegen.wholeStage=false,\
+spark.dynamicAllocation.enabled=false,\
+spark.rapids.memory.pinnedPool.size=4g,\
+spark.rapids.sql.concurrentGpuTasks=3 \
 -- --coalesce-output=8 --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX}
 ```
 
-spark.executor.memory=14g, \
-spark.dataproc.executor.disk.size=1024g, \
-spark.sql.codegen.wholeStage=false, \
-spark.dynamicAllocation.enabled=false, \
-spark.rapids.memory.pinnedPool.size=4g, \
-spark.rapids.sql.concurrentGpuTasks=3, \
+
+
 
 
 ### 4.2. Note the execution time
