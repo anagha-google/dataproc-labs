@@ -249,7 +249,7 @@ spark.shuffle.manager=com.nvidia.spark.rapids.spark332.RapidsShuffleManager" \
 ## 6. In closing
 
 
-Dataproc and Nvidia GPUs can majorly accelerate ETL and Data Science worklads that use Spark SQL and Spark dataframes and can fall back to CPU based execution when a Spark stage/feature is unsupported by spark-rapids.
+Dataproc and Nvidia GPUs can majorly accelerate ETL and Data Science worklads that use Spark SQL and Spark dataframes and optimize performance and thereby costs.
 
 <br><br>
 This concludes the lab. **DONT FORGET** to Shut down the project to avoid billing.
