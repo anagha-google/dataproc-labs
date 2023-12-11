@@ -14,7 +14,7 @@ Successful completion of prior module
 In this lab, we will-
 
 1. Create a Dataproc Persistent Spark History Server
-2. Learn how to submit Spark jobs on Dataproc Serverless with GPUs
+2. Learn how to submit Spark jobs on Dataproc Serverless with GPUs and understand architectural considerations
 3. Visit the Spark History Server to review the execution DAG to review stages that benefited from GPU acceleration.
 4. Understand how to use Nvidia command line tools showcased in Lab Module 2, with Dataproc Serverless
 5. Know the limitations, know where to go for documentation and best practices
@@ -201,7 +201,8 @@ The CPU based execution took 15 minutes
 
 - The Nvidia rapids user tools currently does not support Dataproc Serverless event logs directly.
 - To run the qualification tool, copy the event logs from the Persistent Histroy Server bucket locally and run the tool as detailed in the lab module 2.
-
+- Documentation about the tooling is available [here](https://docs.nvidia.com/spark-rapids/user-guide/latest/index.html)
+  
 <hr>
 <hr>
 
@@ -267,11 +268,20 @@ spark.rapids.sql.concurrentGpuTasks=3" \
 <hr>
 <hr>
 
-## 5. Optimization summary
+## 5. Running the Nvidia Profiler Tool
+
+- The Nvidia rapids user tools currently does not support Dataproc Serverless event logs directly.
+- To run the profiler tool, copy the event log ofthe specific Spark job you want to tune from the Persistent Histroy Server bucket locally and run the tool as detailed in the lab module 2.
+- Documentation about the tooling is available [here](https://docs.nvidia.com/spark-rapids/user-guide/latest/index.html)
+  
+<hr>
+<hr>
+
+## 6. Optimization summary
 
 
 
-## 6. In closing
+## 7. In closing
 
 
 Dataproc and Nvidia GPUs can majorly accelerate ETL and Data Science worklads that use Spark SQL and Spark dataframes and optimize performance and thereby costs.
