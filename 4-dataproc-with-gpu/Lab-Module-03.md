@@ -59,6 +59,7 @@ In this lab, we will-
 14. Accelerator-enabled jobs are not compatible with the constraints/compute.requireShieldedVm organization policy. If your organization enforces this policy, its accelerator-enabled jobs not run.
 15. Spark Rapids details are available [here](https://nvidia.github.io/spark-rapids/)
 16. Rapids Useer Tools details are available [here](https://docs.nvidia.com/spark-rapids/user-guide/latest/index.html)
+17. Cost breakdown is available [here](https://cloud.google.com/dataproc-serverless/pricing)
 
 <hr>
 <hr>
@@ -154,7 +155,7 @@ gcloud dataproc batches submit \
 --version $DATAPROC_SERVERLESS_SPARK_RUNTIME \
 --subnet $SPARK_SUBNET \
 --history-server-cluster projects/$PROJECT_ID/regions/$REGION/clusters/$PERSISTENT_SPARK_HISTORY_SERVER \
---properties spark.dynamicAllocation.enabled=false,spark.executor.instances=4,spark.driver.cores=4,spark.executor.cores=8,spark.executor.memory=14G,spark.sql.codegen.wholeStage=false \
+--properties spark.dynamicAllocation.enabled=false,spark.executor.instances=4,spark.driver.cores=4,spark.executor.cores=8 \
 --service-account $UMSA_FQN \
 -- --coalesce-output=8 --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX} 
 ```
@@ -248,7 +249,6 @@ spark.executor.cores=8,\
 spark.dataproc.executor.disk.tier=premium,\
 spark.dataproc.executor.resource.accelerator.type=l4,\
 spark.shuffle.manager=com.nvidia.spark.rapids.spark332.RapidsShuffleManager,\
-spark.dataproc.executor.disk.size=1024g,\
 spark.sql.codegen.wholeStage=false,\
 spark.dynamicAllocation.enabled=false,\
 spark.rapids.memory.pinnedPool.size=4g,\
@@ -258,11 +258,9 @@ spark.rapids.sql.concurrentGpuTasks=3 \
 
 
 
-
-
 ### 4.2. Note the execution time
 
-
+The batch job took ~7.5 minutes
 
 ### 4.3. Review the execution plan
 
