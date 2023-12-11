@@ -217,6 +217,7 @@ gcloud dataproc batches submit \
 --service-account $UMSA_FQN \
 --properties \
 "
+spark.shuffle.manager=com.nvidia.spark.rapids.spark332.RapidsShuffleManager, \
 spark.sql.codegen.wholeStage=false, \
 spark.dynamicAllocation.enabled=false, \
 spark.dataproc.driver.compute.tier=premium,\
@@ -232,8 +233,7 @@ spark.dataproc.executor.disk.tier=premium, \
 spark.dataproc.executor.disk.size=1024, \
 spark.dataproc.executor.resource.accelerator.type=l4,\
 spark.rapids.memory.pinnedPool.size=4g, \
-spark.rapids.sql.concurrentGpuTasks=3, \
-spark.shuffle.manager=com.nvidia.spark.rapids.spark332.RapidsShuffleManager" \
+spark.rapids.sql.concurrentGpuTasks=3" \
 -- --coalesce-output=8 --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX}
 ```
 
