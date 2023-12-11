@@ -209,9 +209,10 @@ gcloud dataproc batches submit \
 --version $DATAPROC_SERVERLESS_SPARK_RUNTIME \
 --subnet $SPARK_SUBNET \
 --history-server-cluster projects/$PROJECT_ID/regions/$REGION/clusters/$PERSISTENT_SPARK_HISTORY_SERVER \
+--service-account $UMSA_FQN \
 --properties \
-"spark.jars.packages=com.nvidia.spark.rapids.spark332.RapidsShuffleManager",
-"spark.sql.codegen.wholeStage=false, \
+"
+spark.sql.codegen.wholeStage=false, \
 spark.dynamicAllocation.enabled=false, \
 spark.dataproc.driver.compute.tier=premium,\
 spark.driver.memory=4g, \
@@ -225,10 +226,9 @@ spark.executor.memory=14G, \
 spark.dataproc.executor.disk.tier=premium, \
 spark.dataproc.executor.disk.size=1024, \
 spark.dataproc.executor.resource.accelerator.type=l4,\
-spark.shuffle.manager=com.nvidia.spark.rapids.spark332.RapidsShuffleManager,\
 spark.rapids.memory.pinnedPool.size=4g, \
-spark.rapids.sql.concurrentGpuTasks=3" \
---service-account $UMSA_FQN \
+spark.rapids.sql.concurrentGpuTasks=3, \
+spark.shuffle.manager=com.nvidia.spark.rapids.spark332.RapidsShuffleManager" \
 -- --coalesce-output=8 --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX}
 ```
 
