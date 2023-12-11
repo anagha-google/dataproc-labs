@@ -58,7 +58,7 @@ In this lab, we will-
 13. Dataproc Serverless GPU-accelerated batches utilize increased Compute Engine quotas. For example, to run a serverless batch workload that uses an NVIDIA L4 GPU, you must allocate the NVIDIA_L4_GPUS quota.
 14. Accelerator-enabled jobs are not compatible with the constraints/compute.requireShieldedVm organization policy. If your organization enforces this policy, its accelerator-enabled jobs not run.
 15. Spark Rapids details are available [here](https://nvidia.github.io/spark-rapids/)
-16. Rapids Useer Tools details are available [here](https://docs.nvidia.com/spark-rapids/user-guide/latest/index.html)
+16. Rapids User Tools details are available [here](https://docs.nvidia.com/spark-rapids/user-guide/latest/index.html)
 17. Cost breakdown is available [here](https://cloud.google.com/dataproc-serverless/pricing)
 
 <hr>
