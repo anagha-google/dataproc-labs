@@ -131,16 +131,42 @@ gcloud dataproc batches submit \
 -- --coalesce-output=8 --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX} 
 ```
 
+In Dataproc Serverless, there is a fixed total of 3346 MB per core allocated for executor memory and executor overhead memory. The default configuration provided by Serverless, allocating 19120 MB for executor memory and 7648 MB for overhead memory, works optimally. This totals to (3346 * 8) MB. We can explicitly set these values in the arguments or leave them for Serverless to handle, as it essentially achieves the same outcome.
+
 Follow the job execution in the Dataproc->Batches UI-
 
+![README](./images/m3-10.png)   
+<br><br>
+![README](./images/m3-11.png)   
+<br><br>
+![README](./images/m3-12.png)   
+<br><br>
 
-### 3.2. Note the execution time
-
-The CPU based execution took ___ minutes
-
-### 3.3. Review the execution plan
+<hr>
 
 
+
+### 3.2. Review the execution plan
+
+Navigate to the Spark History Server and review the execution plan.
+
+![README](./images/m3-17.png)   
+<br><br>
+![README](./images/m3-13.png)   
+<br><br>
+![README](./images/m3-14.png)   
+<br><br>
+![README](./images/m3-15.png)   
+<br><br>
+
+![README](./images/m3-16.png)   
+<br><br>
+
+<hr>
+
+### 3.3. Note the execution time
+
+The CPU based execution took 15 minutes
 
 <hr>
 <hr>
@@ -176,23 +202,25 @@ gcloud dataproc batches submit \
 --subnet $SPARK_SUBNET \
 --history-server-cluster projects/$PROJECT_ID/regions/$REGION/clusters/$PERSISTENT_SPARK_HISTORY_SERVER \
 --properties \
-spark.dynamicAllocation.enabled=false,\
-spark.executor.instances=4,\
-spark.shuffle.manager=com.nvidia.spark.rapids.spark332.RapidsShuffleManager,\
-spark.driver.cores=4,\
-spark.executor.cores=8,\
+"spark.sql.codegen.wholeStage=false, \
+spark.dynamicAllocation.enabled=false, \
 spark.dataproc.driver.compute.tier=premium,\
-spark.dataproc.executor.compute.tier=premium,\
-spark.dataproc.executor.resource.accelerator.type=l4,\
+spark.driver.memory=4g, \
+spark.driver.cores=4, \
 spark.dataproc.driver.disk.tier=premium,\
-spark.dataproc.executor.disk.tier=premium,\
-spark.dataproc.driver.disk.size=750G,\
-spark.sql.codegen.wholeStage=false,\
-spark.rapids.memory.pinnedPool.size=4G,\
-spark.rapids.sql.concurrentGpuTasks=3 \
+spark.dataproc.driver.disk.size=750g, \
+spark.dataproc.executor.compute.tier=premium,\
+spark.executor.instances=4, \
+spark.executor.cores=8, \
+spark.executor.memory=14G, \
+spark.dataproc.executor.disk.tier=premium, \
+spark.dataproc.executor.disk.size=1024, \
+spark.dataproc.executor.resource.accelerator.type=l4,\
+spark.shuffle.manager=com.nvidia.spark.rapids.spark332.RapidsShuffleManager,\
+spark.rapids.memory.pinnedPool.size=4g, \
+spark.rapids.sql.concurrentGpuTasks=3" \
 --service-account $UMSA_FQN \
 -- --coalesce-output=8 --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX}
-
 ```
 
 ### 4.2. Note the execution time
