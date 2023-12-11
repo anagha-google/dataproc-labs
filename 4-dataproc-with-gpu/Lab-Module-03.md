@@ -40,10 +40,29 @@ In this lab, we will-
 ### 1.5. Duration
 ~ 1 hour or less but does not require focus time.
 
+### 1.6. Architectural Considerations, Best Practices & Documentation Resources
+
+1. Understand the Spark properties supported in Dataproc Serverless by reviewing the docs at -
+2. Create a Persistent Spark History Server (PHS) always for use with Dataproc Serverless. Ideally, 1 PHS per project is a minimum
+3. Reference the PHS when you submit a Dataproc Serverless batch job
+4. The GPU SKUs supported are different across [Dataproc GCE clusters](https://cloud.google.com/dataproc/docs/concepts/compute/gpus) and [Dataproc Serverless](https://cloud.google.com/dataproc-serverless/docs/guides/gpus-serverless). Review the documentation to ensure you are specifying the right SKUs
+5. Ensure you have sufficient GPU quota prior to attempting this lab
+6. Not every Spark opertor is supported by spark-rapids. Review the documentation at - https://nvidia.github.io/spark-rapids/docs/configs.html
+7. If a specific Spark operator is unsupported, fallback to CPUs is seamless
+8. The compatible version of spark-rapids available for Dataproc Serverless is for Spark 3.3.2, which is Dataproc Serverless runtime 1.1. Ensure you specific the runtime explicitly.
+9. Watch the Dataproc Serverless relases and spark-rapids releases from time to time to review if you need to switch to higher versions
+10. Nvidia spark-rapids-user-tools currently cannot automatically download the event logs from PHS. In the interim, you can download the event logs to your local machine and run the tools there. Its an extra step, but it works.
+11. [December 2023]- NVIDIA A100 or NVIDIA L4 GPUs can be attached to Dataproc Serverless batch workloads. A100 and L4 accelerators are subject to Compute Engine GPU regional availability.
+12. The Spark RAPIDS and XGBoost libraries are only available for Dataproc Serverless GPU-accelerated workloads when using Dataproc Serverless Spark runtime version 1.1.
+13. Dataproc Serverless GPU-accelerated batches utilize increased Compute Engine quotas. For example, to run a serverless batch workload that uses an NVIDIA L4 GPU, you must allocate the NVIDIA_L4_GPUS quota.
+14. Accelerator-enabled jobs are not compatible with the constraints/compute.requireShieldedVm organization policy. If your organization enforces this policy, its accelerator-enabled jobs not run.
+15. Spark Rapids details are available [here](https://nvidia.github.io/spark-rapids/)
+
 <hr>
 <hr>
 
-## 2. Create a Persistent Spark History Server
+## 2. Create a Persistent Spa
+rk History Server
 
 This section should take 5 minutes to complete.
 
@@ -138,7 +157,6 @@ gcloud dataproc batches submit \
 -- --coalesce-output=8 --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX} 
 ```
 
-In Dataproc Serverless, there is a fixed total of 3346 MB per core allocated for executor memory and executor overhead memory. The default configuration provided by Serverless, allocating 19120 MB for executor memory and 7648 MB for overhead memory, works optimally. This totals to (3346 * 8) MB. We can explicitly set these values in the arguments or leave them for Serverless to handle, as it essentially achieves the same outcome.
 
 Follow the job execution in the Dataproc->Batches UI-
 
