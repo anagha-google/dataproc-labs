@@ -16,18 +16,23 @@ In this lab, we will-
 1. Create a Dataproc Persistent Spark History Server
 2. Learn how to submit Spark jobs on Dataproc Serverless with GPUs
 3. Visit the Spark History Server to review the execution DAG to review stages that benefited from GPU acceleration.
+4. Understand how to use Nvidia command line tools showcased in Lab Module 2, with Dataproc Serverless
+5. Know the limitations, know where to go for documentation and best practices
 
 <hr>
 
-### 1.3. Lab flow
+### 1.3. Lab infrastructure
+
+![README](./images/m3-04.png)   
+<br><br>
+
+<hr>
+
+### 1.4. Lab flow
 
 
 
 <hr>
-
-### 1.4. Lab infrastructure
-
-
 
 <hr>
 
