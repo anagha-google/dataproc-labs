@@ -97,6 +97,7 @@ gcloud dataproc clusters create ${DATAPROC_PHS_NAME} \
 <hr>
 <hr>
 
+
 ## 3. Run the ETL job from module 2, to establish the CPU performance baseline
 
 ### 3.1. Execute the job
@@ -171,8 +172,15 @@ The CPU based execution took 15 minutes
 <hr>
 <hr>
 
+## 4. Running the Nvidia Qualification Tool
 
-## 4. Run the same ETL job with GPUs
+- The Nvidia rapids user tools currently does not support Dataproc Serverless event logs directly.
+- To run the qualification tool, copy the event logs from the Persistent Histroy Server bucket locally and run the tool as detailed in the lab module 2.
+
+<hr>
+<hr>
+
+## 5. Run the same ETL job with GPUs
 
 ### 4.1. Execute the job
 
@@ -202,6 +210,7 @@ gcloud dataproc batches submit \
 --subnet $SPARK_SUBNET \
 --history-server-cluster projects/$PROJECT_ID/regions/$REGION/clusters/$PERSISTENT_SPARK_HISTORY_SERVER \
 --properties \
+"spark.jars.packages=com.nvidia.spark.rapids.spark332.RapidsShuffleManager",
 "spark.sql.codegen.wholeStage=false, \
 spark.dynamicAllocation.enabled=false, \
 spark.dataproc.driver.compute.tier=premium,\
@@ -224,6 +233,7 @@ spark.rapids.sql.concurrentGpuTasks=3" \
 ```
 
 ### 4.2. Note the execution time
+
 
 
 ### 4.3. Review the execution plan
