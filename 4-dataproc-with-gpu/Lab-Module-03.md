@@ -96,3 +96,49 @@ gcloud dataproc clusters create ${DATAPROC_PHS_NAME} \
 
 <hr>
 <hr>
+
+## 3. Run the ETL job from module 2, to establish the CPU performance baseline
+
+### 3.1. Execute the job
+
+
+### 3.2. Note the execution time
+
+
+### 3.3. Review the execution plan
+
+
+<hr>
+<hr>
+
+
+## 4. Run the same ETL job with GPUs
+
+### 4.1. Execute the job
+
+
+### 4.2. Note the execution time
+
+
+### 4.3. Review the execution plan
+
+
+<hr>
+<hr>
+
+## 5. Optimization summary
+
+
+
+## 6. In closing
+
+
+Dataproc and Nvidia GPUs can majorly accelerate ETL and Data Science worklads that use Spark SQL and Spark dataframes and can fall back to CPU based execution when a Spark stage/feature is unsupported by spark-rapids.
+
+<br><br>
+This concludes the lab. **DONT FORGET** to Shut down the project to avoid billing.
+
+<hr>
+<hr>
+
+
