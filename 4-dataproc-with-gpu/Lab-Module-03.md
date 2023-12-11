@@ -15,10 +15,13 @@ In this lab, we will-
 
 1. Create a Dataproc Persistent Spark History Server
 2. Learn how to submit Spark jobs on Dataproc Serverless with GPUs
+3. Visit the Spark History Server to review the execution DAG to review stages that benefited from GPU acceleration.
 
 <hr>
 
 ### 1.3. Lab flow
+
+
 
 <hr>
 
@@ -69,7 +72,27 @@ gcloud dataproc clusters create ${DATAPROC_PHS_NAME} \
 
 ### 2.2. Navigating to the Spark History Server
 
+1. From the Cloud Console, search for Dataproc and from there, click on clusters. 
+2. The cluster having a "phs" prefix is the persistent history server we just provisioned.
+3. Below are the steps to navigate to the Spark History Server
 
+![README](./images/m3-04.png)   
+<br><br>
+
+![README](./images/m3-05.png)   
+<br><br>
+
+![README](./images/m3-06.png)   
+<br><br>
+
+![README](./images/m3-07.png)   
+<br><br>
+
+![README](./images/m3-08.png)   
+<br><br>
+
+![README](./images/m3-09.png)   
+<br><br>
 
 <hr>
 <hr>
