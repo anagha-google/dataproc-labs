@@ -23,14 +23,15 @@ In this lab, we will-
 
 ### 1.3. Lab infrastructure
 
-![README](./images/m3-04.png)   
+![README](./images/m3-00.png)   
 <br><br>
 
 <hr>
 
 ### 1.4. Lab flow
 
-
+![README](./images/m3-01.png)   
+<br><br>
 
 <hr>
 
