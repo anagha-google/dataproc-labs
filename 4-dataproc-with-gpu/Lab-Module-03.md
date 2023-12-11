@@ -101,6 +101,35 @@ gcloud dataproc clusters create ${DATAPROC_PHS_NAME} \
 
 ### 3.1. Execute the job
 
+Paste in Cloud Shell-
+```
+PROJECT_ID=`gcloud config list --format "value(core.project)" 2>/dev/null`
+PROJECT_NBR=`gcloud projects describe $PROJECT_ID | grep projectNumber | cut -d':' -f2 |  tr -d "'" | xargs`
+PERSISTENT_SPARK_HISTORY_SERVER=phs-${PROJECT_NBR}
+DATA_BUCKET=data_bucket-${PROJECT_NBR}
+CODE_BUCKET=code_bucket-${PROJECT_NBR}
+VPC_NM=VPC=vpc-$PROJECT_NBR
+SPARK_SUBNET=spark-snet
+UMSA_FQN=lab-sa@$PROJECT_ID.iam.gserviceaccount.com
+REGION=us-central1
+ZONE=us-central1-a
+SPARK_JOB_PREFIX="cpu-etl-baseline"
+DATAPROC_SERVERLESS_SPARK_RUNTIME="1.1"
+INPUT_PREFIX="gs://data_bucket-$PROJECT_NBR/churn/input/10scale/"
+OUTPUT_PREFIX="gs://data_bucket-$PROJECT_NBR/churn/output/cpu-based-analytics-serverless/"
+
+gcloud dataproc batches submit \
+--project $PROJECT_ID \
+--region $REGION pyspark \
+--batch $SPARK_JOB_PREFIX-$RANDOM gs://$CODE_BUCKET/churn/main_analytics_app.py \
+--py-files=gs://$CODE_BUCKET/churn/aux_etl_code_archive.zip \
+--version $DATAPROC_SERVERLESS_SPARK_RUNTIME \
+--subnet $SPARK_SUBNET \
+--history-server-cluster projects/$PROJECT_ID/regions/$REGION/clusters/$PERSISTENT_SPARK_HISTORY_SERVER \
+--properties spark.dynamicAllocation.enabled=false,spark.executor.instances=4,spark.driver.cores=4,spark.executor.cores=8,spark.executor.memory=42428m,spark.sql.codegen.wholeStage=false \
+--service-account $UMSA_FQN \
+-- --coalesce-output=8 --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX} 
+```
 
 ### 3.2. Note the execution time
 
