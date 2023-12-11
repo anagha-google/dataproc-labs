@@ -233,31 +233,31 @@ gcloud dataproc batches submit \
 --region $REGION pyspark \
 --batch $SPARK_JOB_PREFIX-$RANDOM gs://$CODE_BUCKET/churn/main_analytics_app.py \
 --py-files=gs://$CODE_BUCKET/churn/aux_etl_code_archive.zip \
---version $DATAPROC_SERVERLESS_SPARK_RUNTIME \
+--version=$DATAPROC_SERVERLESS_SPARK_RUNTIME \
 --subnet $SPARK_SUBNET \
 --history-server-cluster projects/$PROJECT_ID/regions/$REGION/clusters/$PERSISTENT_SPARK_HISTORY_SERVER \
 --service-account $UMSA_FQN \
---properties \
-"spark.sql.codegen.wholeStage=false, \
-spark.dynamicAllocation.enabled=false, \
-spark.dataproc.driver.compute.tier=premium,\
-spark.driver.memory=4g, \
-spark.driver.cores=4, \
+--properties spark.dataproc.driver.compute.tier=premium,\
+spark.driver.memory=4g,\
+spark.driver.cores=4,\
 spark.dataproc.driver.disk.tier=premium,\
-spark.dataproc.driver.disk.size=750g, \
+spark.dataproc.driver.disk.size=750g,\
 spark.dataproc.executor.compute.tier=premium,\
-spark.executor.instances=4, \
-spark.executor.cores=8, \
-spark.executor.memory=14g, \
-spark.dataproc.executor.disk.tier=premium, \
-spark.dataproc.executor.disk.size=1024g, \
+spark.executor.instances=4,\
+spark.executor.cores=8,\
+spark.dataproc.executor.disk.tier=premium,\
 spark.dataproc.executor.resource.accelerator.type=l4,\
-spark.rapids.memory.pinnedPool.size=4g, \
-spark.rapids.sql.concurrentGpuTasks=3" \
+spark.shuffle.manager=com.nvidia.spark.rapids.spark332.RapidsShuffleManager \
 -- --coalesce-output=8 --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX}
 ```
 
-spark.shuffle.manager=com.nvidia.spark.rapids.spark332.RapidsShuffleManager, \
+spark.executor.memory=14g, \
+spark.dataproc.executor.disk.size=1024g, \
+spark.sql.codegen.wholeStage=false, \
+spark.dynamicAllocation.enabled=false, \
+spark.rapids.memory.pinnedPool.size=4g, \
+spark.rapids.sql.concurrentGpuTasks=3, \
+
 
 ### 4.2. Note the execution time
 
