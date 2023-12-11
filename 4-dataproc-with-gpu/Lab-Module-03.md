@@ -256,6 +256,26 @@ spark.rapids.sql.concurrentGpuTasks=3 \
 -- --coalesce-output=8 --input-prefix=${INPUT_PREFIX} --output-prefix=${OUTPUT_PREFIX}
 ```
 
+![README](./images/m3-18.png)   
+<br><br>
+![README](./images/m3-19.png)   
+<br><br>
+![README](./images/m3-20.png)   
+<br><br>
+![README](./images/m3-21.png)   
+<br><br>
+![README](./images/m3-22.png)   
+<br><br>
+![README](./images/m3-23.png)   
+<br><br>
+![README](./images/m3-24.png)   
+<br><br>
+![README](./images/m3-25.png)   
+<br><br>
+![README](./images/m3-26.png)   
+<br><br>
+![README](./images/m3-27.png)   
+<br><br>
 
 
 ### 4.2. Note the execution time
