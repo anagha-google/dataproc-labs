@@ -66,8 +66,7 @@ In this lab, we will-
 <hr>
 <hr>
 
-## 2. Create a Persistent Spa
-rk History Server
+## 2. Create a Persistent Spark History Server
 
 This section should take 5 minutes to complete.
 
