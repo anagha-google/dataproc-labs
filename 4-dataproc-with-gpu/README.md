@@ -19,7 +19,7 @@ This lab showcases Apache Spark application acceleration with spark-rapids on Da
 
 | Aspect | Contribution | 
 | -- | :--- |  
-| Original sample|  Nvidia | 
+| [Original sample for Dataproc on GCE](data-science-blueprints)|  Nvidia | 
 | Adaption for simplicity, addition of automation, production deployment rigor |  Anagha Khanolkar | 
 
 <hr>
