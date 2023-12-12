@@ -1,6 +1,6 @@
 # About
 
-This lab showcases Spark application acceleration with Spark-RAPIDS on Dataproc on GCE & Dataproc Serverless Spark - powered by GPUs. 
+This lab showcases Spark application acceleration with spark-rapids on Dataproc on GCE & Dataproc Serverless Spark - powered by GPUs. 
 
 The lab is an adaptation of the lab from Nvidia in the Google Cloud Platform Data Lake Modernization repo that has been simplified to provide a quickstart experience with the addition of Terraform for automation and Airflow DAGs to demonstrate automation across both Dataproc on GCE clusters and dataproc Spark Serverless. 
 
