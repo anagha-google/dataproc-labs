@@ -36,10 +36,12 @@ In this lab, we will-
 
 <hr>
 
-<hr>
+
 
 ### 1.5. Duration
 ~ 1 hour or less but does not require focus time.
+
+<hr>
 
 ### 1.6. Architectural Considerations, Best Practices & Documentation Resources
 
