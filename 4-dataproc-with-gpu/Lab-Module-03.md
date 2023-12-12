@@ -261,6 +261,16 @@ spark.rapids.sql.concurrentGpuTasks=3 \
 <br><br>
 ![README](./images/m3-19.png)   
 <br><br>
+
+
+
+### 4.2. Note the execution time
+
+The batch job took ~5 minutes<br>
+Note: The Spark History Server reflects the actual Spark execution time.
+
+### 4.3. Review the execution plan
+
 ![README](./images/m3-20.png)   
 <br><br>
 ![README](./images/m3-21.png)   
@@ -277,15 +287,6 @@ spark.rapids.sql.concurrentGpuTasks=3 \
 <br><br>
 ![README](./images/m3-27.png)   
 <br><br>
-
-
-### 4.2. Note the execution time
-
-The batch job took ~5 minutes<br>
-Note: The Spark History Server reflects the actual Spark execution time.
-
-### 4.3. Review the execution plan
-
 
 <hr>
 <hr>
