@@ -39,9 +39,24 @@ In this lab, we will-
 
 <hr>
 
-### 1.5. Duration
+### 1.5. Lab architecture
+
+![README](./images/m2-30.png)   
+
+### 1.6. Duration
 
 ~ 1 hour or less but does not require focus time.
+
+<hr>
+
+### 1.7. Documentation resources
+
+**Dataproc on GCE with GPUs:** https://cloud.google.com/dataproc/docs/concepts/compute/gpus<br>
+**Nvidia tooling:** https://github.com/NVIDIA/spark-rapids-tools/blob/main/user_tools/docs/user-tools-dataproc.md#1gcloud-cli<br>
+**Nvidia user guide:** https://docs.nvidia.com/spark-rapids/user-guide/latest/index.html<br>
+**Nvidia Dataproc guide:** https://docs.nvidia.com/spark-rapids/user-guide/latest/getting-started/google-cloud-dataproc.html<br>
+**Nvidia spark rapids overview:** https://nvidia.github.io/spark-rapids/developer-overview <br>
+**Nvidia contacts:** https://nvidia.github.io/spark-rapids/docs/contact-us.html <br>
 
 <hr>
 <hr>
