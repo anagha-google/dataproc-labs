@@ -280,7 +280,8 @@ spark.rapids.sql.concurrentGpuTasks=3 \
 
 ### 4.2. Note the execution time
 
-The batch job took ~7.5 minutes
+The batch job took ~5 minutes<br>
+Note: The Spark History Server reflects the actual Spark execution time.
 
 ### 4.3. Review the execution plan
 
