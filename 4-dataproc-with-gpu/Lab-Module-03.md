@@ -22,14 +22,19 @@ In this lab, we will-
 
 <hr>
 
-### 1.3. Lab infrastructure
+### 1.3. Lab architecture
+
+![README](./images/m3-00.png)   
+<br><br>
+
+### 1.4. Lab infrastructure
 
 ![README](./images/m3-00.png)   
 <br><br>
 
 <hr>
 
-### 1.4. Lab flow
+### 1.5. Lab flow
 
 ![README](./images/m3-01.png)   
 <br><br>
@@ -38,12 +43,12 @@ In this lab, we will-
 
 
 
-### 1.5. Duration
+### 1.6. Duration
 ~ 1 hour or less but does not require focus time.
 
 <hr>
 
-### 1.6. Architectural Considerations, Best Practices & Documentation Resources
+### 1.7. Architectural Considerations, Best Practices & Documentation Resources
 
 1. Understand the Spark properties supported in Dataproc Serverless by reviewing the docs at -
 2. Create a Persistent Spark History Server (PHS) always for use with Dataproc Serverless. Ideally, 1 PHS per project is a minimum
@@ -62,6 +67,17 @@ In this lab, we will-
 15. Spark Rapids details are available [here](https://nvidia.github.io/spark-rapids/)
 16. Rapids User Tools details are available [here](https://docs.nvidia.com/spark-rapids/user-guide/latest/index.html)
 17. Cost breakdown is available [here](https://cloud.google.com/dataproc-serverless/pricing)
+
+<hr>
+
+### 1.6. Documentation resources
+
+**Dataproc Serverless:** https://cloud.google.com/dataproc-serverless/docs/guides/gpus-serverless<br>
+**Nvidia tooling:** https://github.com/NVIDIA/spark-rapids-tools/blob/main/user_tools/docs/user-tools-dataproc.md#1gcloud-cli<br>
+**Nvidia user guide:** https://docs.nvidia.com/spark-rapids/user-guide/latest/index.html<br>
+**Nvidia Dataproc guide:** https://docs.nvidia.com/spark-rapids/user-guide/latest/getting-started/google-cloud-dataproc.html<br>
+**Nvidia spark rapids overview:** https://nvidia.github.io/spark-rapids/developer-overview <br>
+**Nvidia contacts:** https://nvidia.github.io/spark-rapids/docs/contact-us.html <br>
 
 <hr>
 <hr>
@@ -331,9 +347,9 @@ The author's results-
 
 ## 7. In closing
 
-Dataproc and Nvidia GPUs can majorly accelerate ETL and Data Science worklads that use Spark SQL and Spark dataframes and optimize performance and thereby costs.
+Dataproc with Nvidia GPUs can majorly accelerate ETL and Data Science worklads that use Spark SQL and Spark dataframes and optimize performance and thereby costs.
 
-<br><br>
+<br>
 This concludes the lab. **DONT FORGET** to Shut down the project to avoid billing.
 
 <hr>
