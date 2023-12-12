@@ -262,12 +262,14 @@ spark.rapids.sql.concurrentGpuTasks=3 \
 ![README](./images/m3-19.png)   
 <br><br>
 
-
+<hr>
 
 ### 4.2. Note the execution time
 
 The batch job took ~5 minutes<br>
 Note: The Spark History Server reflects the actual Spark execution time.
+
+<hr>
 
 ### 4.3. Review the execution plan
 
@@ -300,12 +302,34 @@ Note: The Spark History Server reflects the actual Spark execution time.
 <hr>
 <hr>
 
-## 6. Optimization summary
+## 6. Performance Optimization Summary
 
+We ran the same Spark ETL application from Nvidia on Dataproc Serverless batches and compared performance across CPUs and GPUs. The Spark applications are in no way perfectly tuned, but the performance is significantly improved and can be tweaked further for performance critical applications. 
 
+|About|Details|
+| :-- | :-- |
+| Dataproc | Runtime 1.1 | 
+| Apache Spark | 3.3.2 | 
+| Workload | ETL with PySpark on Dataproc on GCE with Spark 3.3.2 | 
+| Data size | 45 MB | 
+| Storage system | Google Cloud Storage | 
+| Processing complexity | Medium |
+
+|Infrastructure| Specification|
+| :-- | :-- |
+| Executor GPU SKU | 1 nvidia-l4 gpu |
+| Worker Node Count | 4 |
+
+The author's results-
+|Infrastructure base| Specifics| Average execution time|
+| :-- | :-- | :-- |
+| CPU-based | Baseline performance | 15 minutes |
+| GPU-based | Yet to be tuned with Nvidia profiler  | 5 minutes |
+
+![README](./images/m3-28.png)   
+<br><br>
 
 ## 7. In closing
-
 
 Dataproc and Nvidia GPUs can majorly accelerate ETL and Data Science worklads that use Spark SQL and Spark dataframes and optimize performance and thereby costs.
 
