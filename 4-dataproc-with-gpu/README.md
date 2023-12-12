@@ -17,7 +17,7 @@ This lab showcases Apache Spark application acceleration with spark-rapids on Da
 
 ## Credits
 
-| # | Contribution | 
+| Aspect | Contribution | 
 | -- | :--- |  
 | Original sample|  Nvidia | 
 | Adaption, automation, production deployment rigor |  Anagha Khanolkar | 
