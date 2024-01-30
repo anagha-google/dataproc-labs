@@ -208,7 +208,7 @@ terraform apply \
 Takes ~50 minutes to complete. In a separate cloud shell tab, you can tail the output file for execution state through completion-
 
 ```
-tail -f ~/dataproc-labs/1-dataproc-serverless-with-terraform/provisioning-automation/core-tf/terraform/s8s-lab-tf.output
+tail -f ~/dataproc-labs/1-dataproc-serverless-with-terraform/provisioning-automation/core-tf/terraform/s8s-core-tf.output
 ```
 
 <br>
