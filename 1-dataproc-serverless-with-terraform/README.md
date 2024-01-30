@@ -185,7 +185,7 @@ GCP_ACCOUNT_NAME=`gcloud auth list --filter=status:ACTIVE --format="value(accoun
 GCP_REGION="us-central1"
 DEPLOYER_ACCOUNT_NAME=$GCP_ACCOUNT_NAME
 ORG_ID=`gcloud organizations list --format="value(name)"`
-CC2_IMAGE_VERSION="composer-2.0.11-airflow-2.2.3"
+CC2_IMAGE_VERSION="composer-2.5.5-airflow-2.6.3"
 
 ```
 
