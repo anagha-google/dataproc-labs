@@ -24,7 +24,7 @@ In this lab, we will-
 
 ### 1.3. Lab architecture
 
-![README](./images/m3-02.png)   
+![README](./images/m03-02.png)   
 <br><br>
 
 ### 1.4. Lab infrastructure
