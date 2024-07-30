@@ -20,6 +20,7 @@ This repo hosts minimum viable self-contained, end-to-end solutions that showcas
 | [Lab-14](https://github.com/GoogleCloudPlatform/dataplex-labs/tree/main/dataplex-quickstart-labs) | Data Governance on Google Cloud for OSS Analytics |
 | [Lab-15](..) | Lineage for Dataproc Spark jobs|
 
+<hr>
 
 ## Scalable Infrastructure for Regulated Organizations
 
@@ -29,6 +30,7 @@ We encourage you to evaluate Assured Workloads' [control packages](https://cloud
 
 Note that unsupported products are not recommended for use by Assured Workloads customers without due diligence and waivers from your regulatory agencies or divisions.
 
+<hr>
 
 ## Credits
 | # | Google Cloud Collaborators | Contribution  | 
