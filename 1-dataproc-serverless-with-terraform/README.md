@@ -185,7 +185,7 @@ GCP_ACCOUNT_NAME=`gcloud auth list --filter=status:ACTIVE --format="value(accoun
 GCP_REGION="us-central1"
 DEPLOYER_ACCOUNT_NAME=$GCP_ACCOUNT_NAME
 ORG_ID=`gcloud organizations list --format="value(name)"`
-CC2_IMAGE_VERSION="composer-2.0.11-airflow-2.2.3"
+CC2_IMAGE_VERSION="composer-2.5.5-airflow-2.6.3"
 
 ```
 
@@ -208,7 +208,7 @@ terraform apply \
 Takes ~50 minutes to complete. In a separate cloud shell tab, you can tail the output file for execution state through completion-
 
 ```
-tail -f ~/dataproc-labs/1-dataproc-serverless-with-terraform/provisioning-automation/core-tf/terraform/s8s-lab-tf.output
+tail -f ~/dataproc-labs/1-dataproc-serverless-with-terraform/provisioning-automation/core-tf/terraform/s8s-core-tf.output
 ```
 
 <br>

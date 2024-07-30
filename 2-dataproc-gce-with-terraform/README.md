@@ -160,6 +160,8 @@ terraform apply \
 
 **Note:** Wait till the provisioning completes (~10 minutes) before moving to the next section.
 
+
+
 <hr>
 
 ## 3. Lab resources provisioning automation with Terraform 
@@ -1248,7 +1250,10 @@ spark:spark.history.fs.gs.outputstream.sync.min.interval.ms=1000ms"
 ##### DONT FORGET TO DESTROY THE RESOURCES UNLESS YOU ARE WORKING ON LAB 3 and 4
 ##### =====================================================================================================
 
+
 ## APPENDIX
+
+
 
 The gcloud command equivalent for creating a cluster
 
@@ -1279,4 +1284,5 @@ gcloud dataproc clusters create $DPGCE_CLUSTER_NAME \
    --metadata spark-bigquery-connector-version=0.26.0 \
    --properties dataproc:dataproc.logging.stackdriver.enable=true,dataproc:dataproc.monitoring.stackdriver.enable=true,yarn:yarn.log-aggregation.enabled=true,dataproc:dataproc.logging.stackdriver.job.yarn.container.enable=true,dataproc:jobs.file-backed-output.enable=true,dataproc:dataproc.logging.stackdriver.job.driver.enable=true
    ```
+
 
